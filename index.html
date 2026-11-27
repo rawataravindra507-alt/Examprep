@@ -163,7 +163,7 @@
   .sec-tab { padding: 7px 14px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--muted); border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
   .sec-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; padding: 10px; background: var(--soft-bg); border-radius: 10px; border: 1px solid var(--border); }
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; padding: 10px; background: var(--soft-bg); border-radius: 10px; border: 1px solid var(--border); max-height: 140px; overflow-y: auto; }
   .p-btn { width: 34px; height: 34px; border-radius: 8px; border: 2px solid transparent; font-weight: 700; cursor: pointer; font-size: 0.86rem; }
   .p-not-visited { background: var(--border); color: var(--text); }
   .p-not-answered { background: var(--danger); color: white; }
@@ -364,7 +364,7 @@
       <div class="top-controls">
         <button class="icon-btn" id="lang-btn" onclick="toggleLang()">EN</button>
         <button class="icon-btn" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
-        <span class="timer" id="timer">10:00</span>
+        <span class="timer" id="timer">60:00</span>
         <button class="btn-top-submit" onclick="submitTest()">सबमिट</button>
       </div>
     </div>
@@ -414,8 +414,10 @@
   </div>
 </div>
 
+<!-- External 100-Question Full Tests File -->
+<script src="cgl_tests.js"></script>
+
 <script>
-  // --- 1. REAL SSC CGL QUESTION BANK (Multiple Sets) ---
   const qBank = {
     maths: [
       { q:{hi:"यदि x + 1/x = 5 है, तो x³ + 1/x³ का मान क्या होगा?", en:"If x + 1/x = 5, find the value of x³ + 1/x³."}, opts:{hi:["110","115","125","140"], en:["110","115","125","140"]}, ans:0, exp:{hi:"ट्रिक: k³ - 3k = 5³ - 3(5) = 125 - 15 = 110।", en:"Trick: k³ - 3k = 125 - 15 = 110."} },
@@ -423,9 +425,7 @@
       { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = (√3/4) × 64 = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} },
       { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} },
       { q:{hi:"यदि a + b + c = 0 है, तो (a³ + b³ + c³) / abc का मान क्या होगा?", en:"If a + b + c = 0, find the value of (a³ + b³ + c³) / abc."}, opts:{hi:["0","1","3","-3"], en:["0","1","3","-3"]}, ans:2, exp:{hi:"जब a+b+c=0 हो, तो a³+b³+c³ = 3abc होता है। अतः 3abc/abc = 3।", en:"When a+b+c=0, a³+b³+c³ = 3abc. So ratio = 3."} },
-      { q:{hi:"एक वृत्त की त्रिज्या 7 cm है, तो उसके अर्धवृत्त का परिमाप क्या होगा?", en:"Radius of a circle is 7 cm. Find perimeter of its semicircle."}, opts:{hi:["22 cm","36 cm","44 cm","29 cm"], en:["22 cm","36 cm","44 cm","29 cm"]}, ans:1, exp:{hi:"अर्धवृत्त का परिमाप = r(π + 2) = 7 × (36/7) = 36 cm।", en:"Perimeter = r(π + 2) = 7 × (36/7) = 36 cm."} },
-      { q:{hi:"यदि cos(A + B) = 0 और sin(A - B) = 1/2 है, तो A का मान क्या होगा?", en:"If cos(A+B) = 0 and sin(A-B) = 1/2, find A."}, opts:{hi:["45°","60°","30°","75°"], en:["45°","60°","30°","75°"]}, ans:1, exp:{hi:"A+B = 90°, A-B = 30° ⇒ 2A = 120° ⇒ A = 60°।", en:"A+B = 90°, A-B = 30° ⇒ A = (90+30)/2 = 60°."} },
-      { q:{hi:"दो संख्याओं का LCM 120 और HCF 10 है। एक संख्या 30 है, दूसरी क्या होगी?", en:"LCM is 120 and HCF is 10. If one number is 30, find the other."}, opts:{hi:["40","50","60","35"], en:["40","50","60","35"]}, ans:0, exp:{hi:"दूसरी संख्या = (LCM × HCF) / पहली संख्या = (120 × 10) / 30 = 40।", en:"Second number = (120 × 10) / 30 = 40."} }
+      { q:{hi:"एक वृत्त की त्रिज्या 7 cm है, तो उसके अर्धवृत्त का परिमाप क्या होगा?", en:"Radius of a circle is 7 cm. Find perimeter of its semicircle."}, opts:{hi:["22 cm","36 cm","44 cm","29 cm"], en:["22 cm","36 cm","44 cm","29 cm"]}, ans:1, exp:{hi:"अर्धवृत्त का परिमाप = r(π + 2) = 7 × (36/7) = 36 cm।", en:"Perimeter = r(π + 2) = 7 × (36/7) = 36 cm."} }
     ],
     reasoning: [
       { q:{hi:"श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en:"Complete the series: 2, 6, 12, 20, 30, ?"}, opts:{hi:["38","40","42","44"], en:["38","40","42","44"]}, ans:2, exp:{hi:"अंतर +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en:"Differences: +4, +6, +8, +10, +12. So 30 + 12 = 42."} },
@@ -467,20 +467,15 @@
     }));
   }
 
-  // --- 2. ALL EXAMS DIRECTORY (SSC CGL Tier 1 Fully Loaded!) ---
   const examDirectory = [
     {
       id: "ssc_cgl_t1", group: "ssc", icon: "🎯", icoClass: "ico-ssc",
-      title: "SSC CGL Tier 1", sub: "2 Full • 2 PYQ • 4 Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
+      title: "SSC CGL Tier 1", sub: "100 Qs Full Test • 2025 PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
       tests: [
-        { title: "SSC CGL Tier 1 - Full Mock Test #1", type: "full", time: 900, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 },
-        { title: "SSC CGL Tier 1 - Full Mock Test #2", type: "full", time: 900, secs: ['maths','reasoning','gs','english'], off: 4, cnt: 4 },
-        { title: "SSC CGL Tier 1 - PYQ Full Paper #1 (2024)", type: "pyq", time: 900, secs: ['maths','reasoning','gs','english'], off: 2, cnt: 4 },
-        { title: "SSC CGL Tier 1 - PYQ Full Paper #2 (2023)", type: "pyq", time: 900, secs: ['maths','reasoning','gs','english'], off: 5, cnt: 4 },
-        { title: "SSC CGL Tier 1 - Maths Sectional Test", type: "sectional", time: 300, secs: ['maths'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - Reasoning Sectional Test", type: "sectional", time: 300, secs: ['reasoning'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - GS / GK Sectional Test", type: "sectional", time: 300, secs: ['gs'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - English Sectional Test", type: "sectional", time: 300, secs: ['english'], off: 0, cnt: 6 }
+        { title: "SSC CGL Tier 1 - Maths Sectional (Mini)", type: "sectional", time: 300, secs: ['maths'], off: 0, cnt: 6 },
+        { title: "SSC CGL Tier 1 - Reasoning Sectional (Mini)", type: "sectional", time: 300, secs: ['reasoning'], off: 0, cnt: 6 },
+        { title: "SSC CGL Tier 1 - GS / GK Sectional (Mini)", type: "sectional", time: 300, secs: ['gs'], off: 0, cnt: 6 },
+        { title: "SSC CGL Tier 1 - English Sectional (Mini)", type: "sectional", time: 300, secs: ['english'], off: 0, cnt: 6 }
       ]
     },
     {
@@ -488,24 +483,21 @@
       title: "SSC CGL Tier 2 (Mains)", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
       tests: [
         { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 4 },
-        { title: "SSC CGL Tier 2 - PYQ Mains Paper", type: "pyq", time: 900, secs: ['maths','reasoning','english','gs'], off: 3, cnt: 4 },
-        { title: "SSC CGL Tier 2 - Maths & Reasoning", type: "sectional", time: 420, secs: ['maths','reasoning'], off: 2, cnt: 4 }
+        { title: "SSC CGL Tier 2 - PYQ Mains Paper", type: "pyq", time: 900, secs: ['maths','reasoning','english','gs'], off: 3, cnt: 4 }
       ]
     },
     {
       id: "ssc_chsl", group: "ssc", icon: "📝", icoClass: "ico-ssc",
       title: "SSC CHSL (10+2)", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
       tests: [
-        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 3 },
-        { title: "SSC CHSL - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs','english'], off: 2, cnt: 3 }
+        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 3 }
       ]
     },
     {
       id: "ssc_mts", group: "ssc", icon: "📘", icoClass: "ico-ssc",
       title: "SSC MTS & Havaldar", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
       tests: [
-        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 3 },
-        { title: "SSC MTS - GS & English Sectional", type: "sectional", time: 300, secs: ['gs','english'], off: 0, cnt: 4 }
+        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 3 }
       ]
     },
     {
@@ -513,16 +505,14 @@
       title: "RRB NTPC CBT 1", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
         { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 },
-        { title: "RRB NTPC CBT 1 - PYQ Shift Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 },
-        { title: "RRB NTPC CBT 1 - GA Sectional", type: "sectional", time: 240, secs: ['gs'], off: 0, cnt: 5 }
+        { title: "RRB NTPC CBT 1 - PYQ Shift Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
       ]
     },
     {
       id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
       title: "RRB NTPC CBT 2", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 },
-        { title: "RRB NTPC CBT 2 - PYQ Level 5/6", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 4 }
+        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
       ]
     },
     {
@@ -536,13 +526,11 @@
       id: "ssc_gd", group: "other", icon: "🪖", icoClass: "ico-def",
       title: "SSC GD & Delhi Police", sub: "Full Test • PYQ • Sectional", pos: 2, neg: 0.25,
       tests: [
-        { title: "SSC GD - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 },
-        { title: "Delhi Police - GK & Reasoning", type: "sectional", time: 300, secs: ['gs','reasoning'], off: 1, cnt: 4 }
+        { title: "SSC GD - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
       ]
     }
   ];
 
-  // --- 3. 25 OWS (A-SERIES WITH TRICKS) ---
   const vocabList = [
     { type: "OWS • 1", word: "Abdicate", meaning: "राजगद्दी या पद त्याग देना (Give up a throne/power)", trick: "Ab (दूर) + Dicate (बोलना) = पद से दूर होने की घोषणा करना।" },
     { type: "OWS • 2", word: "Abolish", meaning: "कानूनी रूप से समाप्त करना (Formally put an end to)", trick: "A + Polish = पुरानी प्रथा को पूरी तरह मिटा देना।" },
@@ -571,7 +559,6 @@
     { type: "OWS • 25", word: "Aviary", meaning: "पक्षीशाला (Place where birds are kept)", trick: "Avi = Bird (पक्षी)। Aviation (उड़ना) से याद रखें।" }
   ];
 
-  // --- 4. ADVANCE MATHS ALL CHAPTERS TRICKY FORMULAS ---
   const formulaGroups = [
     { topic: "1. बीजगणित (Algebra Shortcuts)", items: [
       { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2" },
@@ -628,7 +615,6 @@
     { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' कहा जाता है।" }
   ];
 
-  // --- 5. APP ENGINE ---
   let activeHubExam = null, activeHubFilter = 'all';
   let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
   let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
@@ -790,23 +776,18 @@
 
   function launchTest(examId, testIdx) {
     const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
-      if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
-    const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
-    curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
-  } else {
-    curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
-  }
+    if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
+      const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
+      curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
+    } else {
+      curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
+    }
     curSec = 0; curQ = 0; isResultView = false;
     userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
     marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
     visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
     visited[0][0] = true; timeLeft = curExam.time;
-  if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
-    const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
-    curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
-  } else {
-    curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
-  }
+
     document.getElementById('main-app').classList.add('hidden');
     document.getElementById('bottom-nav').classList.add('hidden');
     document.getElementById('result-screen').classList.add('hidden');
@@ -928,17 +909,20 @@
     document.getElementById('bottom-nav').classList.remove('hidden');
     switchMainTab('home');
   }
+
+  // Load 100-question tests from cgl_tests.js
   if (window.CGL_FULL_TESTS) {
-  const cgl1 = examDirectory.find(e => e.id === 'ssc_cgl_t1');
-  if (cgl1) {
-    window.CGL_FULL_TESTS.forEach((ft, idx) => {
-      cgl1.tests.unshift({ title: ft.title, type: ft.type, time: ft.time, customFullIdx: idx, secs: ['maths','reasoning','gs','english'], cnt: 25 });
-    });
+    const cgl1 = examDirectory.find(e => e.id === 'ssc_cgl_t1');
+    if (cgl1) {
+      window.CGL_FULL_TESTS.slice().reverse().forEach((ft, rIdx) => {
+        const idx = window.CGL_FULL_TESTS.length - 1 - rIdx;
+        cgl1.tests.unshift({ title: ft.title, type: ft.type, time: ft.time, customFullIdx: idx, secs: ['maths','reasoning','gs','english'], cnt: 25 });
+      });
+    }
   }
-  }
- initApp();
+
+  initApp();
   if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
-<script src="cgl_tests.js"></script>
 </script>
 </body>
 </html>
