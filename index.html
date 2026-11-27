@@ -159,9 +159,12 @@
   .timer { background: var(--danger-soft); color: var(--danger); padding: 5px 10px; border-radius: 20px; font-weight: 800; font-size: 0.84rem; }
   .btn-top-submit { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
 
+  .lock-notice { background: var(--amber-soft); color: var(--amber); font-size: 0.76rem; font-weight: 700; padding: 7px 11px; border-radius: 9px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
   .sec-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; }
   .sec-tab { padding: 7px 14px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--muted); border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
   .sec-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .sec-tab.locked { opacity: 0.5; cursor: not-allowed; }
 
   .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; padding: 10px; background: var(--soft-bg); border-radius: 10px; border: 1px solid var(--border); max-height: 140px; overflow-y: auto; }
   .p-btn { width: 34px; height: 34px; border-radius: 8px; border: 2px solid transparent; font-weight: 700; cursor: pointer; font-size: 0.86rem; }
@@ -364,10 +367,15 @@
       <div class="top-controls">
         <button class="icon-btn" id="lang-btn" onclick="toggleLang()">EN</button>
         <button class="icon-btn" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
-        <span class="timer" id="timer">60:00</span>
-        <button class="btn-top-submit" onclick="submitTest()">सबमिट</button>
+        <span class="timer" id="timer">15:00</span>
+        <button class="btn-top-submit" onclick="confirmSubmit()">सबमिट</button>
       </div>
     </div>
+
+    <div id="lock-notice" class="lock-notice hidden">
+      🔒 सेक्शन लॉक चालू है: 15 मिनट पूरे होने पर अगला सेक्शन अपने आप खुलेगा।
+    </div>
+
     <div class="sec-tabs" id="sec-tabs"></div>
     <div class="palette" id="palette"></div>
     <div class="legend">
@@ -414,8 +422,16 @@
   </div>
 </div>
 
-<!-- External 100-Question Full Tests File -->
+<!-- External Test Packs (Auto-loaded when uploaded to GitHub) -->
+<script>window.EXTERNAL_TEST_PACKS = [];</script>
 <script src="cgl_tests.js"></script>
+<script src="cgl_maths_sec.js"></script>
+<script src="cgl_reasoning_sec.js"></script>
+<script src="cgl_gs_sec.js"></script>
+<script src="cgl_english_sec.js"></script>
+<script src="cgl_full_pack2.js"></script>
+<script src="cgl_full_pack3.js"></script>
+<script src="cgl_pyq_pack1.js"></script>
 
 <script>
   const qBank = {
@@ -423,33 +439,22 @@
       { q:{hi:"यदि x + 1/x = 5 है, तो x³ + 1/x³ का मान क्या होगा?", en:"If x + 1/x = 5, find the value of x³ + 1/x³."}, opts:{hi:["110","115","125","140"], en:["110","115","125","140"]}, ans:0, exp:{hi:"ट्रिक: k³ - 3k = 5³ - 3(5) = 125 - 15 = 110।", en:"Trick: k³ - 3k = 125 - 15 = 110."} },
       { q:{hi:"यदि secθ + tanθ = 4 है, तो secθ - tanθ का मान क्या होगा?", en:"If secθ + tanθ = 4, what is the value of secθ - tanθ?"}, opts:{hi:["0.25","0.5","4","1"], en:["0.25","0.5","4","1"]}, ans:0, exp:{hi:"sec²θ - tan²θ = 1 ⇒ secθ - tanθ = 1/4 = 0.25।", en:"secθ - tanθ = 1 / (secθ + tanθ) = 1/4 = 0.25."} },
       { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = (√3/4) × 64 = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} },
-      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} },
-      { q:{hi:"यदि a + b + c = 0 है, तो (a³ + b³ + c³) / abc का मान क्या होगा?", en:"If a + b + c = 0, find the value of (a³ + b³ + c³) / abc."}, opts:{hi:["0","1","3","-3"], en:["0","1","3","-3"]}, ans:2, exp:{hi:"जब a+b+c=0 हो, तो a³+b³+c³ = 3abc होता है। अतः 3abc/abc = 3।", en:"When a+b+c=0, a³+b³+c³ = 3abc. So ratio = 3."} },
-      { q:{hi:"एक वृत्त की त्रिज्या 7 cm है, तो उसके अर्धवृत्त का परिमाप क्या होगा?", en:"Radius of a circle is 7 cm. Find perimeter of its semicircle."}, opts:{hi:["22 cm","36 cm","44 cm","29 cm"], en:["22 cm","36 cm","44 cm","29 cm"]}, ans:1, exp:{hi:"अर्धवृत्त का परिमाप = r(π + 2) = 7 × (36/7) = 36 cm।", en:"Perimeter = r(π + 2) = 7 × (36/7) = 36 cm."} }
+      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} }
     ],
     reasoning: [
       { q:{hi:"श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en:"Complete the series: 2, 6, 12, 20, 30, ?"}, opts:{hi:["38","40","42","44"], en:["38","40","42","44"]}, ans:2, exp:{hi:"अंतर +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en:"Differences: +4, +6, +8, +10, +12. So 30 + 12 = 42."} },
       { q:{hi:"यदि CAT = 24 है, तो DOG का मान क्या होगा?", en:"If CAT = 24, what is the value of DOG?"}, opts:{hi:["24","26","28","30"], en:["24","26","28","30"]}, ans:1, exp:{hi:"D(4) + O(15) + G(7) = 26।", en:"D(4) + O(15) + G(7) = 26."} },
-      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} },
-      { q:{hi:"विषम चुनें (Odd one out): 27, 64, 125, 144", en:"Find the odd one out: 27, 64, 125, 144"}, opts:{hi:["27","64","125","144"], en:["27","64","125","144"]}, ans:3, exp:{hi:"27(3³), 64(4³), 125(5³) घन (Cube) हैं, जबकि 144(12²) वर्ग है।", en:"27, 64, 125 are perfect cubes; 144 is a square."} },
-      { q:{hi:"यदि 15 अगस्त 2024 को गुरुवार था, तो 15 अगस्त 2025 को कौन-सा दिन होगा?", en:"If 15 Aug 2024 was Thursday, what day was 15 Aug 2025?"}, opts:{hi:["बुधवार","शुक्रवार","शनिवार","रविवार"], en:["Wednesday","Friday","Saturday","Sunday"]}, ans:1, exp:{hi:"साधारण वर्ष में 1 विषम दिन (Odd day) जुड़ता है: गुरुवार + 1 = शुक्रवार।", en:"Adding 1 odd day for a normal year: Thursday + 1 = Friday."} },
-      { q:{hi:"पुस्तक : पुस्तकालय :: वृक्ष : ?", en:"Book : Library :: Tree : ?"}, opts:{hi:["फल","पत्ती","वन (Forest)","जड़"], en:["Fruit","Leaf","Forest","Root"]}, ans:2, exp:{hi:"पुस्तकों का समूह पुस्तकालय और वृक्षों का समूह वन कहलाता है।", en:"Collection of books is Library; trees is Forest."} }
+      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} }
     ],
     gs: [
       { q:{hi:"भारतीय संविधान के किस अनुच्छेद में 'वित्तीय आपातकाल' है?", en:"Which Article provides for 'Financial Emergency'?"}, opts:{hi:["अनुच्छेद 352","अनुच्छेद 356","अनुच्छेद 360","अनुच्छेद 368"], en:["Article 352","Article 356","Article 360","Article 368"]}, ans:2, exp:{hi:"अनुच्छेद 360 में वित्तीय आपातकाल का प्रावधान है।", en:"Article 360 deals with Financial Emergency."} },
       { q:{hi:"हड़प्पा सभ्यता का प्रसिद्ध बंदरगाह 'लोथल' किस राज्य में है?", en:"In which state is the Harappan port 'Lothal' located?"}, opts:{hi:["राजस्थान","गुजरात","पंजाब","हरियाणा"], en:["Rajasthan","Gujarat","Punjab","Haryana"]}, ans:1, exp:{hi:"लोथल गुजरात में भोगवा नदी के किनारे स्थित था।", en:"Lothal is located in Gujarat on the Bhogava river."} },
-      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} },
-      { q:{hi:"'विजयनगर साम्राज्य' की स्थापना 1336 में किसने की थी?", en:"Who founded the Vijayanagara Empire in 1336?"}, opts:{hi:["कृष्णदेव राय","हरिहर और बुक्का","अलाउद्दीन खिलजी","बाबर"], en:["Krishnadevaraya","Harihara & Bukka","Alauddin Khilji","Babur"]}, ans:1, exp:{hi:"हरिहर और बुक्का ने तुंगभद्रा नदी के किनारे इसकी स्थापना की थी।", en:"Founded by Harihara I and Bukka Raya I."} },
-      { q:{hi:"कोशिका की 'आत्महत्या की थैली' किसे कहा जाता है?", en:"Which organelle is known as the 'Suicidal Bag' of the cell?"}, opts:{hi:["माइटोकॉन्ड्रिया","लाइसोसोम","राइबोसोम","केंद्रक"], en:["Mitochondria","Lysosome","Ribosome","Nucleus"]}, ans:1, exp:{hi:"लाइसोसोम में पाचक एंजाइम होते हैं।", en:"Lysosomes contain hydrolytic digestive enzymes."} },
-      { q:{hi:"भारत में 'श्वेत क्रांति' (White Revolution) के जनक कौन हैं?", en:"Who is the father of White Revolution in India?"}, opts:{hi:["एम.एस. स्वामीनाथन","डॉ. वर्गीज कुरियन","नॉर्मन बोरलॉग","सैम पित्रोदा"], en:["M.S. Swaminathan","Dr. Verghese Kurien","Norman Borlaug","Sam Pitroda"]}, ans:1, exp:{hi:"डॉ. वर्गीज कुरियन को दुग्ध क्रांति (ऑपरेशन फ्लड) का जनक कहा जाता है।", en:"Dr. Verghese Kurien led Operation Flood."} }
+      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} }
     ],
     english: [
       { q:{hi:"One Word: A doctor who treats children's diseases.", en:"One Word: A doctor who treats children's diseases."}, opts:{hi:["Cardiologist","Paediatrician","Dermatologist","Neurologist"], en:["Cardiologist","Paediatrician","Dermatologist","Neurologist"]}, ans:1, exp:{hi:"Paediatrician = बच्चों का डॉक्टर।", en:"Paediatrician treats children."} },
       { q:{hi:"Synonym of 'ABUNDANT':", en:"Synonym of 'ABUNDANT':"}, opts:{hi:["Scarce","Plentiful","Rare","Empty"], en:["Scarce","Plentiful","Rare","Empty"]}, ans:1, exp:{hi:"Abundant = प्रचुर मात्रा में (Plentiful)।", en:"Abundant means existing in large quantities."} },
-      { q:{hi:"Idiom 'Break the ice' means:", en:"Idiom 'Break the ice' means:"}, opts:{hi:["To start a conversation","To break something","To feel cold","To end a fight"], en:["To start a conversation","To break something","To feel cold","To end a fight"]}, ans:0, exp:{hi:"चुप्पी तोड़कर बातचीत शुरू करना।", en:"To initiate social interaction."} },
-      { q:{hi:"One Word: One who is able to use both hands equally well.", en:"One Word: One who is able to use both hands equally well."}, opts:{hi:["Ambiguous","Ambidextrous","Altruist","Agnostic"], en:["Ambiguous","Ambidextrous","Altruist","Agnostic"]}, ans:1, exp:{hi:"Ambi (दोनों) + Dexter (कुशल) = Ambidextrous।", en:"Ambidextrous means skilled with both hands."} },
-      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} },
-      { q:{hi:"Antonym of 'OPTIMISTIC':", en:"Antonym of 'OPTIMISTIC':"}, opts:{hi:["Hopeful","Pessimistic","Bright","Cheerful"], en:["Hopeful","Pessimistic","Bright","Cheerful"]}, ans:1, exp:{hi:"Optimistic (आशावादी) का विलोम Pessimistic (निराशावादी) है।", en:"Pessimistic is the opposite of Optimistic."} }
+      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} }
     ]
   };
 
@@ -470,20 +475,14 @@
   const examDirectory = [
     {
       id: "ssc_cgl_t1", group: "ssc", icon: "🎯", icoClass: "ico-ssc",
-      title: "SSC CGL Tier 1", sub: "100 Qs Full Test • 2025 PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
-      tests: [
-        { title: "SSC CGL Tier 1 - Maths Sectional (Mini)", type: "sectional", time: 300, secs: ['maths'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - Reasoning Sectional (Mini)", type: "sectional", time: 300, secs: ['reasoning'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - GS / GK Sectional (Mini)", type: "sectional", time: 300, secs: ['gs'], off: 0, cnt: 6 },
-        { title: "SSC CGL Tier 1 - English Sectional (Mini)", type: "sectional", time: 300, secs: ['english'], off: 0, cnt: 6 }
-      ]
+      title: "SSC CGL Tier 1", sub: "15-15 Min Section Lock • Full Test • PYQ • Sectional", pos: 2, neg: 0.5,
+      tests: []
     },
     {
       id: "ssc_cgl_t2", group: "ssc", icon: "🏆", icoClass: "ico-ssc",
       title: "SSC CGL Tier 2 (Mains)", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
       tests: [
-        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 4 },
-        { title: "SSC CGL Tier 2 - PYQ Mains Paper", type: "pyq", time: 900, secs: ['maths','reasoning','english','gs'], off: 3, cnt: 4 }
+        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 3 }
       ]
     },
     {
@@ -504,15 +503,14 @@
       id: "rrb_ntpc_cbt1", group: "rrb", icon: "🚆", icoClass: "ico-rrb",
       title: "RRB NTPC CBT 1", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 },
-        { title: "RRB NTPC CBT 1 - PYQ Shift Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
+        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
       ]
     },
     {
       id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
       title: "RRB NTPC CBT 2", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
+        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 3 }
       ]
     },
     {
@@ -624,7 +622,37 @@
   }
   function getHistory() { return JSON.parse(localStorage.getItem('ep_history')) || []; }
 
+  // Register all external tests into examDirectory
+  function loadExternalPacks() {
+    const allExternal = [];
+    if (window.CGL_FULL_TESTS) {
+      window.CGL_FULL_TESTS.forEach(t => {
+        allExternal.push({ examId: 'ssc_cgl_t1', ...t, secLock: true, secTime: 900 });
+      });
+    }
+    if (window.EXTERNAL_TEST_PACKS && window.EXTERNAL_TEST_PACKS.length) {
+      window.EXTERNAL_TEST_PACKS.forEach(t => allExternal.push(t));
+    }
+
+    allExternal.forEach((t, idx) => {
+      const targetExam = examDirectory.find(e => e.id === (t.examId || 'ssc_cgl_t1'));
+      if (targetExam) {
+        const qCount = t.sections.reduce((s, sec) => s + sec.questions.length, 0);
+        targetExam.tests.push({
+          title: t.title,
+          type: t.type || 'full',
+          time: t.time || (t.sections.length * (t.secTime || 900)),
+          qCount: qCount,
+          secLock: !!t.secLock,
+          secTime: t.secTime || 900,
+          fullData: t
+        });
+      }
+    });
+  }
+
   function initApp() {
+    loadExternalPacks();
     if (isDark) { document.documentElement.setAttribute('data-theme', 'dark'); updateThemeIcons(); }
     renderHomeExams(); renderProfileUI(); renderStudyHub(); renderHistoryUI();
   }
@@ -669,12 +697,13 @@
       const realIdx = activeHubExam.tests.indexOf(t);
       const badgeCls = t.type === 'full' ? 'badge-full' : t.type === 'pyq' ? 'badge-pyq' : 'badge-sec';
       const badgeTxt = t.type === 'full' ? 'Full Test' : t.type === 'pyq' ? 'PYQ Paper' : 'Sectional';
-      const qTotal = t.secs.length * t.cnt;
+      const qTotal = t.qCount || (t.secs ? t.secs.length * t.cnt : 25);
+      const lockBadge = t.secLock ? `<span>🔒 15m/सेक्शन</span>` : '';
       return `
         <div class="test-card">
           <span class="test-badge ${badgeCls}">${badgeTxt}</span>
           <div class="test-title">${t.title}</div>
-          <div class="test-meta"><span>📝 ${qTotal} सवाल</span><span>⏱️ ${Math.round(t.time/60)} मिनट</span><span>📊 +${activeHubExam.pos} / -${activeHubExam.neg}</span></div>
+          <div class="test-meta"><span>📝 ${qTotal} सवाल</span><span>⏱️ ${Math.round(t.time/60)} मिनट</span>${lockBadge}<span>📊 +${activeHubExam.pos} / -${activeHubExam.neg}</span></div>
           <button class="btn-start" onclick="launchTest('${activeHubExam.id}', ${realIdx})">टेस्ट शुरू करें →</button>
         </div>`;
     }).join('');
@@ -776,22 +805,34 @@
 
   function launchTest(examId, testIdx) {
     const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
-    if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
-      const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
-      curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
+    if (tObj.fullData) {
+      const ft = tObj.fullData;
+      curExam = {
+        name: ft.title, pos: ft.pos || exObj.pos, neg: ft.neg || exObj.neg,
+        time: ft.time, sections: ft.sections,
+        secLock: !!ft.secLock && ft.sections.length > 1,
+        secTime: ft.secTime || 900
+      };
     } else {
-      curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
+      curExam = {
+        name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time,
+        sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 3),
+        secLock: false, secTime: tObj.time
+      };
     }
+
     curSec = 0; curQ = 0; isResultView = false;
     userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
     marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
     visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
-    visited[0][0] = true; timeLeft = curExam.time;
+    visited[0][0] = true;
+    timeLeft = curExam.secLock ? curExam.secTime : curExam.time;
 
     document.getElementById('main-app').classList.add('hidden');
     document.getElementById('bottom-nav').classList.add('hidden');
     document.getElementById('result-screen').classList.add('hidden');
     document.getElementById('test-screen').classList.remove('hidden');
+    document.getElementById('lock-notice').classList.toggle('hidden', !curExam.secLock);
     document.getElementById('exam-title').innerText = curExam.name;
     document.getElementById('q-marks').innerText = `+${curExam.pos} / -${curExam.neg}`;
     startTimer(); renderAll(); window.scrollTo(0, 0);
@@ -799,12 +840,34 @@
 
   function startTimer() {
     clearInterval(timerInt);
+    updateTimerDisplay();
     timerInt = setInterval(() => {
-      let m = Math.floor(timeLeft/60), s = timeLeft%60;
-      document.getElementById('timer').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
-      if (timeLeft <= 0) submitTest();
       timeLeft--;
+      if (timeLeft <= 0) {
+        if (curExam.secLock && curSec < curExam.sections.length - 1) {
+          curSec++;
+          curQ = 0;
+          visited[curSec][0] = true;
+          timeLeft = curExam.secTime;
+          renderAll();
+          updateTimerDisplay();
+          alert(`समय समाप्त! अब अगला सेक्शन (${curExam.sections[curSec].name}) शुरू हो गया है।`);
+        } else {
+          submitTest();
+        }
+      } else {
+        updateTimerDisplay();
+      }
     }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    document.getElementById('timer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+  }
+
+  function confirmSubmit() {
+    if (confirm('क्या आप टेस्ट सबमिट करना चाहते हैं?')) submitTest();
   }
 
   function renderAll() {
@@ -817,8 +880,16 @@
     const tabs = document.getElementById('sec-tabs'); tabs.innerHTML = '';
     curExam.sections.forEach((s, idx) => {
       const btn = document.createElement('button');
-      btn.className = 'sec-tab' + (idx === curSec ? ' active' : ''); btn.innerText = s.name;
-      btn.onclick = () => { curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll(); };
+      const isLocked = curExam.secLock && idx !== curSec;
+      btn.className = 'sec-tab' + (idx === curSec ? ' active' : '') + (isLocked ? ' locked' : '');
+      btn.innerText = isLocked ? `🔒 ${s.name}` : s.name;
+      btn.onclick = () => {
+        if (isLocked) {
+          alert('सेक्शन लॉक है! 15 मिनट पूरे होने के बाद ही अगला सेक्शन खुलेगा।');
+          return;
+        }
+        curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll();
+      };
       tabs.appendChild(btn);
     });
 
@@ -849,14 +920,42 @@
     const revBtn = document.getElementById('review-btn');
     revBtn.classList.toggle('active-mark', marked[curSec][curQ]);
     revBtn.innerText = marked[curSec][curQ] ? 'रिव्यू में है ✓' : 'Mark for Review';
-    document.getElementById('prev-btn').style.visibility = (curSec === 0 && curQ === 0) ? 'hidden' : 'visible';
-    document.getElementById('next-btn').innerText = (curSec === curExam.sections.length - 1 && curQ === sec.questions.length - 1) ? 'सबमिट करें' : 'सेव और अगला';
+
+    const isFirstInView = curExam.secLock ? (curQ === 0) : (curSec === 0 && curQ === 0);
+    const isLastInSec = (curQ === sec.questions.length - 1);
+    const isLastOverall = (curSec === curExam.sections.length - 1 && isLastInSec);
+
+    document.getElementById('prev-btn').style.visibility = isFirstInView ? 'hidden' : 'visible';
+    if (curExam.secLock && isLastInSec && !isLastOverall) {
+      document.getElementById('next-btn').innerText = 'सेक्शन का आखिरी सवाल (🔒)';
+    } else {
+      document.getElementById('next-btn').innerText = isLastOverall ? 'सबमिट करें' : 'सेव और अगला';
+    }
   }
 
   function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
   function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
-  function prevQ() { if (curQ > 0) curQ--; else if (curSec > 0) { curSec--; curQ = curExam.sections[curSec].questions.length - 1; } renderAll(); }
-  function nextQ() { if (curQ < curExam.sections[curSec].questions.length - 1) curQ++; else if (curSec < curExam.sections.length - 1) { curSec++; curQ = 0; } else submitTest(); renderAll(); }
+
+  function prevQ() {
+    if (curQ > 0) curQ--;
+    else if (!curExam.secLock && curSec > 0) {
+      curSec--; curQ = curExam.sections[curSec].questions.length - 1;
+    }
+    renderAll();
+  }
+
+  function nextQ() {
+    const secLen = curExam.sections[curSec].questions.length;
+    if (curQ < secLen - 1) {
+      curQ++; renderAll();
+    } else if (curExam.secLock && curSec < curExam.sections.length - 1) {
+      alert('यह इस सेक्शन का आखिरी सवाल है। 15 मिनट पूरे होते ही अगला सेक्शन अपने आप खुल जाएगा।');
+    } else if (!curExam.secLock && curSec < curExam.sections.length - 1) {
+      curSec++; curQ = 0; renderAll();
+    } else {
+      confirmSubmit();
+    }
+  }
 
   function submitTest() {
     clearInterval(timerInt); isResultView = true;
@@ -908,17 +1007,6 @@
     document.getElementById('main-app').classList.remove('hidden');
     document.getElementById('bottom-nav').classList.remove('hidden');
     switchMainTab('home');
-  }
-
-  // Load 100-question tests from cgl_tests.js
-  if (window.CGL_FULL_TESTS) {
-    const cgl1 = examDirectory.find(e => e.id === 'ssc_cgl_t1');
-    if (cgl1) {
-      window.CGL_FULL_TESTS.slice().reverse().forEach((ft, rIdx) => {
-        const idx = window.CGL_FULL_TESTS.length - 1 - rIdx;
-        cgl1.tests.unshift({ title: ft.title, type: ft.type, time: ft.time, customFullIdx: idx, secs: ['maths','reasoning','gs','english'], cnt: 25 });
-      });
-    }
   }
 
   initApp();
