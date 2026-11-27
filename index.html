@@ -334,4 +334,667 @@
             <div class="stat-val" id="stat-acc">0%</div>
             <div class="stat-lbl">औसत सटीकता</div>
           </div>
-          <div cla
+          <div class="stat-box">
+            <div class="stat-val" id="stat-best">0</div>
+            <div class="stat-lbl">बेस्ट स्कोर</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4 style="margin:0 0 12px;">प्रोफाइल एडिट करें</h4>
+        <div class="form-group">
+          <label>आपका नाम</label>
+          <input type="text" id="input-name" class="form-input" placeholder="अपना नाम लिखें">
+        </div>
+        <div class="form-group">
+          <label>टारगेट एग्ज़ाम</label>
+          <select id="input-target" class="form-input">
+            <option value="SSC CGL & RRB NTPC">SSC CGL & RRB NTPC</option>
+            <option value="SSC CGL">SSC CGL</option>
+            <option value="RRB NTPC">RRB NTPC</option>
+            <option value="SSC CHSL / MTS">SSC CHSL / MTS</option>
+          </select>
+        </div>
+        <button class="btn-start" onclick="saveProfile()">प्रोफाइल सेव करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bnav-btn active" id="nav-home" onclick="switchMainTab('home')">
+      <span class="bnav-ico">🏠</span><span>होम</span>
+    </button>
+    <button class="bnav-btn" id="nav-study" onclick="switchMainTab('study')">
+      <span class="bnav-ico">📚</span><span>स्टडी</span>
+    </button>
+    <button class="bnav-btn" id="nav-history" onclick="switchMainTab('history')">
+      <span class="bnav-ico">📊</span><span>हिस्ट्री</span>
+    </button>
+    <button class="bnav-btn" id="nav-profile" onclick="switchMainTab('profile')">
+      <span class="bnav-ico">👤</span><span>प्रोफाइल</span>
+    </button>
+  </nav>
+
+  <!-- TEST SCREEN -->
+  <div class="card hidden" id="test-screen">
+    <div class="top-bar">
+      <span class="exam-name" id="exam-title">SSC CGL</span>
+      <div class="top-controls">
+        <button class="icon-btn" id="lang-btn" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
+        <span class="timer" id="timer">10:00</span>
+        <button class="btn-top-submit" onclick="submitTest()">सबमिट</button>
+      </div>
+    </div>
+
+    <div class="sec-tabs" id="sec-tabs"></div>
+    <div class="palette" id="palette"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--success)"></i>हल किया</span>
+      <span><i class="dot" style="background:var(--danger)"></i>छोड़ा</span>
+      <span><i class="dot" style="background:var(--purple)"></i>रिव्यू</span>
+      <span><i class="dot" style="background:var(--border)"></i>देखा नहीं</span>
+    </div>
+
+    <div class="q-meta">
+      <span id="q-count">सवाल 1 / 3</span>
+      <span id="q-marks">+2 / -0.5</span>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div id="options-box"></div>
+
+    <div class="action-btns">
+      <button class="act-btn btn-clear" onclick="clearResponse()">जवाब हटाएँ</button>
+      <button class="act-btn btn-review" id="review-btn" onclick="toggleReview()">Mark for Review</button>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-btn btn-prev" id="prev-btn" onclick="prevQ()">पिछला</button>
+      <button class="nav-btn btn-next" id="next-btn" onclick="nextQ()">सेव और अगला</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="card hidden" id="result-screen">
+    <div class="top-bar">
+      <span class="exam-name">रिज़ल्ट एनालिसिस</span>
+      <div class="top-controls">
+        <button class="icon-btn" id="lang-btn-res" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" id="theme-btn-res" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+
+    <div class="score-box">
+      <div style="font-size:0.86rem; color:var(--muted);">कुल स्कोर</div>
+      <div class="score-num" id="final-score">0</div>
+      <div class="stats">
+        <span class="correct">सही: <b id="res-correct">0</b></span>
+        <span class="wrong">गलत: <b id="res-wrong">0</b></span>
+        <span>छोड़े: <b id="res-skip">0</b></span>
+        <span>सटीकता: <b id="res-acc">0%</b></span>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>सेक्शन</th><th>सही</th><th>गलत</th><th>स्कोर</th></tr>
+      </thead>
+      <tbody id="sec-table-body"></tbody>
+    </table>
+
+    <div id="review-box"></div>
+    <button class="btn-start" style="margin-top:15px;" onclick="goHome()">होम पेज पर जाएँ</button>
+  </div>
+
+</div>
+
+<script>
+  // --- 1. EXTRA STUDY CONTENT ---
+  const currentAffairs = [
+    { date: "National • Polity", title: "भारतीय संविधान और प्रमुख अनुच्छेद रिविज़न", desc: "अनुच्छेद 32 को डॉ. बी. आर. अंबेडकर ने 'संविधान की आत्मा' कहा है। अनुच्छेद 280 में वित्त आयोग (Finance Commission) का प्रावधान है।" },
+    { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC & Railway स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को चंद्रमा के दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' के रूप में मनाया जाता है।" },
+    { date: "Economy • Banking", title: "RBI और मौद्रिक नीति (Monetary Policy)", desc: "रेपो रेट (Repo Rate) वह दर है जिस पर RBI वाणिज्यिक बैंकों को अल्पकालिक ऋण देता है। इसके बढ़ने से महंगाई नियंत्रित होती है।" },
+    { date: "Static GK • Geography", title: "भारत की प्रमुख नदियाँ और बांध", desc: "टिहरी बांध (उत्तराखंड) भागीरथी नदी पर स्थित भारत का सबसे ऊँचा बांध है, जबकि हीराकुंड बांध (ओडिशा) महानदी पर सबसे लंबा बांध है।" }
+  ];
+
+  const formulaGroups = [
+    {
+      topic: "बीजगणित (Algebra)",
+      items: [
+        { name: "(a + b)²", eq: "a² + b² + 2ab" },
+        { name: "a² - b²", eq: "(a + b)(a - b)" },
+        { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2" },
+        { name: "यदि x + 1/x = k", eq: "x³ + 1/x³ = k³ - 3k" }
+      ]
+    },
+    {
+      topic: "त्रिकोणमिति (Trigonometry)",
+      items: [
+        { name: "sin²θ + cos²θ", eq: "1" },
+        { name: "1 + tan²θ", eq: "sec²θ" },
+        { name: "sin 2θ", eq: "2 sinθ · cosθ" },
+        { name: "cos 2θ", eq: "1 - 2sin²θ" }
+      ]
+    },
+    {
+      topic: "अंकगणित व चाल (Arithmetic)",
+      items: [
+        { name: "लाभ % (Profit %)", eq: "(Profit / CP) × 100" },
+        { name: "साधारण ब्याज (SI)", eq: "(P × R × T) / 100" },
+        { name: "km/h से m/s", eq: "× (5 / 18)" },
+        { name: "m/s से km/h", eq: "× (18 / 5)" }
+      ]
+    },
+    {
+      topic: "भौतिक विज्ञान (Physics SI Units)",
+      items: [
+        { name: "बल (Force)", eq: "Newton (F = ma)" },
+        { name: "कार्य / ऊर्जा (Work)", eq: "Joule (W = F·d)" },
+        { name: "शक्ति (Power)", eq: "Watt (P = V × I)" },
+        { name: "प्रतिरोध (Resistance)", eq: "Ohm (V = I × R)" }
+      ]
+    }
+  ];
+
+  const vocabList = [
+    { type: "OWS", word: "Paediatrician", meaning: "बच्चों का डॉक्टर (Doctor who treats children)", trick: "Root: 'Paed' = बच्चा (Child)। जैसे Pediatrics।" },
+    { type: "OWS", word: "Pathology", meaning: "रोग विज्ञान (Study of diseases)", trick: "Root: 'Patho' = रोग/दर्द + 'Logy' = अध्ययन।" },
+    { type: "OWS", word: "Panacea", meaning: "रामबाण इलाज (Cure for all diseases)", trick: "Root: 'Pan' = सभी (All) + 'Acea' = इलाज।" },
+    { type: "OWS", word: "Omnipotent", meaning: "सर्वशक्तिमान (One who is all powerful)", trick: "Root: 'Omni' = सब + 'Potent' = शक्ति (Power)।" },
+    { type: "Idiom", word: "Break the ice", meaning: "चुप्पी तोड़ना / बातचीत शुरू करना", trick: "बर्फ जमने जैसा सन्नाटा तोड़कर बात शुरू करना।" },
+    { type: "Idiom", word: "Once in a blue moon", meaning: "बहुत कम / कभी-कभार (Very rarely)", trick: "नीला चाँद बहुत कम दिखाई देता है।" }
+  ];
+
+  // --- 2. MOCK TESTS DATA ---
+  const exams = {
+    ssc: {
+      name: "SSC CGL मॉक टेस्ट",
+      pos: 2, neg: 0.5, time: 600,
+      sections: [
+        {
+          name: "Maths", allowLang: true,
+          questions: [
+            { q: { hi: "यदि sin θ = 1/2 है, तो cos 2θ का मान क्या होगा?", en: "If sin θ = 1/2, what is the value of cos 2θ?" }, opts: { hi: ["1/2", "√3/2", "1", "0"], en: ["1/2", "√3/2", "1", "0"] }, ans: 0, exp: { hi: "sin θ = 1/2 ⇒ θ = 30°। अतः cos 2θ = cos 60° = 1/2।", en: "Since sin θ = 1/2, θ = 30°. Therefore, cos 2θ = cos 60° = 1/2." } },
+            { q: { hi: "किसी वस्तु को ₹480 में बेचने पर 20% का लाभ होता है, तो उसका क्रय मूल्य क्या है?", en: "By selling an article for ₹480, there is a profit of 20%. Find its cost price." }, opts: { hi: ["₹380", "₹400", "₹420", "₹450"], en: ["₹380", "₹400", "₹420", "₹450"] }, ans: 1, exp: { hi: "क्रय मूल्य (CP) = (480 × 100) / 120 = ₹400।", en: "Cost Price (CP) = (480 × 100) / 120 = ₹400." } },
+            { q: { hi: "यदि x + 1/x = 5 है, तो x² + 1/x² का मान क्या होगा?", en: "If x + 1/x = 5, then what is the value of x² + 1/x²?" }, opts: { hi: ["25", "23", "27", "21"], en: ["25", "23", "27", "21"] }, ans: 1, exp: { hi: "सूत्र: x² + 1/x² = k² - 2 = 5² - 2 = 23।", en: "Formula: x² + 1/x² = k² - 2 = 5² - 2 = 23." } }
+          ]
+        },
+        {
+          name: "Reasoning", allowLang: true,
+          questions: [
+            { q: { hi: "श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en: "Complete the series: 2, 6, 12, 20, 30, ?" }, opts: { hi: ["38", "40", "42", "44"], en: ["38", "40", "42", "44"] }, ans: 2, exp: { hi: "अंतर क्रमशः +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en: "Differences increase by +2: +4, +6, +8, +10, +12. So 30 + 12 = 42." } },
+            { q: { hi: "यदि CAT = 24 है, तो DOG का मान क्या होगा?", en: "If CAT = 24, then what is the value of DOG?" }, opts: { hi: ["24", "26", "28", "30"], en: ["24", "26", "28", "30"] }, ans: 1, exp: { hi: "C(3)+A(1)+T(20) = 24। इसी प्रकार D(4)+O(15)+G(7) = 26।", en: "C(3)+A(1)+T(20) = 24. Similarly, D(4)+O(15)+G(7) = 26." } },
+            { q: { hi: "निम्न में से विषम (Odd one out) चुनें:", en: "Select the odd one out from the following:" }, opts: { hi: ["जयपुर", "भोपाल", "लखनऊ", "कानपुर"], en: ["Jaipur", "Bhopal", "Lucknow", "Kanpur"] }, ans: 3, exp: { hi: "जयपुर, भोपाल और लखनऊ राज्यों की राजधानियाँ हैं, कानपुर नहीं।", en: "Jaipur, Bhopal, and Lucknow are state capitals, whereas Kanpur is not." } }
+          ]
+        },
+        {
+          name: "GS", allowLang: true,
+          questions: [
+            { q: { hi: "भारतीय संविधान के किस अनुच्छेद में 'वित्तीय आपातकाल' का प्रावधान है?", en: "Which Article of the Indian Constitution provides for 'Financial Emergency'?" }, opts: { hi: ["अनुच्छेद 352", "अनुच्छेद 356", "अनुच्छेद 360", "अनुच्छेद 368"], en: ["Article 352", "Article 356", "Article 360", "Article 368"] }, ans: 2, exp: { hi: "अनुच्छेद 360 में वित्तीय आपातकाल का प्रावधान है।", en: "Article 360 deals with Financial Emergency." } },
+            { q: { hi: "हड़प्पा सभ्यता का प्रसिद्ध बंदरगाह 'लोथल' किस राज्य में स्थित है?", en: "In which state is the famous Harappan port 'Lothal' located?" }, opts: { hi: ["राजस्थान", "गुजरात", "पंजाब", "हरियाणा"], en: ["Rajasthan", "Gujarat", "Punjab", "Haryana"] }, ans: 1, exp: { hi: "लोथल गुजरात में भोगवा नदी के किनारे स्थित था।", en: "Lothal was located on the banks of the Bhogava river in Gujarat." } },
+            { q: { hi: "रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en: "Which vitamin helps in blood clotting?" }, opts: { hi: ["विटामिन A", "विटामिन C", "विटामिन D", "विटामिन K"], en: ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"] }, ans: 3, exp: { hi: "विटामिन K रक्त का थक्का जमाने में मदद करता है।", en: "Vitamin K (Phylloquinone) is essential for blood clotting." } }
+          ]
+        },
+        {
+          name: "English", allowLang: false,
+          questions: [
+            { q: { hi: "One Word Substitution: A doctor who treats children's diseases.", en: "One Word Substitution: A doctor who treats children's diseases." }, opts: { hi: ["Cardiologist", "Paediatrician", "Dermatologist", "Neurologist"], en: ["Cardiologist", "Paediatrician", "Dermatologist", "Neurologist"] }, ans: 1, exp: { hi: "Paediatrician means a doctor who specializes in children's diseases.", en: "Paediatrician means a doctor who specializes in children's diseases." } },
+            { q: { hi: "Choose the synonym of 'ABUNDANT':", en: "Choose the synonym of 'ABUNDANT':" }, opts: { hi: ["Scarce", "Plentiful", "Rare", "Empty"], en: ["Scarce", "Plentiful", "Rare", "Empty"] }, ans: 1, exp: { hi: "'Abundant' means existing in large quantities, so 'Plentiful' is the correct synonym.", en: "'Abundant' means existing in large quantities, so 'Plentiful' is the correct synonym." } },
+            { q: { hi: "Fill in the blank: He has been living here ___ 2020.", en: "Fill in the blank: He has been living here ___ 2020." }, opts: { hi: ["for", "from", "since", "by"], en: ["for", "from", "since", "by"] }, ans: 2, exp: { hi: "'Since' is used for a specific point of time (2020).", en: "'Since' is used for a specific point of time (2020)." } }
+          ]
+        }
+      ]
+    },
+    ntpc: {
+      name: "Railway NTPC मॉक टेस्ट",
+      pos: 1, neg: 0.33, time: 480,
+      sections: [
+        {
+          name: "Maths", allowLang: true,
+          questions: [
+            { q: { hi: "120 का 25% कितना होगा?", en: "What is 25% of 120?" }, opts: { hi: ["25", "30", "35", "40"], en: ["25", "30", "35", "40"] }, ans: 1, exp: { hi: "120 × (25 / 100) = 30।", en: "120 × (25 / 100) = 30." } },
+            { q: { hi: "एक ट्रेन 72 km/h की चाल से चल रही है, इसकी चाल m/s में क्या होगी?", en: "A train is running at 72 km/h. What is its speed in m/s?" }, opts: { hi: ["15 m/s", "20 m/s", "25 m/s", "18 m/s"], en: ["15 m/s", "20 m/s", "25 m/s", "18 m/s"] }, ans: 1, exp: { hi: "72 × (5 / 18) = 20 m/s।", en: "To convert km/h to m/s, multiply by 5/18: 72 × 5/18 = 20 m/s." } },
+            { q: { hi: "12 और 18 का लघुत्तम समापवर्त्य (LCM) क्या होगा?", en: "What is the LCM of 12 and 18?" }, opts: { hi: ["24", "36", "48", "72"], en: ["24", "36", "48", "72"] }, ans: 1, exp: { hi: "12 और 18 का सबसे छोटा समापवर्त्य 36 है।", en: "The least common multiple of 12 and 18 is 36." } }
+          ]
+        },
+        {
+          name: "Reasoning", allowLang: true,
+          questions: [
+            { q: { hi: "दर्पण में देखने पर घड़ी में 3:00 बजे का समय कैसा दिखाई देगा?", en: "What time will 3:00 on a clock appear to be in a mirror?" }, opts: { hi: ["6:00", "9:00", "12:00", "3:00"], en: ["6:00", "9:00", "12:00", "3:00"] }, ans: 1, exp: { hi: "12:00 - 3:00 = 9:00।", en: "Subtract from 12:00: 12:00 - 3:00 = 9:00." } },
+            { q: { hi: "पुस्तक : पुस्तकालय :: वृक्ष : ?", en: "Book : Library :: Tree : ?" }, opts: { hi: ["फल", "पत्ती", "वन", "जड़"], en: ["Fruit", "Leaf", "Forest", "Root"] }, ans: 2, exp: { hi: "पुस्तकों के समूह से पुस्तकालय और वृक्षों के समूह से वन बनता है।", en: "A collection of books is a Library; a collection of trees is a Forest." } },
+            { q: { hi: "श्रृंखला पूरी करें: A, C, F, J, O, ?", en: "Complete the series: A, C, F, J, O, ?" }, opts: { hi: ["S", "T", "U", "V"], en: ["S", "T", "U", "V"] }, ans: 2, exp: { hi: "अंतर +2, +3, +4, +5, +6 है। अतः O(15) + 6 = U(21)।", en: "Pattern is +2, +3, +4, +5, +6. So O(15) + 6 = U(21)." } }
+          ]
+        },
+        {
+          name: "General Awareness", allowLang: true,
+          questions: [
+            { q: { hi: "भारत में पहली रेलगाड़ी 1853 में किन दो शहरों के बीच चली थी?", en: "Between which two cities did the first train in India run in 1853?" }, opts: { hi: ["दिल्ली से आगरा", "मुंबई से ठाणे", "कोलकाता से हावड़ा", "चेन्नई से बेंगलुरु"], en: ["Delhi to Agra", "Mumbai to Thane", "Kolkata to Howrah", "Chennai to Bengaluru"] }, ans: 1, exp: { hi: "पहली यात्री ट्रेन 16 अप्रैल 1853 को मुंबई से ठाणे चली थी।", en: "India's first passenger train ran from Mumbai to Thane on 16 April 1853." } },
+            { q: { hi: "विद्युत धारा (Electric Current) का SI मात्रक क्या है?", en: "What is the SI unit of Electric Current?" }, opts: { hi: ["वोल्ट", "ओम", "एम्पियर", "वाट"], en: ["Volt", "Ohm", "Ampere", "Watt"] }, ans: 2, exp: { hi: "विद्युत धारा का SI मात्रक एम्पियर है।", en: "The SI unit of electric current is Ampere." } },
+            { q: { hi: "कोशिका की 'आत्महत्या की थैली' किसे कहा जाता है?", en: "Which organelle is known as the 'Suicidal Bag' of the cell?" }, opts: { hi: ["माइटोकॉन्ड्रिया", "लाइसोसोम", "राइबोसोम", "केंद्रक"], en: ["Mitochondria", "Lysosome", "Ribosome", "Nucleus"] }, ans: 1, exp: { hi: "लाइसोसोम में पाचक एंजाइम होते हैं जो क्षतिग्रस्त कोशिका को नष्ट कर देते हैं।", en: "Lysosomes contain digestive enzymes that can break down damaged cells." } }
+          ]
+        }
+      ]
+    }
+  };
+
+  // --- 3. STATE & STORAGE ---
+  let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
+  let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
+
+  function getProfile() {
+    return JSON.parse(localStorage.getItem('ep_profile')) || { name: 'स्टूडेंट', target: 'SSC CGL & RRB NTPC' };
+  }
+  function getHistory() {
+    return JSON.parse(localStorage.getItem('ep_history')) || [];
+  }
+
+  // --- 4. UI RENDERING ---
+  function initApp() {
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      updateThemeIcons();
+    }
+    renderProfileUI();
+    renderStudyHub();
+    renderHistoryUI();
+  }
+
+  function updateThemeIcons() {
+    document.getElementById('theme-btn-main').innerText = isDark ? '☀️ Light' : '🌙 Dark';
+    document.getElementById('theme-btn-test').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('theme-btn-res').innerText = isDark ? '☀️' : '🌙';
+  }
+
+  function toggleTheme() {
+    isDark = !isDark;
+    localStorage.setItem('ep_dark', isDark);
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    updateThemeIcons();
+  }
+
+  function switchMainTab(tab) {
+    ['home', 'study', 'history', 'profile'].forEach(t => {
+      document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+      document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+    });
+    if (tab === 'history') renderHistoryUI();
+    if (tab === 'profile') renderProfileUI();
+    window.scrollTo(0, 0);
+  }
+
+  function openStudySection(sub) {
+    switchMainTab('study');
+    switchStudyTab(sub);
+  }
+
+  function switchStudyTab(sub) {
+    ['ca', 'formula', 'vocab'].forEach(s => {
+      document.getElementById('study-' + s).classList.toggle('hidden', s !== sub);
+      document.getElementById('st-btn-' + s).classList.toggle('active', s === sub);
+    });
+  }
+
+  function renderStudyHub() {
+    // Current Affairs
+    document.getElementById('study-ca').innerHTML = currentAffairs.map(c => `
+      <div class="info-card">
+        <span class="ca-date">${c.date}</span>
+        <div class="ca-title">${c.title}</div>
+        <p class="ca-desc">${c.desc}</p>
+      </div>
+    `).join('');
+
+    // Formula Sheet
+    document.getElementById('study-formula').innerHTML = formulaGroups.map(g => `
+      <div class="info-card">
+        <div class="ca-title" style="margin-bottom:8px;">📐 ${g.topic}</div>
+        ${g.items.map(i => `
+          <div class="formula-row">
+            <span class="formula-name">${i.name}</span>
+            <span class="formula-eq">${i.eq}</span>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    // Vocabulary
+    document.getElementById('study-vocab').innerHTML = vocabList.map(v => `
+      <div class="info-card">
+        <span class="ca-date">${v.type}</span>
+        <div class="vocab-word">${v.word}</div>
+        <div class="vocab-meaning">${v.meaning}</div>
+        <div class="vocab-trick">💡 <b>ट्रिक:</b> ${v.trick}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderProfileUI() {
+    const p = getProfile();
+    const h = getHistory();
+    document.getElementById('hero-greeting').innerText = `नमस्ते, ${p.name} 👋`;
+    document.getElementById('header-target').innerText = `Target: ${p.target}`;
+    document.getElementById('hero-tests-pill').innerText = `📊 ${h.length} टेस्ट पूरे`;
+    document.getElementById('prof-avatar').innerText = p.name.charAt(0).toUpperCase();
+    document.getElementById('prof-name-display').innerText = p.name;
+    document.getElementById('prof-target-display').innerText = `Target: ${p.target}`;
+    document.getElementById('input-name').value = p.name;
+    document.getElementById('input-target').value = p.target;
+
+    document.getElementById('stat-tests').innerText = h.length;
+    if (h.length > 0) {
+      const avgAcc = Math.round(h.reduce((sum, x) => sum + x.acc, 0) / h.length);
+      const bestScore = Math.max(...h.map(x => parseFloat(x.score)));
+      document.getElementById('stat-acc').innerText = avgAcc + '%';
+      document.getElementById('stat-best').innerText = bestScore.toFixed(1);
+    } else {
+      document.getElementById('stat-acc').innerText = '0%';
+      document.getElementById('stat-best').innerText = '0';
+    }
+  }
+
+  function saveProfile() {
+    const name = document.getElementById('input-name').value.trim() || 'स्टूडेंट';
+    const target = document.getElementById('input-target').value;
+    localStorage.setItem('ep_profile', JSON.stringify({ name, target }));
+    renderProfileUI();
+    alert('प्रोफाइल सेव हो गई!');
+  }
+
+  function renderHistoryUI() {
+    const h = getHistory();
+    const box = document.getElementById('history-list');
+    if (h.length === 0) {
+      box.innerHTML = `<div class="empty-state">अभी तक आपने कोई टेस्ट सबमिट नहीं किया है।<br>होम पेज से अपना पहला मॉक टेस्ट दें!</div>`;
+      return;
+    }
+    box.innerHTML = h.map(item => `
+      <div class="info-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <b style="font-size:0.95rem;">${item.exam}</b>
+          <span style="font-size:0.74rem; color:var(--muted);">${item.date}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem;">
+          <span>स्कोर: <b style="color:var(--primary);">${item.score}</b></span>
+          <span class="correct">सही: ${item.correct}</span>
+          <span class="wrong">गलत: ${item.wrong}</span>
+          <span>सटीकता: <b>${item.acc}%</b></span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function clearHistory() {
+    if (confirm('क्या आप टेस्ट हिस्ट्री हटाना चाहते हैं?')) {
+      localStorage.removeItem('ep_history');
+      renderHistoryUI();
+      renderProfileUI();
+    }
+  }
+
+  // --- 5. GLOBAL SEARCH ---
+  function handleSearch(query) {
+    const q = query.trim().toLowerCase();
+    const resBox = document.getElementById('search-results-box');
+    const defBox = document.getElementById('home-default-content');
+
+    if (!q) {
+      resBox.classList.add('hidden');
+      defBox.classList.remove('hidden');
+      return;
+    }
+
+    defBox.classList.add('hidden');
+    resBox.classList.remove('hidden');
+    let html = '';
+
+    if ('ssc cgl mock test maths reasoning gs english'.includes(q)) {
+      html += `<div class="info-card" onclick="startExam('ssc')" style="cursor:pointer;"><b>🎯 SSC CGL मॉक टेस्ट</b><div class="ca-desc">शुरू करने के लिए टैप करें</div></div>`;
+    }
+    if ('rrb ntpc railway mock test'.includes(q)) {
+      html += `<div class="info-card" onclick="startExam('ntpc')" style="cursor:pointer;"><b>🚆 Railway NTPC मॉक टेस्ट</b><div class="ca-desc">शुरू करने के लिए टैप करें</div></div>`;
+    }
+
+    vocabList.forEach(v => {
+      if ((v.word + ' ' + v.meaning + ' ' + v.type).toLowerCase().includes(q)) {
+        html += `<div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div></div>`;
+      }
+    });
+
+    formulaGroups.forEach(g => {
+      g.items.forEach(i => {
+        if ((g.topic + ' ' + i.name + ' ' + i.eq).toLowerCase().includes(q)) {
+          html += `<div class="info-card"><span class="ca-date">${g.topic}</span><div class="formula-row"><span>${i.name}</span><span class="formula-eq">${i.eq}</span></div></div>`;
+        }
+      });
+    });
+
+    currentAffairs.forEach(c => {
+      if ((c.title + ' ' + c.desc).toLowerCase().includes(q)) {
+        html += `<div class="info-card"><span class="ca-date">${c.date}</span><div class="ca-title">${c.title}</div><p class="ca-desc">${c.desc}</p></div>`;
+      }
+    });
+
+    resBox.innerHTML = html || `<div class="empty-state">"${query}" से जुड़ा कुछ नहीं मिला।</div>`;
+  }
+
+  // --- 6. TEST ENGINE ---
+  function toggleLang() {
+    lang = (lang === 'hi') ? 'en' : 'hi';
+    document.getElementById('lang-btn').innerText = lang === 'hi' ? 'EN' : 'हिंदी';
+    document.getElementById('lang-btn-res').innerText = lang === 'hi' ? 'EN' : 'हिंदी';
+    if (isResultView) renderResultContent();
+    else renderAll();
+  }
+
+  function startExam(type) {
+    curExam = exams[type];
+    curSec = 0; curQ = 0; isResultView = false;
+    userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
+    marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited[0][0] = true;
+    timeLeft = curExam.time;
+
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.remove('hidden');
+    document.getElementById('exam-title').innerText = curExam.name;
+    document.getElementById('q-marks').innerText = `+${curExam.pos} / -${curExam.neg}`;
+
+    startTimer();
+    renderAll();
+    window.scrollTo(0, 0);
+  }
+
+  function startTimer() {
+    clearInterval(timerInt);
+    timerInt = setInterval(() => {
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      document.getElementById('timer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+      if (timeLeft <= 0) submitTest();
+      timeLeft--;
+    }, 1000);
+  }
+
+  function renderTabs() {
+    const tabs = document.getElementById('sec-tabs');
+    tabs.innerHTML = '';
+    curExam.sections.forEach((sec, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'sec-tab' + (idx === curSec ? ' active' : '');
+      btn.innerText = sec.name;
+      btn.onclick = () => { curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll(); };
+      tabs.appendChild(btn);
+    });
+  }
+
+  function renderPalette() {
+    const pal = document.getElementById('palette');
+    pal.innerHTML = '';
+    curExam.sections[curSec].questions.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.innerText = i + 1;
+      let cls = 'p-btn ';
+      if (marked[curSec][i] && userAns[curSec][i] !== null) cls += 'p-ans-marked';
+      else if (marked[curSec][i]) cls += 'p-marked';
+      else if (userAns[curSec][i] !== null) cls += 'p-answered';
+      else if (visited[curSec][i]) cls += 'p-not-answered';
+      else cls += 'p-not-visited';
+      if (i === curQ) cls += ' p-active';
+      btn.className = cls;
+      btn.onclick = () => { curQ = i; visited[curSec][i] = true; renderAll(); };
+      pal.appendChild(btn);
+    });
+  }
+
+  function renderAll() {
+    visited[curSec][curQ] = true;
+    const sec = curExam.sections[curSec];
+    const q = sec.questions[curQ];
+    const activeLang = sec.allowLang ? lang : 'en';
+
+    const langBtn = document.getElementById('lang-btn');
+    langBtn.disabled = !sec.allowLang;
+    langBtn.innerText = sec.allowLang ? (lang === 'hi' ? 'EN' : 'हिंदी') : 'EN Only';
+
+    renderTabs();
+    renderPalette();
+
+    document.getElementById('q-count').innerText = `${sec.name} - Q ${curQ + 1} / ${sec.questions.length}`;
+    document.getElementById('q-text').innerText = q.q[activeLang];
+
+    const box = document.getElementById('options-box');
+    box.innerHTML = '';
+    q.opts[activeLang].forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option' + (userAns[curSec][curQ] === i ? ' selected' : '');
+      btn.innerText = opt;
+      btn.onclick = () => { userAns[curSec][curQ] = i; renderAll(); };
+      box.appendChild(btn);
+    });
+
+    const revBtn = document.getElementById('review-btn');
+    if (marked[curSec][curQ]) {
+      revBtn.classList.add('active-mark');
+      revBtn.innerText = 'रिव्यू में है ✓';
+    } else {
+      revBtn.classList.remove('active-mark');
+      revBtn.innerText = 'Mark for Review';
+    }
+
+    const isFirst = (curSec === 0 && curQ === 0);
+    const isLast = (curSec === curExam.sections.length - 1 && curQ === sec.questions.length - 1);
+    document.getElementById('prev-btn').style.visibility = isFirst ? 'hidden' : 'visible';
+    document.getElementById('next-btn').innerText = isLast ? 'सबमिट करें' : 'सेव और अगला';
+  }
+
+  function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
+  function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
+
+  function prevQ() {
+    if (curQ > 0) curQ--;
+    else if (curSec > 0) { curSec--; curQ = curExam.sections[curSec].questions.length - 1; }
+    renderAll();
+  }
+
+  function nextQ() {
+    const secLen = curExam.sections[curSec].questions.length;
+    if (curQ < secLen - 1) { curQ++; renderAll(); }
+    else if (curSec < curExam.sections.length - 1) { curSec++; curQ = 0; renderAll(); }
+    else submitTest();
+  }
+
+  function submitTest() {
+    clearInterval(timerInt);
+    isResultView = true;
+    const summary = renderResultContent();
+
+    const h = getHistory();
+    h.unshift({
+      exam: curExam.name,
+      score: summary.totalScore.toFixed(2),
+      correct: summary.totalCorrect,
+      wrong: summary.totalWrong,
+      acc: summary.acc,
+      date: new Date().toLocaleDateString('hi-IN', { day: 'numeric', month: 'short' })
+    });
+    localStorage.setItem('ep_history', JSON.stringify(h.slice(0, 20)));
+    renderProfileUI();
+
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function renderResultContent() {
+    let totalCorrect = 0, totalWrong = 0, totalSkip = 0;
+    const tblBody = document.getElementById('sec-table-body');
+    const revBox = document.getElementById('review-box');
+    tblBody.innerHTML = '';
+    revBox.innerHTML = '';
+
+    curExam.sections.forEach((sec, sIdx) => {
+      let sCor = 0, sWrg = 0;
+      const activeLang = sec.allowLang ? lang : 'en';
+      revBox.innerHTML += `<div class="sec-heading">${sec.name}</div>`;
+
+      sec.questions.forEach((q, qIdx) => {
+        const ua = userAns[sIdx][qIdx];
+        let status = '';
+        if (ua === null) { totalSkip++; status = 'छोड़ा गया'; }
+        else if (ua === q.ans) { totalCorrect++; sCor++; status = '<span class="correct">सही</span>'; }
+        else { totalWrong++; sWrg++; status = '<span class="wrong">गलत</span>'; }
+
+        revBox.innerHTML += `
+          <div class="review-item">
+            <b>${qIdx+1}. ${q.q[activeLang]}</b><br>
+            आपका जवाब: ${ua !== null ? q.opts[activeLang][ua] : 'कोई नहीं'} (${status})<br>
+            <span class="correct">सही जवाब: ${q.opts[activeLang][q.ans]}</span>
+            <div class="exp-box"><b>सॉल्यूशन:</b> ${q.exp[activeLang]}</div>
+          </div>`;
+      });
+
+      const sScore = (sCor * curExam.pos) - (sWrg * curExam.neg);
+      tblBody.innerHTML += `
+        <tr>
+          <td><b>${sec.name}</b></td>
+          <td class="correct">${sCor}</td>
+          <td class="wrong">${sWrg}</td>
+          <td><b>${sScore.toFixed(2)}</b></td>
+        </tr>`;
+    });
+
+    const totalScore = (totalCorrect * curExam.pos) - (totalWrong * curExam.neg);
+    const attempted = totalCorrect + totalWrong;
+    const acc = attempted > 0 ? Math.round((totalCorrect / attempted) * 100) : 0;
+
+    document.getElementById('final-score').innerText = totalScore.toFixed(2);
+    document.getElementById('res-correct').innerText = totalCorrect;
+    document.getElementById('res-wrong').innerText = totalWrong;
+    document.getElementById('res-skip').innerText = totalSkip;
+    document.getElementById('res-acc').innerText = acc + '%';
+
+    return { totalScore, totalCorrect, totalWrong, acc };
+  }
+
+  function goHome() {
+    isResultView = false;
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+    switchMainTab('home');
+  }
+
+  initApp();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
