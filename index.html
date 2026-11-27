@@ -790,13 +790,23 @@
 
   function launchTest(examId, testIdx) {
     const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
+      if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
+    const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
+    curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
+  } else {
     curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
+  }
     curSec = 0; curQ = 0; isResultView = false;
     userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
     marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
     visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
     visited[0][0] = true; timeLeft = curExam.time;
-
+  if (tObj.customFullIdx !== undefined && window.CGL_FULL_TESTS) {
+    const ft = window.CGL_FULL_TESTS[tObj.customFullIdx];
+    curExam = { name: ft.title, pos: ft.pos, neg: ft.neg, time: ft.time, sections: ft.sections };
+  } else {
+    curExam = { name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time, sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 4) };
+  }
     document.getElementById('main-app').classList.add('hidden');
     document.getElementById('bottom-nav').classList.add('hidden');
     document.getElementById('result-screen').classList.add('hidden');
@@ -918,9 +928,17 @@
     document.getElementById('bottom-nav').classList.remove('hidden');
     switchMainTab('home');
   }
-
-  initApp();
+  if (window.CGL_FULL_TESTS) {
+  const cgl1 = examDirectory.find(e => e.id === 'ssc_cgl_t1');
+  if (cgl1) {
+    window.CGL_FULL_TESTS.forEach((ft, idx) => {
+      cgl1.tests.unshift({ title: ft.title, type: ft.type, time: ft.time, customFullIdx: idx, secs: ['maths','reasoning','gs','english'], cnt: 25 });
+    });
+  }
+  }
+ initApp();
   if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+<script src="cgl_tests.js"></script>
 </script>
 </body>
 </html>
