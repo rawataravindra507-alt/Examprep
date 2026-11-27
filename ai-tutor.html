@@ -1,910 +1,280 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Gemini ExamPro — AI Doubt Solver</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExamPrep AI Tutor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #131314;
-      --sidebar: #1e1f20;
-      --surface: #1e1f20;
-      --surface-hover: #282a2c;
-      --user-bubble: #282a2c;
-      --text: #e3e3e3;
-      --muted: #9aa0a6;
-      --border: #333537;
-      --accent: #8ab4f8;
-      --grad: linear-gradient(74deg, #4285f4 0%, #9b72cb 50%, #d96570 100%);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      height: 100dvh;
-      display: flex;
-      overflow: hidden;
+      font-family: 'Inter', sans-serif;
     }
-
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: var(--sidebar);
-      display: flex;
-      flex-direction: column;
-      padding: 14px 12px;
-      border-right: 1px solid var(--border);
-      transition: transform 0.25s ease;
-      z-index: 50;
+    .chat-scroll::-webkit-scrollbar {
+      width: 6px;
     }
-
-    .new-chat-btn {
-      background: #282a2c;
-      color: var(--text);
-      border: none;
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      margin-bottom: 16px;
-    }
-
-    .new-chat-btn:hover { background: #333537; }
-
-    .sidebar-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      padding: 6px 10px;
-      font-weight: 600;
-    }
-
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .chat-item {
-      padding: 9px 12px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--text);
-      cursor: pointer;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chat-item:hover, .chat-item.active {
-      background: #004a77;
-      color: #c2e7ff;
-    }
-
-    .sidebar-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .settings-btn {
-      width: 100%;
-      background: transparent;
-      color: var(--text);
-      border: none;
-      padding: 10px 12px;
-      border-radius: 10px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.88rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .settings-btn:hover { background: var(--surface-hover); }
-
-    /* Main Area */
-    .main-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100dvh;
-      position: relative;
-      min-width: 0;
-    }
-
-    header {
-      height: 56px;
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .back-link {
-      background: var(--surface);
-      color: var(--text);
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    .back-link:hover { background: var(--surface-hover); }
-
-    .icon-btn {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 1.2rem;
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .icon-btn:hover { background: var(--surface-hover); }
-
-    .brand-title {
-      font-size: 1.05rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badge {
-      font-size: 0.68rem;
-      background: #282a2c;
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    /* Chat Container */
-    .chat-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .chat-inner {
-      width: 100%;
-      max-width: 780px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding-bottom: 24px;
-    }
-
-    /* Welcome Screen */
-    .welcome {
-      margin-top: 6vh;
-      width: 100%;
-    }
-
-    .welcome h1 {
-      font-size: 2.2rem;
-      font-weight: 500;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 6px;
-    }
-
-    .welcome p {
-      font-size: 1.25rem;
-      color: #8e918f;
-      margin-bottom: 24px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      background: var(--surface);
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 0.88rem;
-      line-height: 1.45;
-      color: var(--text);
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: background 0.15s;
-    }
-
-    .card:hover { background: var(--surface-hover); border-color: var(--border); }
-
-    /* Messages */
-    .msg-row {
-      display: flex;
-      width: 100%;
-      gap: 12px;
-    }
-
-    .msg-row.user {
-      justify-content: flex-end;
-    }
-
-    .user-box {
-      background: var(--user-bubble);
-      padding: 12px 18px;
-      border-radius: 20px 20px 4px 20px;
-      max-width: 85%;
-      font-size: 0.95rem;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
-
-    .user-box img {
-      max-width: 220px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .ai-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--grad);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      margin-top: 2px;
-    }
-
-    .ai-box {
-      flex: 1;
-      min-width: 0;
-      font-size: 0.95rem;
-      line-height: 1.65;
-      color: var(--text);
-    }
-
-    .ai-box h1, .ai-box h2, .ai-box h3 {
-      margin: 14px 0 8px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .ai-box p { margin-bottom: 10px; }
-    .ai-box ul, .ai-box ol { margin: 8px 0 12px 20px; }
-    .ai-box li { margin-bottom: 5px; }
-    .ai-box code {
-      background: #282a2c;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-size: 0.86rem;
-    }
-    .ai-box pre {
-      background: #1e1f20;
-      padding: 12px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin: 10px 0;
-    }
-    .ai-box table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px 0;
-      font-size: 0.88rem;
-      display: block;
-      overflow-x: auto;
-    }
-    .ai-box th, .ai-box td {
-      border: 1px solid var(--border);
-      padding: 8px;
-      text-align: left;
-    }
-    .ai-box th { background: #1e1f20; }
-
-    .msg-actions {
-      margin-top: 8px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .copy-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    .copy-btn:hover { color: var(--text); border-color: var(--text); }
-
-    /* Bottom Composer */
-    .composer-wrap {
-      padding: 10px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--bg);
-    }
-
-    .preview-strip {
-      width: 100%;
-      max-width: 780px;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      padding: 6px 12px;
-      background: var(--surface);
-      border-radius: 12px;
-      font-size: 0.82rem;
-    }
-
-    .preview-strip img {
-      height: 44px;
-      border-radius: 6px;
-    }
-
-    .composer {
-      width: 100%;
-      max-width: 780px;
-      background: var(--surface);
-      border-radius: 28px;
-      padding: 8px 12px;
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      border: 1px solid var(--border);
-    }
-
-    .composer textarea {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 0.96rem;
-      padding: 8px 6px;
-      resize: none;
-      max-height: 140px;
-      outline: none;
-      line-height: 1.4;
-    }
-
-    .send-btn {
-      background: var(--accent);
-      color: #062033;
-      border: none;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .disclaimer {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 8px;
-      text-align: center;
-    }
-
-    /* Settings Modal */
-    .modal-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 16px;
-    }
-
-    .modal {
-      background: var(--sidebar);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      width: 100%;
-      max-width: 420px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .modal h2 { font-size: 1.1rem; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label { font-size: 0.82rem; color: var(--muted); }
-    .field input, .field select {
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    .btn-save {
-      background: var(--accent);
-      color: #062033;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 9px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    /* Mobile Sidebar */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 40;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        transform: translateX(-100%);
-      }
-      .sidebar.open { transform: translateX(0); }
-      .overlay.open { display: block; }
-      .welcome h1 { font-size: 1.85rem; }
-      .welcome p { font-size: 1.05rem; }
-      .badge { display: none; }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background-color: rgba(148, 163, 184, 0.5);
+      border-radius: 9999px;
     }
   </style>
 </head>
-<body>
-
-  <div class="overlay" id="overlay"></div>
-
-  <aside class="sidebar" id="sidebar">
-    <button class="new-chat-btn" id="newChatBtn">＋ New chat</button>
-    <div class="sidebar-label">Recent Chats</div>
-    <div class="chat-list" id="chatList"></div>
-    <div class="sidebar-footer">
-      <a class="settings-btn" href="index.html">← Back to ExamPrep Pro</a>
-      <button class="settings-btn" id="openSettingsBtn">⚙️ API Key &amp; Exam Settings</button>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+  <!-- Top Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white shadow">
+        AI
+      </div>
+      <div>
+        <h1 class="text-base sm:text-lg font-bold tracking-tight">ExamPrep AI Tutor</h1>
+        <p class="text-xs text-slate-400">SSC, NTPC &amp; Govt Exam Doubt Solver</p>
+      </div>
     </div>
-  </aside>
+    <button
+      id="clear-chat-btn"
+      type="button"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+    >
+      Clear Chat
+    </button>
+  </header>
 
-  <div class="main-wrap">
-    <header>
-      <div class="header-left">
-        <button class="icon-btn" id="menuBtn" title="Menu">☰</button>
-        <a href="index.html" class="back-link">← ExamPrep</a>
-        <div class="brand-title">
-          Gemini <span class="badge" id="headerBadge">SSC &amp; NTPC</span>
+  <!-- Main Chat Area -->
+  <main class="flex-1 max-w-4xl w-full mx-auto flex flex-col p-3 sm:p-5 gap-3">
+    <!-- Quick Prompts -->
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        data-prompt="SSC CGL की तैयारी के लिए 30 दिन का आसान प्लान हिंदी में बताओ।"
+        class="quick-prompt text-xs px-3 py-1.5 rounded-full bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 border border-slate-800 transition"
+      >
+        SSC 30-Day Plan
+      </button>
+      <button
+        type="button"
+        data-prompt="पाइथागोरस प्रमेय को आसान उदाहरण और शॉर्ट ट्रिक के साथ समझाओ।"
+        class="quick-prompt text-xs px-3 py-1.5 rounded-full bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 border border-slate-800 transition"
+      >
+        Pythagoras Trick
+      </button>
+      <button
+        type="button"
+        data-prompt="भारतीय संविधान के 5 सबसे महत्वपूर्ण अनुच्छेद ट्रिक से याद कराओ।"
+        class="quick-prompt text-xs px-3 py-1.5 rounded-full bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 border border-slate-800 transition"
+      >
+        GK Polity Trick
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div
+      id="chat-messages"
+      class="flex-1 overflow-y-auto chat-scroll rounded-2xl bg-slate-900 border border-slate-800 p-4 space-y-4 min-h-[360px] max-h-[65vh]"
+    >
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">
+          AI
+        </div>
+        <div class="rounded-2xl rounded-tl-none bg-slate-800/90 px-4 py-3 text-sm leading-relaxed text-slate-100 max-w-[85%]">
+          नमस्ते! मैं आपका <b>ExamPrep AI Tutor</b> हूँ। Maths, Reasoning, GK या English का कोई भी डाउट पूछें—मैं आसान भाषा और शॉर्ट ट्रिक के साथ समझाऊँगा।
         </div>
       </div>
-      <button class="icon-btn" id="topSettingsBtn" title="Settings">⚙️</button>
-    </header>
-
-    <div class="chat-area" id="chatArea">
-      <div class="chat-inner" id="chatInner"></div>
     </div>
 
-    <div class="composer-wrap">
-      <div class="preview-strip" id="previewStrip">
-        <img id="previewImg" src="" alt="preview" />
-        <span>Photo attached</span>
-        <button class="copy-btn" id="removeImgBtn" style="margin-left:auto;">Remove</button>
-      </div>
+    <!-- Status / Error Message Box -->
+    <div id="status-box" class="hidden rounded-xl px-3.5 py-2 text-xs font-medium bg-amber-950/80 text-amber-200 border border-amber-800"></div>
 
-      <div class="composer">
-        <input type="file" id="fileInput" accept="image/*" hidden />
-        <button class="icon-btn" id="uploadBtn" title="Photo upload karo">＋</button>
-        <textarea id="promptInput" rows="1" placeholder="Ask Gemini ExamPro..."></textarea>
-        <button class="icon-btn" id="micBtn" title="Bolkar pucho">🎤</button>
-        <button class="send-btn" id="sendBtn" title="Send">➤</button>
-      </div>
-      <div class="disclaimer">Exam facts ko apni standard books/notes se bhi cross-check karein.</div>
-    </div>
-  </div>
-
-  <!-- Settings Modal -->
-  <div class="modal-bg" id="modalBg">
-    <div class="modal">
-      <h2>Settings</h2>
-      <div class="field">
-        <label>Gemini API Key (Google AI Studio)</label>
-        <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
-      </div>
-      <div class="field">
-        <label>Model Name</label>
-        <input type="text" id="modelInput" value="gemini-3.8-flash" />
-      </div>
-      <div class="field">
-        <label>Target Exam</label>
-        <select id="examSelect">
-          <option value="SSC CGL & RRB NTPC">SSC CGL &amp; RRB NTPC</option>
-          <option value="MP Police Constable & SI">MP Police Constable &amp; SI</option>
-          <option value="SSC GD & Delhi Police">SSC GD &amp; Delhi Police</option>
-          <option value="All Competitive Exams">All Competitive Exams</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Language Style</label>
-        <select id="langSelect">
-          <option value="Simple Hinglish (Hindi + English exam terms)">Simple Hinglish</option>
-          <option value="Clear Hindi">Clear Hindi</option>
-          <option value="Clear English">Clear English</option>
-        </select>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" id="closeModalBtn">Cancel</button>
-        <button class="btn-save" id="saveSettingsBtn">Save</button>
-      </div>
-    </div>
-  </div>
+    <!-- Input Form -->
+    <form id="chat-form" class="flex items-end gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-2.5">
+      <textarea
+        id="user-input"
+        rows="1"
+        placeholder="अपना डाउट यहाँ लिखें..."
+        class="flex-1 bg-transparent text-sm text-slate-100 placeholder-slate-400 resize-none focus:outline-none px-2 py-1.5 max-h-32"
+      ></textarea>
+      <button
+        id="send-btn"
+        type="submit"
+        class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold transition shrink-0"
+      >
+        Send
+      </button>
+    </form>
+  </main>
 
   <script>
-    const LS_KEY = "gemini_exampro_key_v2";
-    const LS_MODEL = "gemini_exampro_model_v2";
-    const LS_EXAM = "gemini_exampro_exam_v2";
-    const LS_LANG = "gemini_exampro_lang_v2";
-    const LS_CHATS = "gemini_exampro_chats_v2";
+    const WORKER_URL = 'https://gemini-proxy.rawataravindra507.workers.dev';
 
-    let chats = JSON.parse(localStorage.getItem(LS_CHATS) || "[]");
-    let currentChatId = null;
-    let attachedImage = null;
-    let currentController = null;
+    const chatMessagesEl = document.getElementById('chat-messages');
+    const chatFormEl = document.getElementById('chat-form');
+    const userInputEl = document.getElementById('user-input');
+    const sendBtnEl = document.getElementById('send-btn');
+    const clearChatBtnEl = document.getElementById('clear-chat-btn');
+    const statusBoxEl = document.getElementById('status-box');
 
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const chatList = document.getElementById("chatList");
-    const chatInner = document.getElementById("chatInner");
-    const chatArea = document.getElementById("chatArea");
-    const promptInput = document.getElementById("promptInput");
-    const sendBtn = document.getElementById("sendBtn");
-    const modalBg = document.getElementById("modalBg");
-    const apiKeyInput = document.getElementById("apiKeyInput");
-    const modelInput = document.getElementById("modelInput");
-    const examSelect = document.getElementById("examSelect");
-    const langSelect = document.getElementById("langSelect");
-    const headerBadge = document.getElementById("headerBadge");
-    const fileInput = document.getElementById("fileInput");
-    const previewStrip = document.getElementById("previewStrip");
-    const previewImg = document.getElementById("previewImg");
+    const systemInstructionText =
+      'You are ExamPrep AI Tutor for Indian government exam students (SSC, Railway, State Exams). Explain concepts, math tricks, reasoning, English, and GK clearly in simple Hindi or Hinglish.';
 
-    function loadSettings() {
-      apiKeyInput.value = localStorage.getItem(LS_KEY) || "";
-      modelInput.value = localStorage.getItem(LS_MODEL) || "gemini-3.8-flash";
-      examSelect.value = localStorage.getItem(LS_EXAM) || "SSC CGL & RRB NTPC";
-      langSelect.value = localStorage.getItem(LS_LANG) || "Simple Hinglish (Hindi + English exam terms)";
-      headerBadge.textContent = examSelect.value;
+    let conversationHistory = [];
+    let isGenerating = false;
+
+    function showStatus(message) {
+      if (!message) {
+        statusBoxEl.classList.add('hidden');
+        statusBoxEl.textContent = '';
+        return;
+      }
+      statusBoxEl.textContent = message;
+      statusBoxEl.classList.remove('hidden');
     }
 
-    function saveChats() {
-      localStorage.setItem(LS_CHATS, JSON.stringify(chats));
-      renderSidebar();
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
-    function renderSidebar() {
-      chatList.innerHTML = "";
-      chats.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "chat-item" + (c.id === currentChatId ? " active" : "");
-        div.textContent = c.title || "New Chat";
-        div.onclick = () => {
-          currentChatId = c.id;
-          renderChat();
-          closeSidebar();
-        };
-        chatList.appendChild(div);
+    function appendMessage(role, text) {
+      const wrapper = document.createElement('div');
+      wrapper.className = role === 'user' ? 'flex items-start justify-end gap-3' : 'flex items-start gap-3';
+
+      if (role === 'user') {
+        wrapper.innerHTML = `
+          <div class="rounded-2xl rounded-tr-none bg-indigo-600 px-4 py-3 text-sm leading-relaxed text-white max-w-[85%] whitespace-pre-wrap">${escapeHtml(text)}</div>
+          <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold shrink-0">You</div>
+        `;
+      } else {
+        wrapper.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+          <div class="rounded-2xl rounded-tl-none bg-slate-800/90 px-4 py-3 text-sm leading-relaxed text-slate-100 max-w-[85%] whitespace-pre-wrap">${escapeHtml(text)}</div>
+        `;
+      }
+
+      chatMessagesEl.appendChild(wrapper);
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    async function fetchWithBackoff(url, payload, maxRetries = 3) {
+      let delayMs = 1000;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.status === 429 || response.status >= 500) {
+            if (attempt < maxRetries) {
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+              delayMs *= 2;
+              continue;
+            }
+          }
+
+          if (!response.ok) {
+            throw new Error(`Server error (${response.status})`);
+          }
+
+          return await response.json();
+        } catch (err) {
+          if (attempt === maxRetries) {
+            throw err;
+          }
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+          delayMs *= 2;
+        }
+      }
+    }
+
+    async function sendPrompt(promptText) {
+      const cleaned = (promptText || '').trim();
+      if (!cleaned || isGenerating) return;
+
+      showStatus('');
+      isGenerating = true;
+      sendBtnEl.disabled = true;
+
+      appendMessage('user', cleaned);
+      conversationHistory.push({
+        role: 'user',
+        parts: [{ text: cleaned }]
       });
+
+      const payload = {
+        contents: conversationHistory,
+        systemInstruction: {
+          parts: [{ text: systemInstructionText }]
+        }
+      };
+
+      try {
+        showStatus('AI जवाब तैयार कर रहा है...');
+        const result = await fetchWithBackoff(WORKER_URL, payload);
+        const replyText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!replyText) {
+          throw new Error('Empty response from model');
+        }
+
+        showStatus('');
+        appendMessage('model', replyText);
+        conversationHistory.push({
+          role: 'model',
+          parts: [{ text: replyText }]
+        });
+      } catch (error) {
+        showStatus('जवाब लाने में समस्या आई। कृपया Cloudflare में GEMINI_API_KEY और इंटरनेट जांचें।');
+      } finally {
+        isGenerating = false;
+        sendBtnEl.disabled = false;
+        userInputEl.focus();
+      }
     }
 
-    function renderWelcome() {
-      chatInner.innerHTML = `
-        <div class="welcome">
-          <h1>Hello, Aravindra</h1>
-          <p>Aaj kis subject ya topic ki taiyari karni hai?</p>
-          <div class="cards">
-            <div class="card" onclick="quickAsk('Fundamental Rights (Art 12-35) ko ek table mein short revision notes ke saath samjhao.')">📜 Polity: Fundamental Rights Table</div>
-            <div class="card" onclick="quickAsk('Modern History 1857 se 1947 tak ke main events chronology mein batao.')">🏛️ History: 1857–1947 Timeline</div>
-            <div class="card" onclick="quickAsk('SSC CGL ke liye 5 important One-Word Substitutions aur unki yaad karne ki trick do.')">📚 English: OWS + Tricks</div>
-            <div class="card" onclick="quickAsk('RRB NTPC General Science ke 5 most repeated Biology questions MCQ format mein pucho.')">🔬 Science: 5 PYQ Quiz</div>
+    chatFormEl.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = userInputEl.value;
+      userInputEl.value = '';
+      userInputEl.style.height = 'auto';
+      sendPrompt(val);
+    });
+
+    userInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatFormEl.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    userInputEl.addEventListener('input', () => {
+      userInputEl.style.height = 'auto';
+      userInputEl.style.height = Math.min(userInputEl.scrollHeight, 128) + 'px';
+    });
+
+    document.querySelectorAll('.quick-prompt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sendPrompt(btn.dataset.prompt || '');
+      });
+    });
+
+    clearChatBtnEl.addEventListener('click', () => {
+      conversationHistory = [];
+      chatMessagesEl.innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold shrink-0">
+            AI
+          </div>
+          <div class="rounded-2xl rounded-tl-none bg-slate-800/90 px-4 py-3 text-sm leading-relaxed text-slate-100 max-w-[85%]">
+            चैट साफ कर दी गई है। अब आप कोई नया डाउट पूछ सकते हैं।
           </div>
         </div>
       `;
-    }
-
-    window.quickAsk = (text) => {
-      promptInput.value = text;
-      sendMessage();
-    };
-
-    function renderChat() {
-      renderSidebar();
-      const chat = chats.find(c => c.id === currentChatId);
-      if (!chat || chat.messages.length === 0) {
-        renderWelcome();
-        return;
-      }
-
-      chatInner.innerHTML = "";
-      chat.messages.forEach(m => {
-        const row = document.createElement("div");
-        row.className = "msg-row " + m.role;
-
-        if (m.role === "user") {
-          const box = document.createElement("div");
-          box.className = "user-box";
-          if (m.image) {
-            const img = document.createElement("img");
-            img.src = m.image;
-            box.appendChild(img);
-          }
-          const txt = document.createElement("div");
-          txt.textContent = m.text;
-          box.appendChild(txt);
-          row.appendChild(box);
-        } else {
-          const av = document.createElement("div");
-          av.className = "ai-avatar";
-          av.textContent = "✦";
-
-          const box = document.createElement("div");
-          box.className = "ai-box";
-          box.innerHTML = window.marked ? marked.parse(m.text) : m.text.replace(/\n/g, "<br>");
-
-          const actions = document.createElement("div");
-          actions.className = "msg-actions";
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-btn";
-          copyBtn.textContent = "Copy";
-          copyBtn.onclick = () => {
-            navigator.clipboard.writeText(m.text);
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => copyBtn.textContent = "Copy", 1500);
-          };
-          actions.appendChild(copyBtn);
-          box.appendChild(actions);
-
-          row.appendChild(av);
-          row.appendChild(box);
-        }
-        chatInner.appendChild(row);
-      });
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const text = promptInput.value.trim();
-      if (!text && !attachedImage) return;
-
-      const apiKey = localStorage.getItem(LS_KEY);
-      if (!apiKey) {
-        modalBg.style.display = "flex";
-        return;
-      }
-
-      // Pichle pending answer ko turant rok do
-      if (currentController) {
-        currentController.abort();
-      }
-      currentController = new AbortController();
-      const signal = currentController.signal;
-
-      if (!currentChatId) {
-        const newChat = { id: Date.now().toString(), title: text.slice(0, 32) || "Photo Question", messages: [] };
-        chats.unshift(newChat);
-        currentChatId = newChat.id;
-      }
-
-      const chat = chats.find(c => c.id === currentChatId);
-      const userMsg = { role: "user", text: text || "Is image ko explain karo.", image: attachedImage?.dataUrl || null };
-      chat.messages.push(userMsg);
-
-      const currentImg = attachedImage;
-      attachedImage = null;
-      previewStrip.style.display = "none";
-      promptInput.value = "";
-      promptInput.style.height = "auto";
-
-      const aiMsg = { role: "ai", text: "Soch raha hoon..." };
-      chat.messages.push(aiMsg);
-      renderChat();
-
-      try {
-        const model = localStorage.getItem(LS_MODEL) || "gemini-3.8-flash";
-        const exam = localStorage.getItem(LS_EXAM) || "SSC CGL & RRB NTPC";
-        const lang = localStorage.getItem(LS_LANG) || "Simple Hinglish (Hindi + English exam terms)";
-
-        const validHistory = chat.messages.slice(0, -1).filter(
-          m => m.text !== "Soch raha hoon..." && !m.text.includes("Roka gaya")
-        );
-
-        const contents = validHistory.map((m, idx, arr) => {
-          const parts = [{ text: m.text }];
-          if (idx === arr.length - 1 && currentImg) {
-            parts.push({ inlineData: { mimeType: currentImg.mimeType, data: currentImg.base64 } });
-          }
-          return { role: m.role === "user" ? "user" : "model", parts };
-        });
-
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          signal: signal,
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{
-                text: `You are Gemini ExamPro, a helpful AI tutor for ${exam}. Respond in ${lang}. Use clean Markdown headings, bullet points, tables where helpful, and exam-focused tricks.`
-              }]
-            },
-            contents
-          })
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || "API Error");
-
-        aiMsg.text = data.candidates?.[0]?.content?.parts?.map(p => p.text).filter(Boolean).join("\n") || "Koi jawab nahi mila.";
-        saveChats();
-        renderChat();
-      } catch (err) {
-        if (err.name === "AbortError") {
-          aiMsg.text = "*(Roka gaya — naya sawal pucha gaya)*";
-        } else {
-          aiMsg.text = `**Error:** ${err.message}`;
-        }
-        renderChat();
-      }
-    }
-
-    // Events
-    sendBtn.onclick = sendMessage;
-    promptInput.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+      showStatus('');
     });
-    promptInput.addEventListener("input", () => {
-      promptInput.style.height = "auto";
-      promptInput.style.height = Math.min(promptInput.scrollHeight, 140) + "px";
-    });
-
-    document.getElementById("newChatBtn").onclick = () => {
-      if (currentController) currentController.abort();
-      currentChatId = null;
-      renderChat();
-      closeSidebar();
-    };
-
-    const openSidebar = () => { sidebar.classList.add("open"); overlay.classList.add("open"); };
-    const closeSidebar = () => { sidebar.classList.remove("open"); overlay.classList.remove("open"); };
-    document.getElementById("menuBtn").onclick = openSidebar;
-    overlay.onclick = closeSidebar;
-
-    const openSettings = () => { loadSettings(); modalBg.style.display = "flex"; closeSidebar(); };
-    document.getElementById("openSettingsBtn").onclick = openSettings;
-    document.getElementById("topSettingsBtn").onclick = openSettings;
-    document.getElementById("closeModalBtn").onclick = () => modalBg.style.display = "none";
-
-    document.getElementById("saveSettingsBtn").onclick = () => {
-      localStorage.setItem(LS_KEY, apiKeyInput.value.trim());
-      localStorage.setItem(LS_MODEL, modelInput.value.trim() || "gemini-3.8-flash");
-      localStorage.setItem(LS_EXAM, examSelect.value);
-      localStorage.setItem(LS_LANG, langSelect.value);
-      headerBadge.textContent = examSelect.value;
-      modalBg.style.display = "none";
-    };
-
-    // Image Upload
-    document.getElementById("uploadBtn").onclick = () => fileInput.click();
-    fileInput.onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        attachedImage = {
-          mimeType: file.type,
-          dataUrl,
-          base64: dataUrl.split(",")[1]
-        };
-        previewImg.src = dataUrl;
-        previewStrip.style.display = "flex";
-      };
-      reader.readAsDataURL(file);
-    };
-    document.getElementById("removeImgBtn").onclick = () => {
-      attachedImage = null;
-      fileInput.value = "";
-      previewStrip.style.display = "none";
-    };
-
-    // Voice Mic
-    document.getElementById("micBtn").onclick = () => {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) return alert("Is browser mein voice input supported nahi hai.");
-      const rec = new SR();
-      rec.lang = "en-IN";
-      rec.onresult = e => {
-        promptInput.value += (promptInput.value ? " " : "") + e.results[0][0].transcript;
-      };
-      rec.start();
-    };
-
-    loadSettings();
-    renderChat();
   </script>
 </body>
 </html>
+```
