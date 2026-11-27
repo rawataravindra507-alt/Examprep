@@ -372,6 +372,7 @@
               <option value="SSC CHSL / MTS / CPO">SSC CHSL / MTS / CPO</option>
               <option value="SSC GD Constable">SSC GD Constable</option>
               <option value="Delhi Police Constable">Delhi Police Constable</option>
+              <option value="MP Police Constable & SI">MP Police Constable & SI</option>
               <option value="RRB Group D / ALP / RPF">RRB Group D / ALP / RPF</option>
               <option value="State Police / Agniveer">State Police / Agniveer</option>
             </select>
@@ -493,6 +494,7 @@
 <script src="cgl_pyq_pack1.js"></script>
 <script src="ntpc_tests.js"></script>
 <script src="other_exams.js"></script>
+<script src="mp_police_tests.js"></script>
 
 <script>
   const qBank = {
@@ -641,6 +643,16 @@
     },
 
     // POLICE & DEFENCE EXAMS (Separate Columns)
+    {
+      id: "mp_police_constable", group: "other", icon: "🚔", icoClass: "ico-def",
+      title: "MP Police Constable", sub: "100 Qs • 120 Min • No Negative Marking (+1 / 0)", pos: 1, neg: 0,
+      tests: []
+    },
+    {
+      id: "mp_police_si", group: "other", icon: "⭐⭐", icoClass: "ico-def",
+      title: "MP Police SI (Sub-Inspector)", sub: "200 Qs • 180 Min • Hindi, English & GK (+1 / 0)", pos: 1, neg: 0,
+      tests: []
+    },
     {
       id: "delhi_police", group: "other", icon: "🛡️", icoClass: "ico-def",
       title: "Delhi Police Constable", sub: "Full Test • PYQ • GK & Reasoning (+1 / -0.25)", pos: 1, neg: 0.25,
@@ -1119,10 +1131,10 @@
 
   function renderAll() {
     visited[curSec][curQ] = true;
-    const sec = curExam.sections[curSec], q = sec.questions[curQ], activeLang = sec.allowLang ? lang : 'en';
+    const sec = curExam.sections[curSec], q = sec.questions[curQ], activeLang = sec.allowLang ? lang : (sec.fixedLang || 'en');
     const langBtn = document.getElementById('lang-btn');
     langBtn.disabled = !sec.allowLang;
-    langBtn.innerText = sec.allowLang ? (lang === 'hi' ? 'EN' : 'हिंदी') : 'EN Only';
+    langBtn.innerText = sec.allowLang ? (lang === 'hi' ? 'EN' : 'हिंदी') : (sec.fixedLang === 'hi' ? 'हिंदी Only' : 'EN Only');
 
     const tabs = document.getElementById('sec-tabs'); tabs.innerHTML = '';
     curExam.sections.forEach((s, idx) => {
