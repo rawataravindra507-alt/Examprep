@@ -242,9 +242,52 @@
   .correct { color: var(--success); font-weight: 700; }
   .wrong { color: var(--danger); font-weight: 700; }
   .empty-state { text-align: center; padding: 26px 15px; color: var(--muted); font-size: 0.88rem; }
+
+  /* Login Modal / Screen */
+  .login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; box-shadow: var(--shadow); text-align: center; }
+  .login-logo { width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .login-err { color: var(--danger); font-size: 0.78rem; font-weight: 700; margin-top: 6px; display: none; }
+
+  /* PDF Download & Share Buttons */
+  .pdf-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); padding: 10px 12px; border-radius: 12px; box-shadow: var(--shadow); }
+  .pdf-bar-title { font-weight: 800; font-size: 0.86rem; }
+  .btn-pdf { background: linear-gradient(135deg, #dc2626, #ea580c); color: #fff; border: none; padding: 7px 12px; border-radius: 9px; font-weight: 800; font-size: 0.78rem; cursor: pointer; white-space: nowrap; }
+  .btn-share { background: var(--secondary-soft); color: var(--secondary); border: 1px solid var(--secondary); padding: 7px 10px; border-radius: 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+  [data-theme="dark"] .btn-share { color: #5eead4; }
+  .btn-logout { width: 100%; margin-top: 10px; padding: 10px; border-radius: 10px; border: 1.5px solid var(--danger); background: transparent; color: var(--danger); font-weight: 800; font-size: 0.88rem; cursor: pointer; }
+
+  /* 2-Column Maths Formula Selector */
+  .math-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .math-col-btn { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 12px 10px; cursor: pointer; text-align: center; box-shadow: var(--shadow); }
+  .math-col-btn.active { border-color: var(--primary); background: var(--primary-soft); }
+  .math-col-btn b { display: block; font-size: 0.92rem; margin-top: 4px; color: var(--text); }
+  .math-col-btn span { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  [data-theme="dark"] .math-col-btn.active b { color: #e0e7ff; }
+
 </style>
 </head>
 <body>
+
+<!-- MOBILE NUMBER LOGIN SCREEN -->
+<div id="login-screen" class="login-overlay hidden">
+  <div class="login-card">
+    <div class="login-logo">EP</div>
+    <h2 style="margin:0 0 4px; font-size:1.3rem;">ExamPrep Pro</h2>
+    <p style="margin:0 0 18px; font-size:0.82rem; color:var(--muted);">अपने मोबाइल नंबर से लॉगिन करें ताकि आपका प्रोफाइल और टेस्ट रिकॉर्ड सेव रहे</p>
+    <div class="form-group">
+      <label>मोबाइल नंबर (10 अंक)</label>
+      <input type="tel" id="login-mobile" class="form-input" maxlength="10" placeholder="जैसे: 9876543210" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label>आपका नाम (नए यूज़र के लिए)</label>
+      <input type="text" id="login-name" class="form-input" placeholder="अपना नाम लिखें">
+    </div>
+    <div id="login-err" class="login-err">कृपया सही 10 अंकों का मोबाइल नंबर डालें।</div>
+    <button class="btn-start" style="margin-top:10px;" onclick="doMobileLogin()">लॉगिन / शुरू करें →</button>
+  </div>
+</div>
+
 
 <div class="app-shell">
   <div id="main-app">
@@ -256,7 +299,10 @@
           <div class="brand-sub" id="header-target">Target: SSC CGL & RRB NTPC</div>
         </div>
       </div>
-      <button class="icon-btn" id="theme-btn-main" onclick="toggleTheme()">🌙 Dark</button>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button class="btn-share" onclick="shareApp()">📤 Share</button>
+        <button class="icon-btn" id="theme-btn-main" onclick="toggleTheme()">🌙 Dark</button>
+      </div>
     </div>
 
     <!-- TAB 1: HOME -->
@@ -315,12 +361,52 @@
     <!-- TAB 2: STUDY HUB -->
     <div id="tab-study" class="hidden">
       <div class="pill-tabs">
-        <button class="pill-tab active" id="st-btn-vocab" onclick="switchStudyTab('vocab')">📚 25 OWS (ट्रिक्स)</button>
-        <button class="pill-tab" id="st-btn-formula" onclick="switchStudyTab('formula')">📐 एडवांस मैथ्स फॉर्मूला</button>
+        <button class="pill-tab active" id="st-btn-formula" onclick="switchStudyTab('formula')">📐 Maths फॉर्मूला</button>
+        <button class="pill-tab" id="st-btn-reasoning" onclick="switchStudyTab('reasoning')">🧠 Reasoning फैक्ट्स</button>
+        <button class="pill-tab" id="st-btn-vocab" onclick="switchStudyTab('vocab')">📚 Vocab (OWS)</button>
         <button class="pill-tab" id="st-btn-ca" onclick="switchStudyTab('ca')">📰 करंट व GK</button>
       </div>
-      <div id="study-vocab"></div>
-      <div id="study-formula" class="hidden"></div>
+
+      <!-- Maths Formulas (2 Columns: 1. Advance, 2. Arithmetic) -->
+      <div id="study-formula">
+        <div class="math-col-grid">
+          <div class="math-col-btn active" id="mcol-adv" onclick="switchMathCol('adv')">
+            <div style="font-size:1.3rem;">📐</div>
+            <b>1. Advance Maths</b>
+            <span>7 Chapters • SSC CGL</span>
+          </div>
+          <div class="math-col-btn" id="mcol-arith" onclick="switchMathCol('arith')">
+            <div style="font-size:1.3rem;">🔢</div>
+            <b>2. Arithmetic</b>
+            <span>10 Chapters • Complete</span>
+          </div>
+        </div>
+        <div class="pdf-bar">
+          <span class="pdf-bar-title" id="math-pdf-title">📐 Advance Maths Complete Sheet</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF(activeMathCol === 'adv' ? 'adv_maths' : 'arith_maths')">📥 PDF Download</button>
+        </div>
+        <div id="study-formula-list"></div>
+      </div>
+
+      <!-- Reasoning Formulas & Facts -->
+      <div id="study-reasoning" class="hidden">
+        <div class="pdf-bar">
+          <span class="pdf-bar-title">🧠 Reasoning Formulas & Facts</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF('reasoning')">📥 PDF Download</button>
+        </div>
+        <div id="study-reasoning-list"></div>
+      </div>
+
+      <!-- Vocab -->
+      <div id="study-vocab" class="hidden">
+        <div class="pdf-bar">
+          <span class="pdf-bar-title">📚 25 OWS + Tricks Sheet</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF('vocab')">📥 PDF Download</button>
+        </div>
+        <div id="study-vocab-list"></div>
+      </div>
+
+      <!-- Current Affairs -->
       <div id="study-ca" class="hidden"></div>
     </div>
 
@@ -397,6 +483,8 @@
           </select>
         </div>
         <button class="btn-start" onclick="saveProfile()">प्रोफाइल सेव करें ✓</button>
+        <button class="btn-start" style="margin-top:9px; background:linear-gradient(135deg,#0d9488,#059669);" onclick="shareApp()">📤 ऐप लिंक शेयर करें (Share App)</button>
+        <button class="btn-logout" onclick="logoutUser()">🔄 नंबर बदलें / लॉगआउट करें</button>
       </div>
     </div>
   </div>
@@ -712,55 +800,182 @@
     { type: "OWS • 25", word: "Aviary", meaning: "पक्षीशाला (Place where birds are kept)", trick: "Avi = Bird (पक्षी)। Aviation (उड़ना) से याद रखें।" }
   ];
 
-  // Full 7-Chapter Advance Maths Tricky Formula Sheet
-  const formulaGroups = [
-    { topic: "1. बीजगणित (Algebra Shortcuts)", items: [
-      { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2" },
-      { name: "यदि x - 1/x = k", eq: "x² + 1/x² = k² + 2" },
-      { name: "यदि x + 1/x = k", eq: "x³ + 1/x³ = k³ - 3k" },
-      { name: "यदि x - 1/x = k", eq: "x³ - 1/x³ = k³ + 3k" },
-      { name: "यदि a + b + c = 0", eq: "a³ + b³ + c³ = 3abc" },
-      { name: "यदि x + 1/x = 2 (फिक्स ट्रिक)", eq: "x = 1 रखें (हमेशा)" }
+  // 1. ADVANCE MATHS - HIGH LEVEL COMPLETE SSC CGL / TIER 2 SHEET
+  const advanceFormulas = [
+    { topic: "1. बीजगणित (Algebra - Complete SSC CGL)", items: [
+      { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2  |  x³ + 1/x³ = k³ - 3k" },
+      { name: "यदि x - 1/x = k", eq: "x² + 1/x² = k² + 2  |  x³ - 1/x³ = k³ + 3k" },
+      { name: "x⁵ + 1/x⁵ का सीधा सूत्र", eq: "(x² + 1/x²)(x³ + 1/x³) - (x + 1/x)" },
+      { name: "x + 1/x = ±√3 (मानक परिणाम)", eq: "x⁶ = -1  (या x⁶ + 1 = 0)" },
+      { name: "x + 1/x = 1  |  x + 1/x = -1", eq: "x³ = -1  |  x³ = +1" },
+      { name: "a³ + b³ + c³ - 3abc (फॉर्मूला 1)", eq: "(a+b+c)(a²+b²+c²-ab-bc-ca)" },
+      { name: "a³ + b³ + c³ - 3abc (फॉर्मूला 2)", eq: "½(a+b+c)[(a-b)²+(b-c)²+(c-a)²]" },
+      { name: "यदि a+b+c = 0 या a=b=c", eq: "a³ + b³ + c³ = 3abc" },
+      { name: "(a + b)² - (a - b)²", eq: "4ab  |  (a+b)²+(a-b)² = 2(a²+b²)" },
+      { name: "द्विघात समीकरण ax²+bx+c=0 के मूल", eq: "α+β = -b/a  |  αβ = c/a" }
     ]},
-    { topic: "2. त्रिकोणमिति (Trigonometry Tricks)", items: [
-      { name: "यदि A + B = 90°", eq: "sinA = cosB, tanA·tanB = 1" },
-      { name: "यदि secθ + tanθ = k", eq: "secθ - tanθ = 1/k" },
-      { name: "यदि cosecθ + cotθ = k", eq: "cosecθ - cotθ = 1/k" },
-      { name: "a sinθ + b cosθ का Max/Min मान", eq: "± √(a² + b²)" },
-      { name: "sin 2θ / cos 2θ", eq: "2sinθcosθ / 1 - 2sin²θ" }
+    { topic: "2. त्रिकोणमिति व ऊँचाई-दूरी (Trigonometry)", items: [
+      { name: "मूल सर्वसमिकाएँ (Identities)", eq: "sin²θ+cos²θ=1 | sec²θ-tan²θ=1 | cosec²θ-cot²θ=1" },
+      { name: "यदि A + B = 90°", eq: "sinA=cosB, tanA·tanB=1, sin²A+sin²B=1" },
+      { name: "यदि secθ + tanθ = k", eq: "secθ - tanθ = 1/k  ⇒  secθ = (k²+1)/2k" },
+      { name: "यदि a sinθ + b cosθ = c", eq: "a cosθ - b sinθ = ±√(a² + b² - c²)" },
+      { name: "a sinθ + b cosθ का Max / Min", eq: "+√(a² + b²)  /  -√(a² + b²)" },
+      { name: "a sin²θ + b cos²θ का Max / Min", eq: "Max = बड़ा(a,b)  |  Min = छोटा(a,b)" },
+      { name: "a tan²θ + b cot²θ का Min मान", eq: "2√(ab)  (हमेशा)" },
+      { name: "sin 2θ / cos 2θ / tan 2θ", eq: "2sinθcosθ | 2cos²θ-1 | 2tanθ/(1-tan²θ)" },
+      { name: "sin 3θ / cos 3θ", eq: "3sinθ - 4sin³θ  |  4cos³θ - 3cosθ" },
+      { name: "ऊँचाई-दूरी अनुपात (30°:60°:90°)", eq: "1 : √3 : 2  |  (45°:45°:90° = 1:1:√2)" }
     ]},
-    { topic: "3. ज्यामिति (Geometry Direct Results)", items: [
-      { name: "बहुभुज के अंतः कोणों का योग", eq: "(n - 2) × 180°" },
-      { name: "बहुभुज के विकर्ण (Diagonals)", eq: "n(n - 3) / 2" },
-      { name: "अंतःकेंद्र कोण (Incentre ∠BIC)", eq: "90° + (∠A / 2)" },
-      { name: "बाह्य समद्विभाजक कोण (∠BOC)", eq: "90° - (∠A / 2)" },
-      { name: "परिकेंद्र कोण (Circumcentre)", eq: "केंद्र पर कोण = 2 × परिधि कोण" }
+    { topic: "3. ज्यामिति (Geometry - Triangles & Circles)", items: [
+      { name: "कोण समद्विभाजक प्रमेय (Angle Bisector)", eq: "AB / AC = BD / DC" },
+      { name: "अंतःकेंद्र (∠BIC) / बाह्य केंद्र (∠BOC)", eq: "90° + ∠A/2  |  90° - ∠A/2" },
+      { name: "लंबकेंद्र (Orthocentre ∠BHC)", eq: "180° - ∠A" },
+      { name: "समरूप त्रिभुज (Similar Δ) क्षेत्रफल", eq: "Area₁/Area₂ = (Side₁/Side₂)²" },
+      { name: "कोसाइन नियम (Cosine Rule)", eq: "cos A = (b² + c² - a²) / 2bc" },
+      { name: "साइन नियम (Sine Rule)", eq: "a/sinA = b/sinB = c/sinC = 2R" },
+      { name: "वृत्त: अंतः प्रतिच्छेदी जीवाएँ", eq: "AP × PB = CP × PD" },
+      { name: "वृत्त: स्पर्श व छेदक रेखा (Tangent-Secant)", eq: "PT² = PA × PB" },
+      { name: "DCT (सीधी उभयनिष्ठ स्पर्श रेखा)", eq: "√[d² - (R - r)²]" },
+      { name: "TCT (तिर्यक उभयनिष्ठ स्पर्श रेखा)", eq: "√[d² - (R + r)²]" },
+      { name: "बहुभुज: अंतः कोण योग / विकर्ण", eq: "(n-2)×180°  |  n(n-3)/2" }
     ]},
     { topic: "4. क्षेत्रमिति 2D (Mensuration 2D)", items: [
-      { name: "समबाहु त्रिभुज (Equilateral) क्षेत्रफल", eq: "(√3 / 4) × a²" },
-      { name: "समबाहु त्रिभुज की ऊँचाई (h)", eq: "(√3 / 2) × a" },
-      { name: "समचतुर्भुज (Rhombus) क्षेत्रफल", eq: "(1 / 2) × d₁ × d₂" },
-      { name: "समलंब (Trapezium) क्षेत्रफल", eq: "(1 / 2) × (a + b) × h" },
-      { name: "अर्धवृत्त का परिमाप (ट्रिक)", eq: "r × (36 / 7)" }
+      { name: "त्रिभुज: हेरोन सूत्र / अंतःत्रिज्या (r)", eq: "√[s(s-a)(s-b)(s-c)]  |  r = Area / s" },
+      { name: "परित्रिज्या (R) / समकोण Δ की r", eq: "R = abc/(4·Area)  |  r = (P+B-H)/2" },
+      { name: "समबाहु त्रिभुज (Equilateral) Area / h", eq: "(√3/4)a²  |  (√3/2)a  |  R:r = 2:1" },
+      { name: "समचतुर्भुज (Rhombus) Area / भुजा", eq: "½ d₁d₂  |  4a² = d₁² + d₂²" },
+      { name: "समलंब (Trapezium) क्षेत्रफल", eq: "½ × (a + b) × h" },
+      { name: "त्रिज्यखंड (Sector) Area / चाप (Arc)", eq: "(θ/360)πr²  |  (θ/360)2πr" },
+      { name: "अर्धवृत्त का परिमाप (Direct Trick)", eq: "r(π + 2) = r × (36 / 7)" }
     ]},
     { topic: "5. क्षेत्रमिति 3D (Mensuration 3D)", items: [
-      { name: "बेलन (Cylinder) आयतन / वक्रपृष्ठ", eq: "πr²h  |  2πrh" },
-      { name: "शंकु (Cone) आयतन / वक्रपृष्ठ", eq: "(1/3)πr²h  |  πrl" },
-      { name: "गोला (Sphere) आयतन / पृष्ठ", eq: "(4/3)πr³  |  4πr²" },
-      { name: "अर्धगोला (Hemisphere) संपूर्ण पृष्ठ", eq: "3πr²" },
-      { name: "घनाभ (Cuboid) का विकर्ण", eq: "√(l² + b² + h²)" }
+      { name: "घनाभ (Cuboid) V / TSA / विकर्ण", eq: "lbh | 2(lb+bh+hl) | √(l²+b²+h²)" },
+      { name: "बेलन (Cylinder) V / CSA / TSA", eq: "πr²h | 2πrh | 2πr(h+r)" },
+      { name: "शंकु (Cone) V / CSA / TSA", eq: "⅓πr²h | πrl | πr(l+r)" },
+      { name: "छिन्नक (Frustum) आयतन (Volume)", eq: "⅓πh(R² + r² + Rr)" },
+      { name: "छिन्नक (Frustum) CSA", eq: "π(R + r)l, जहाँ l = √[h²+(R-r)²]" },
+      { name: "गोला (Sphere) V / SA", eq: "(4/3)πr³  |  4πr²" },
+      { name: "अर्धगोला (Hemisphere) V / CSA / TSA", eq: "(2/3)πr³  |  2πr²  |  3πr²" },
+      { name: "प्रिज्म (Prism) आयतन / LSA", eq: "आधार क्षेत्रफल × h  |  आधार परिमाप × h" },
+      { name: "पिरामिड (Pyramid) आयतन / LSA", eq: "⅓ × आधार क्षेत्रफल × h | ½ × परिमाप × l" }
     ]},
     { topic: "6. निर्देशांक ज्यामिति (Coordinate Geometry)", items: [
-      { name: "दो बिंदुओं के बीच की दूरी", eq: "√[(x₂-x₁)² + (y₂-y₁)²]" },
-      { name: "मध्य बिंदु (Mid-Point)", eq: "((x₁+x₂)/2 , (y₁+y₂)/2)" },
-      { name: "रेखा की ढाल (Slope, m)", eq: "(y₂ - y₁) / (x₂ - x₁)" },
-      { name: "केंद्रक (Centroid) के निर्देशांक", eq: "((x₁+x₂+x₃)/3 , (y₁+y₂+y₃)/3)" }
+      { name: "दूरी सूत्र (Distance Formula)", eq: "√[(x₂ - x₁)² + (y₂ - y₁)²]" },
+      { name: "विभाजन सूत्र (Section Formula m:n)", eq: "((mx₂+nx₁)/(m+n) , (my₂+ny₁)/(m+n))" },
+      { name: "रेखा की ढाल (Slope) / लंबवत शर्त", eq: "m = -a/b  |  लंबवत: m₁ × m₂ = -1" },
+      { name: "त्रिभुज का क्षेत्रफल (3 बिंदुओं से)", eq: "½|x₁(y₂-y₃)+x₂(y₃-y₁)+x₃(y₁-y₂)|" },
+      { name: "केंद्रक (Centroid) / परावर्तन (Reflection)", eq: "((x₁+x₂+x₃)/3 , (y₁+y₂+y₃)/3)" }
     ]},
-    { topic: "7. संख्या पद्धति व घातांक (Number System)", items: [
-      { name: "प्रथम n प्राकृतिक संख्याओं का योग", eq: "n(n + 1) / 2" },
-      { name: "प्रथम n वर्गों का योग (1²+2²..)", eq: "n(n+1)(2n+1) / 6" },
-      { name: "प्रथम n घनों का योग (1³+2³..)", eq: "[n(n + 1) / 2]²" },
-      { name: "इकाई अंक (Cyclicity ट्रिक)", eq: "घात को 4 से भाग दें (शेषफल रखें)" }
+    { topic: "7. संख्या पद्धति व करणी (Number System)", items: [
+      { name: "प्रथम n प्राकृतिक / वर्ग / घन योग", eq: "n(n+1)/2 | n(n+1)(2n+1)/6 | [n(n+1)/2]²" },
+      { name: "समान्तर श्रेणी (AP) nवाँ पद व योग", eq: "a+(n-1)d  |  (n/2)[2a+(n-1)d]" },
+      { name: "गुणोत्तर श्रेणी (GP) nवाँ पद व अनंत योग", eq: "arⁿ⁻¹  |  S∞ = a / (1 - r)" },
+      { name: "कुल गुणनखंड (N = aᵖ·bᵠ·cʳ)", eq: "(p + 1)(q + 1)(r + 1)" },
+      { name: "शून्यों की संख्या (n! में)", eq: "[n/5] + [n/25] + [n/125] + ..." },
+      { name: "शेषफल प्रमेय (Euler's / Fermat)", eq: "aᵖ⁻¹ ≡ 1 (mod p), p अभाज्य" }
+    ]}
+  ];
+
+  // 2. ARITHMETIC MATHS - COMPLETE SSC CGL / RAILWAY SHEET
+  const arithmeticFormulas = [
+    { topic: "1. प्रतिशत (Percentage)", items: [
+      { name: "क्रमिक % परिवर्तन (Successive)", eq: "x + y + (xy / 100) %" },
+      { name: "दाम R% बढ़े ⇒ खपत में कमी %", eq: "[R / (100 + R)] × 100" },
+      { name: "दाम R% घटे ⇒ खपत में वृद्धि %", eq: "[R / (100 - R)] × 100" },
+      { name: "प्रमुख भिन्न मान (Fractions)", eq: "1/6=16.67% | 1/7=14.28% | 1/8=12.5% | 1/12=8.33%" }
+    ]},
+    { topic: "2. लाभ-हानि व बट्टा (Profit, Loss & Discount)", items: [
+      { name: "CP व MP का सीधा अनुपात", eq: "CP / MP = (100 - D%) / (100 + P%)" },
+      { name: "समान SP पर x% लाभ व x% हानि", eq: "हमेशा हानि = x² / 100 %" },
+      { name: "बेईमान दुकानदार (गलत बाट)", eq: "लाभ % = (त्रुटि / तौला गया वजन) × 100" },
+      { name: "दो क्रमिक छूट (x% और y%)", eq: "एकल छूट = x + y - (xy / 100) %" },
+      { name: "Buy x Get y Free में छूट %", eq: "[y / (x + y)] × 100" }
+    ]},
+    { topic: "3. साधारण व चक्रवृद्धि ब्याज (SI & CI)", items: [
+      { name: "साधारण ब्याज (SI) / मिश्रधन", eq: "SI = PRT/100  |  A = P(1 + RT/100)" },
+      { name: "2 वर्ष के CI व SI का अंतर", eq: "Diff = P × (R / 100)²" },
+      { name: "3 वर्ष के CI व SI का अंतर", eq: "Diff = P(R/100)² × (300 + R)/100" },
+      { name: "अर्धवार्षिक / त्रैमासिक CI", eq: "दर R/2, समय 2T  |  दर R/4, समय 4T" },
+      { name: "SI किस्त (Installment) सूत्र", eq: "x = [100·A] / [100t + Rt(t-1)/2]" },
+      { name: "CI किस्त (2 समान किस्तें)", eq: "P = x/(1+R/100) + x/(1+R/100)²" }
+    ]},
+    { topic: "4. अनुपात, समानुपात व साझेदारी (Ratio)", items: [
+      { name: "मध्यानुपाती (Mean Proportional)", eq: "√(a × b)" },
+      { name: "तृतीयानुपाती (Third Proportional)", eq: "b² / a" },
+      { name: "चतुर्थानुपाती (Fourth Proportional)", eq: "(b × c) / a" },
+      { name: "साझेदारी (Partnership) लाभ अनुपात", eq: "लाभ = पूँजी (Capital) × समय (Time)" }
+    ]},
+    { topic: "5. मिश्रण व एलिगेशन (Mixture & Alligation)", items: [
+      { name: "एलिगेशन नियम (Alligation Rule)", eq: "(महंगा - औसत) : (औसत - सस्ता)" },
+      { name: "बार-बार प्रतिस्थापन (Replacement)", eq: "बची मात्रा = प्रारंभिक × (1 - y/x)ⁿ" }
+    ]},
+    { topic: "6. समय-कार्य व नल-टंकी (Time & Work)", items: [
+      { name: "MDH मसाला सूत्र", eq: "(M₁·D₁·H₁·E₁) / W₁ = (M₂·D₂·H₂·E₂) / W₂" },
+      { name: "A व B मिलकर (x व y दिन)", eq: "(x × y) / (x + y) दिन" },
+      { name: "यदि A को (A+B) से x दिन व B को y दिन अधिक लगें", eq: "A+B का समय = √(x × y)" },
+      { name: "मजदूरी (Wages) का बंटवारा", eq: "हमेशा किए गए कार्य (या क्षमता) के अनुपात में" }
+    ]},
+    { topic: "7. समय, चाल, ट्रेन व नाव (TSD, Train & Boat)", items: [
+      { name: "औसत चाल (समान दूरी)", eq: "2xy / (x + y)  |  3xyz / (xy+yz+zx)" },
+      { name: "देर/जल्दी पहुँचने पर दूरी सूत्र", eq: "D = [S₁·S₂ / (S₁-S₂)] × ΔT" },
+      { name: "मिलने के बाद t₁ व t₂ समय लगें", eq: "S₁ / S₂ = √(t₂ / t₁)" },
+      { name: "नाव की चाल (B) व धारा की चाल (S)", eq: "B = (D+U)/2  |  S = (D-U)/2" },
+      { name: "चोर-पुलिस पकड़ने का समय", eq: "बीच की दूरी / सापेक्ष चाल (S₁ - S₂)" }
+    ]},
+    { topic: "8. औसत (Average)", items: [
+      { name: "लगातार n सम / विषम संख्याओं का औसत", eq: "सम = n + 1  |  विषम = n" },
+      { name: "1 से n तक वर्गों का औसत", eq: "(n + 1)(2n + 1) / 6" },
+      { name: "प्रतिस्थापन (Replacement) ट्रिक", eq: "नया मान = पुराना ± (कुल संख्या × औसत बदलाव)" }
+    ]},
+    { topic: "9. क्रमचय, संचय व प्रायिकता (P&C, Probability)", items: [
+      { name: "क्रमचय (Permutation ⁿPᵣ)", eq: "n! / (n - r)!" },
+      { name: "संचय (Combination ⁿCᵣ)", eq: "n! / [r! × (n - r)!]" },
+      { name: "प्रायिकता (Probability)", eq: "P(E) = अनुकूल परिणाम / कुल परिणाम" }
+    ]}
+  ];
+
+  // 3. REASONING FORMULAS & MEMORY FACTS (Downloadable PDF)
+  const reasoningFormulas = [
+    { topic: "1. वर्णमाला स्थान मान (Alphabet Place Values)", items: [
+      { name: "EJOTY ट्रिक (5 के गुणज)", eq: "E=5, J=10, O=15, T=20, Y=25" },
+      { name: "CFILORUX ट्रिक (3 के गुणज)", eq: "C=3, F=6, I=9, L=12, O=15, R=18, U=21, X=24" },
+      { name: "दाएँ से स्थान निकालने का सूत्र", eq: "बाएँ से स्थान = 27 - दाएँ से स्थान" },
+      { name: "विपरीत अक्षर जोड़ी (योग = 27)", eq: "AZ(आज), BY(बाय), CX(सिक्स), DW(दूधवाला), EV(ईव), FU(फू)" },
+      { name: "विपरीत जोड़ी (भाग 2)", eq: "GT(रोड), HS(हाईस्कूल), IR(इंडियन रेल), JQ(जंगल क्वीन), KP(कानपुर), LO(लव), MN(मन)" }
+    ]},
+    { topic: "2. वर्ग और घन (याद रखने वाले जरूरी मान)", items: [
+      { name: "वर्ग (11 से 20)", eq: "121, 144, 169, 196, 225, 256, 289, 324, 361, 400" },
+      { name: "वर्ग (21 से 30)", eq: "441, 484, 529, 576, 625, 676, 729, 784, 841, 900" },
+      { name: "घन / Cubes (1 से 10)", eq: "1, 8, 27, 64, 125, 216, 343, 512, 729, 1000" },
+      { name: "घन / Cubes (11 से 15)", eq: "1331, 1728, 2197, 2744, 3375" }
+    ]},
+    { topic: "3. घड़ी (Clock Shortcuts)", items: [
+      { name: "घंटे व मिनट सुई के बीच कोण (θ)", eq: "θ = |30H - (11/2)M|  या  |30H - 5.5M|" },
+      { name: "दर्पण प्रतिबिंब (Mirror Image)", eq: "11:60 (या 23:60) में से समय घटाएँ" },
+      { name: "जल प्रतिबिंब (Water Image)", eq: "18:30 (या 17:90) में से समय घटाएँ" },
+      { name: "12 घंटे / 24 घंटे में 0° व 180°", eq: "11 बार / 22 बार (90° = 22 बार / 44 बार)" }
+    ]},
+    { topic: "4. कैलेंडर (Calendar Facts & Codes)", items: [
+      { name: "साधारण वर्ष / लीप वर्ष में विषम दिन", eq: "साधारण = 1 विषम दिन | लीप = 2 विषम दिन" },
+      { name: "शताब्दी विषम दिन (100/200/300/400)", eq: "100→5, 200→3, 300→1, 400→0 (ट्रिक: 5310)" },
+      { name: "शताब्दी का अंतिम दिन नहीं हो सकता", eq: "मंगलवार, गुरुवार, शनिवार (कभी नहीं)" },
+      { name: "कैलेंडर रिपीट ट्रिक (वर्ष ÷ 4 का शेष)", eq: "शेष 0→+28 | शेष 1→+6 | शेष 2,3→+11 वर्ष" }
+    ]},
+    { topic: "5. पासा और घन (Dice & Cube)", items: [
+      { name: "मानक पासा (Standard Dice)", eq: "विपरीत फलकों का योग हमेशा 7 (1↔6, 2↔5, 3↔4)" },
+      { name: "1 अंक समान होने पर नियम", eq: "समान अंक से Clockwise घूमकर तुलना करें" },
+      { name: "रंगे हुए घन (n = बड़ा/छोटा भुजा)", eq: "कुल=n³ | 3-रंग=8 | 2-रंग=12(n-2) | 1-रंग=6(n-2)² | 0-रंग=(n-2)³" }
+    ]},
+    { topic: "6. आकृति गिनना (Counting Figures)", items: [
+      { name: "त्रिभुज के अंदर लंबवत रेखाएँ (n भाग)", eq: "कुल त्रिभुज = n(n + 1) / 2" },
+      { name: "वर्ग के अंदर दोनों विकर्ण (4 भाग)", eq: "4 × 2 = 8 त्रिभुज (8 भाग ⇒ 16 त्रिभुज)" },
+      { name: "n × n ग्रिड में कुल वर्ग (Squares)", eq: "1² + 2² + ... + n²" },
+      { name: "n × n ग्रिड में कुल आयत (Rectangles)", eq: "1³ + 2³ + ... + n³ = [n(n+1)/2]²" }
+    ]},
+    { topic: "7. क्रम व्यवस्था व न्याय निगमन (Ranking & Syllogism)", items: [
+      { name: "पंक्ति में कुल व्यक्ति", eq: "Total = Left + Right - 1" },
+      { name: "स्थान बदलने पर कुल व्यक्ति", eq: "एक का नया स्थान + दूसरे का पुराना स्थान - 1" },
+      { name: "Either-Or की 3 शर्तें (Syllogism)", eq: "1. दोनों गलत 2. समान शब्द 3. एक Positive + एक Negative" }
     ]}
   ];
 
@@ -769,14 +984,75 @@
     { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' कहा जाता है।" }
   ];
 
-  let activeHubExam = null, activeHubFilter = 'all', activeSecSubject = 'Maths';
+  let activeHubExam = null, activeHubFilter = 'all', activeSecSubject = 'Maths', activeMathCol = 'adv';
   let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
   let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
+  let currentMobile = localStorage.getItem('ep_active_mobile') || '';
+
+  function getProfileKey() { return currentMobile ? 'ep_profile_' + currentMobile : 'ep_profile'; }
+  function getHistoryKey() { return currentMobile ? 'ep_history_' + currentMobile : 'ep_history'; }
 
   function getProfile() {
-    return JSON.parse(localStorage.getItem('ep_profile')) || { name:'स्टूडेंट', city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', cat:'UR', medium:'हिंदी माध्यम' };
+    return JSON.parse(localStorage.getItem(getProfileKey())) || { name:'स्टूडेंट', mobile: currentMobile, city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', cat:'UR', medium:'हिंदी माध्यम' };
   }
-  function getHistory() { return JSON.parse(localStorage.getItem('ep_history')) || []; }
+  function getHistory() { return JSON.parse(localStorage.getItem(getHistoryKey())) || []; }
+
+  function checkLoginStatus() {
+    const loginEl = document.getElementById('login-screen');
+    if (!currentMobile) {
+      loginEl.classList.remove('hidden');
+    } else {
+      loginEl.classList.add('hidden');
+    }
+  }
+
+  function doMobileLogin() {
+    const mob = document.getElementById('login-mobile').value.trim().replace(/\D/g, '');
+    const nm = document.getElementById('login-name').value.trim();
+    const errEl = document.getElementById('login-err');
+    if (mob.length !== 10) {
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    currentMobile = mob;
+    localStorage.setItem('ep_active_mobile', mob);
+    const existing = JSON.parse(localStorage.getItem(getProfileKey()));
+    if (!existing) {
+      localStorage.setItem(getProfileKey(), JSON.stringify({
+        name: nm || 'स्टूडेंट', mobile: mob, city: 'जयपुर', goal: '6', target: 'SSC CGL Tier 1 & 2', cat: 'UR', medium: 'हिंदी माध्यम'
+      }));
+    } else if (nm) {
+      existing.name = nm;
+      existing.mobile = mob;
+      localStorage.setItem(getProfileKey(), JSON.stringify(existing));
+    }
+    document.getElementById('login-screen').classList.add('hidden');
+    renderProfileUI();
+    renderHistoryUI();
+  }
+
+  function logoutUser() {
+    if (confirm('क्या आप लॉगआउट करके दूसरे नंबर से लॉगिन करना चाहते हैं? (आपका डेटा इस नंबर पर सुरक्षित रहेगा)')) {
+      localStorage.removeItem('ep_active_mobile');
+      currentMobile = '';
+      document.getElementById('login-mobile').value = '';
+      document.getElementById('login-name').value = '';
+      checkLoginStatus();
+    }
+  }
+
+  function shareApp() {
+    const appUrl = window.location.href.split('#')[0];
+    const shareText = 'ExamPrep Pro - SSC CGL, RRB NTPC, MP Police aur sabhi Govt Exams ke Free Mock Tests, PYQs, Maths & Reasoning Formulas PDF ke sath! Abhi try karein: ' + appUrl;
+    if (navigator.share) {
+      navigator.share({ title: 'ExamPrep Pro App', text: shareText, url: appUrl }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => alert('App link copy ho gaya! Ab WhatsApp ya Telegram par paste karke share karein.'));
+    } else {
+      prompt('Is link ko copy karke share karein:', appUrl);
+    }
+  }
 
   function getTestSubject(t) {
     const title = (t.title || '').toLowerCase();
@@ -869,6 +1145,7 @@
 
   function initApp() {
     loadExternalPacks();
+    checkLoginStatus();
     if (isDark) { document.documentElement.setAttribute('data-theme', 'dark'); updateThemeIcons(); }
     renderHomeExams(); renderProfileUI(); renderStudyHub(); renderHistoryUI();
   }
@@ -981,22 +1258,78 @@
   }
 
   function switchStudyTab(sub) {
-    ['vocab', 'formula', 'ca'].forEach(s => {
+    ['formula', 'reasoning', 'vocab', 'ca'].forEach(s => {
       document.getElementById('study-' + s).classList.toggle('hidden', s !== sub);
       document.getElementById('st-btn-' + s).classList.toggle('active', s === sub);
     });
   }
 
-  function renderStudyHub() {
-    document.getElementById('study-vocab').innerHTML = vocabList.map(v => `
-      <div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 <b>ट्रिक:</b> ${v.trick}</div></div>
+  function switchMathCol(col) {
+    activeMathCol = col;
+    document.getElementById('mcol-adv').classList.toggle('active', col === 'adv');
+    document.getElementById('mcol-arith').classList.toggle('active', col === 'arith');
+    document.getElementById('math-pdf-title').innerText = col === 'adv' ? '📐 Advance Maths Complete Sheet' : '🔢 Arithmetic Complete Sheet';
+    const data = col === 'adv' ? advanceFormulas : arithmeticFormulas;
+    document.getElementById('study-formula-list').innerHTML = data.map(g => `
+      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">${col === 'adv' ? '📐' : '🔢'} ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
     `).join('');
-    document.getElementById('study-formula').innerHTML = formulaGroups.map(g => `
-      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">📐 ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
+  }
+
+  function renderStudyHub() {
+    switchMathCol('adv');
+    document.getElementById('study-reasoning-list').innerHTML = reasoningFormulas.map(g => `
+      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">🧠 ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
+    `).join('');
+    document.getElementById('study-vocab-list').innerHTML = vocabList.map(v => `
+      <div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 <b>ट्रिक:</b> ${v.trick}</div></div>
     `).join('');
     document.getElementById('study-ca').innerHTML = currentAffairs.map(c => `
       <div class="info-card"><span class="ca-date">${c.date}</span><div class="ca-title">${c.title}</div><p class="ca-desc">${c.desc}</p></div>
     `).join('');
+  }
+
+  function downloadStudyPDF(type) {
+    let title = '', bodyHtml = '';
+    if (type === 'adv_maths' || type === 'arith_maths' || type === 'reasoning') {
+      const list = type === 'adv_maths' ? advanceFormulas : type === 'arith_maths' ? arithmeticFormulas : reasoningFormulas;
+      title = type === 'adv_maths' ? 'Advance Maths - Complete Formula Sheet (ExamPrep Pro)'
+            : type === 'arith_maths' ? 'Arithmetic Maths - Complete Formula Sheet (ExamPrep Pro)'
+            : 'Reasoning - All Formulas & Memory Facts (ExamPrep Pro)';
+      bodyHtml = list.map(g => `
+        <div class="sec">
+          <h3>${g.topic}</h3>
+          <table>${g.items.map(i => `<tr><td class="k">${i.name}</td><td class="v">${i.eq}</td></tr>`).join('')}</table>
+        </div>
+      `).join('');
+    } else if (type === 'vocab') {
+      title = 'SSC One Word Substitutions (A-Series) with Tricks (ExamPrep Pro)';
+      bodyHtml = '<table><tr><th>#</th><th>Word</th><th>Meaning</th><th>Memory Trick</th></tr>' +
+        vocabList.map((v, i) => `<tr><td>${i+1}</td><td><b>${v.word}</b></td><td>${v.meaning}</td><td>${v.trick}</td></tr>`).join('') + '</table>';
+    }
+
+    const win = window.open('', '_blank');
+    if (!win) { alert('कृपया ब्राउज़र में Pop-up allow करें ताकि PDF खुल सके।'); return; }
+    win.document.write(`<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>${title}</title>
+      <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; color: #0f172a; line-height: 1.45; }
+        h1 { font-size: 18px; color: #4f46e5; border-bottom: 2px solid #4f46e5; padding-bottom: 6px; margin-bottom: 14px; }
+        .sec { margin-bottom: 14px; page-break-inside: avoid; }
+        h3 { font-size: 14px; background: #eef2ff; color: #312e81; padding: 6px 10px; border-radius: 6px; margin: 0 0 6px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 8px; }
+        th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+        th { background: #f1f5f9; }
+        .k { width: 45%; font-weight: 600; color: #334155; }
+        .v { width: 55%; font-weight: 700; color: #1e3a8a; }
+        .print-btn { background: #4f46e5; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 14px; font-size: 14px; }
+        @media print { .print-btn { display: none; } body { padding: 0; } }
+      </style></head><body>
+      <button class="print-btn" onclick="window.print()">📥 Save as PDF / Print</button>
+      <h1>${title}</h1>
+      ${bodyHtml}
+      <p style="font-size:11px; color:#64748b; margin-top:16px; text-align:center;">Generated by ExamPrep Pro • https://rawataravindra507-alt.github.io/Examprep/</p>
+      <script>setTimeout(() => window.print(), 400);<\/script>
+      </body></html>`);
+    win.document.close();
   }
 
   function renderProfileUI() {
@@ -1008,7 +1341,7 @@
     document.getElementById('prof-avatar').innerText = p.name.charAt(0).toUpperCase();
     document.getElementById('prof-name-display').innerText = p.name;
     document.getElementById('prof-target-display').innerText = `Target: ${p.target}`;
-    document.getElementById('prof-tags').innerHTML = `<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🏷️ ${p.cat || 'UR'}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
+    document.getElementById('prof-tags').innerHTML = `${currentMobile ? '<span class="prof-tag">📱 ' + currentMobile + '</span>' : ''}<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🏷️ ${p.cat || 'UR'}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
     document.getElementById('input-name').value = p.name;
     document.getElementById('input-city').value = p.city;
     document.getElementById('input-goal').value = p.goal;
@@ -1021,7 +1354,7 @@
   }
 
   function saveProfile() {
-    localStorage.setItem('ep_profile', JSON.stringify({
+    localStorage.setItem(getProfileKey(), JSON.stringify({
       name: document.getElementById('input-name').value.trim() || 'स्टूडेंट',
       city: document.getElementById('input-city').value.trim() || 'भारत',
       goal: document.getElementById('input-goal').value || '6',
@@ -1044,7 +1377,7 @@
   }
 
   function clearHistory() {
-    if (confirm('क्या आप टेस्ट हिस्ट्री हटाना चाहते हैं?')) { localStorage.removeItem('ep_history'); renderHistoryUI(); renderProfileUI(); }
+    if (confirm('क्या आप टेस्ट हिस्ट्री हटाना चाहते हैं?')) { localStorage.removeItem(getHistoryKey()); renderHistoryUI(); renderProfileUI(); }
   }
 
   function handleSearch(query) {
@@ -1205,7 +1538,7 @@
     const summary = renderResultContent();
     const h = getHistory();
     h.unshift({ exam: curExam.name, score: summary.totalScore.toFixed(2), correct: summary.totalCorrect, wrong: summary.totalWrong, acc: summary.acc, date: new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'short' }) });
-    localStorage.setItem('ep_history', JSON.stringify(h.slice(0, 25)));
+    localStorage.setItem(getHistoryKey(), JSON.stringify(h.slice(0, 25)));
     renderProfileUI();
     document.getElementById('test-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
