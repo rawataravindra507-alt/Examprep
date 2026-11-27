@@ -297,6 +297,25 @@
   .theme-police .option.selected { border-color: #b91c1c; background: #fee2e2; color: #7f1d1d; }
   [data-theme="dark"] .theme-police .option.selected { background: #7f1d1d; color: #fee2e2; }
 
+
+  /* Testbook-Style Detailed Solution, 4-Option Breakdown & Key Points */
+  .tb-opt-box { margin-top: 9px; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--card); }
+  .tb-opt-head { background: var(--soft-bg); padding: 6px 10px; font-size: 0.76rem; font-weight: 800; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .tb-opt-row { padding: 7px 10px; font-size: 0.81rem; border-bottom: 1px dashed var(--border); display: flex; flex-direction: column; gap: 2px; }
+  .tb-opt-row:last-child { border-bottom: none; }
+  .tb-opt-row.is-cor { background: var(--success-soft); }
+  .tb-opt-row.is-wrg { background: var(--danger-soft); }
+  .tb-opt-lbl { font-weight: 700; display: flex; justify-content: space-between; gap: 6px; }
+  .tb-opt-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.4; }
+  [data-theme="dark"] .tb-opt-row.is-cor .tb-opt-desc { color: #a7f3d0; }
+  [data-theme="dark"] .tb-opt-row.is-wrg .tb-opt-desc { color: #fecaca; }
+
+  .tb-kp-box { margin-top: 9px; padding: 9px 11px; background: var(--secondary-soft); border-left: 4px solid var(--secondary); border-radius: 7px; font-size: 0.8rem; }
+  .tb-kp-title { font-weight: 800; color: var(--secondary); margin-bottom: 5px; font-size: 0.82rem; }
+  [data-theme="dark"] .tb-kp-title { color: #5eead4; }
+  .tb-kp-list { margin: 0; padding-left: 16px; line-height: 1.5; color: var(--text); }
+  .tb-kp-list li { margin-bottom: 3px; }
+
 </style>
 </head>
 <body>
@@ -1143,6 +1162,102 @@
     return 'Maths';
   }
 
+  // Testbook-Style Topic Key Facts (Auto-shown in Detailed Solutions)
+  const TOPIC_KEY_FACTS = {
+    "Algebra": {
+      hi: ["यदि x + 1/x = k ⇒ x² + 1/x² = k² - 2 और x³ + 1/x³ = k³ - 3k।", "यदि x + 1/x = √3 ⇒ x⁶ = -1 होता है।", "यदि a + b + c = 0 ⇒ a³ + b³ + c³ = 3abc।"],
+      en: ["If x + 1/x = k ⇒ x² + 1/x² = k² - 2 and x³ + 1/x³ = k³ - 3k.", "If x + 1/x = √3 ⇒ x⁶ = -1.", "If a + b + c = 0 ⇒ a³ + b³ + c³ = 3abc."]
+    },
+    "Trigonometry": {
+      hi: ["sin²θ + cos²θ = 1 | sec²θ - tan²θ = 1 | cosec²θ - cot²θ = 1।", "यदि A + B = 90° ⇒ sinA = cosB और tanA·tanB = 1।", "a tan²θ + b cot²θ का न्यूनतम मान हमेशा 2√(ab) होता है।"],
+      en: ["sin²θ + cos²θ = 1 | sec²θ - tan²θ = 1 | cosec²θ - cot²θ = 1.", "If A + B = 90° ⇒ sinA = cosB and tanA·tanB = 1.", "Min value of a tan²θ + b cot²θ is always 2√(ab)."]
+    },
+    "Geometry": {
+      hi: ["अंतःकेंद्र ∠BIC = 90° + ∠A/2 | लंबकेंद्र ∠BHC = 180° - ∠A।", "DCT = √[d² - (R-r)²] और TCT = √[d² - (R+r)²]।", "बहुभुज के विकर्ण = n(n-3)/2 और अंतः कोण योग = (n-2)×180°।"],
+      en: ["Incentre ∠BIC = 90° + ∠A/2 | Orthocentre ∠BHC = 180° - ∠A.", "DCT = √[d² - (R-r)²] and TCT = √[d² - (R+r)²].", "Polygon diagonals = n(n-3)/2; interior angle sum = (n-2)×180°."]
+    },
+    "Mensuration": {
+      hi: ["समबाहु त्रिभुज: Area = (√3/4)a², ऊँचाई = (√3/2)a।", "शंकु आयतन = ⅓πr²h, बेलन = πr²h, गोला = (4/3)πr³।", "समचतुर्भुज: Area = ½ d₁d₂ और 4a² = d₁² + d₂²।"],
+      en: ["Equilateral Δ: Area = (√3/4)a², Height = (√3/2)a.", "Volume: Cone = ⅓πr²h, Cylinder = πr²h, Sphere = (4/3)πr³.", "Rhombus: Area = ½ d₁d₂ and 4a² = d₁² + d₂²."]
+    },
+    "Profit & Loss": {
+      hi: ["सीधा अनुपात: CP / MP = (100 - D%) / (100 + P%)।", "समान SP पर x% लाभ व x% हानि में हमेशा x²/100 % हानि होती है।", "क्रमिक छूट (x%, y%) = x + y - xy/100 %।"],
+      en: ["Direct Ratio: CP / MP = (100 - D%) / (100 + P%).", "Same SP with x% gain & x% loss always gives x²/100 % loss.", "Successive discount = x + y - xy/100 %."]
+    },
+    "SI & CI": {
+      hi: ["2 वर्ष CI - SI = P(R/100)² | 3 वर्ष = P(R/100)² × (300+R)/100।", "यदि राशि CI पर t वर्ष में n गुनी हो, तो nᵏ गुनी होने में k×t वर्ष लगेंगे।"],
+      en: ["2-yr CI - SI = P(R/100)² | 3-yr = P(R/100)² × (300+R)/100.", "If a sum becomes n times in t yrs at CI, it becomes nᵏ times in k×t yrs."]
+    },
+    "Time & Work": {
+      hi: ["MDH सूत्र: (M₁·D₁·H₁)/W₁ = (M₂·D₂·H₂)/W₂।", "A और B मिलकर (x व y दिन) = (xy)/(x+y) दिन।"],
+      en: ["MDH Formula: (M₁·D₁·H₁)/W₁ = (M₂·D₂·H₂)/W₂.", "A and B together = (xy)/(x+y) days."]
+    },
+    "Time, Speed & Dist.": {
+      hi: ["km/h से m/s के लिए × 5/18 और m/s से km/h के लिए × 18/5 करें।", "नाव की चाल B = (D+U)/2 और धारा की चाल S = (D-U)/2।"],
+      en: ["km/h to m/s: multiply by 5/18; m/s to km/h: multiply by 18/5.", "Boat speed = (D+U)/2 and Stream speed = (D-U)/2."]
+    },
+    "Percentage": {
+      hi: ["क्रमिक % बदलाव = x + y + xy/100 %।", "दाम R% बढ़े ⇒ खपत कमी = [R/(100+R)] × 100 %।"],
+      en: ["Successive % change = x + y + xy/100 %.", "If price rises R%, consumption reduction = [R/(100+R)] × 100 %."]
+    },
+    "Ratio & Mixture": {
+      hi: ["मध्यानुपाती = √(ab), तृतीयानुपाती = b²/a, चतुर्थानुपाती = bc/a।", "साझेदारी में लाभ = पूँजी × समय।"],
+      en: ["Mean prop = √(ab), Third = b²/a, Fourth = bc/a.", "Partnership Profit = Capital × Time."]
+    },
+    "Average": {
+      hi: ["प्रथम n प्राकृतिक संख्याओं का औसत = (n+1)/2।", "लगातार n सम का औसत = n+1 और विषम का औसत = n।"],
+      en: ["Avg of first n natural numbers = (n+1)/2.", "Avg of first n even = n+1; first n odd = n."]
+    },
+    "Number System & HCF/LCM": {
+      hi: ["दो संख्याओं का गुणनफल = LCM × HCF।", "8 से विभाज्यता: अंतिम 3 अंक; 9 से विभाज्यता: अंकों का योग 9 से कटे।"],
+      en: ["Product of two numbers = LCM × HCF.", "Divisibility by 8: last 3 digits; by 9: sum of digits."]
+    },
+    "Polity": {
+      hi: ["मूल संविधान में 395 अनुच्छेद, 22 भाग और 8 अनुसूचियाँ थीं (अब 12 अनुसूचियाँ)।", "अनुच्छेद 32 (संवैधानिक उपचार) को डॉ. अंबेडकर ने संविधान की आत्मा कहा।", "42वाँ संशोधन (1976) 'लघु संविधान' कहलाता है।"],
+      en: ["Original Constitution had 395 Articles, 22 Parts, 8 Schedules (now 12).", "Article 32 was called the 'Heart and Soul' by Dr. Ambedkar.", "42nd Amendment (1976) is known as the Mini Constitution."]
+    },
+    "History": {
+      hi: ["प्लासी का युद्ध: 1757 | बक्सर का युद्ध: 1764 | 1857 की क्रांति: मेरठ से 10 मई।", "भारतीय राष्ट्रीय कांग्रेस की स्थापना 1885 में ए.ओ. ह्यूम ने मुंबई में की।", "गांधी-इरविन समझौता (1931) और पूना पैक्ट (1932) SSC के फेवरेट सवाल हैं।"],
+      en: ["Battle of Plassey: 1757 | Buxar: 1764 | Revolt of 1857 started in Meerut.", "INC was founded in 1885 by A.O. Hume in Bombay.", "Gandhi-Irwin Pact (1931) and Poona Pact (1932) are frequently asked."]
+    },
+    "Geography": {
+      hi: ["कर्क रेखा भारत के 8 राज्यों (गुजरात, राजस्थान, म.प्र., छ.ग., झारखंड, प.बंगाल, त्रिपुरा, मिज़ोरम) से गुजरती है।", "नर्मदा और ताप्ती पश्चिम की ओर बहकर अरब सागर में एश्चुअरी बनाती हैं।"],
+      en: ["Tropic of Cancer passes through 8 Indian states.", "Narmada and Tapi flow westward and form estuaries in the Arabian Sea."]
+    },
+    "Economy": {
+      hi: ["RBI की स्थापना 1 अप्रैल 1935 (हिल्टन यंग आयोग) और राष्ट्रीयकरण 1949 में हुआ।", "GST (101वाँ संशोधन) 1 जुलाई 2017 से लागू हुआ — यह एक अप्रत्यक्ष कर है।"],
+      en: ["RBI was established on 1 April 1935 and nationalized in 1949.", "GST (101st Amendment) rolled out on 1 July 2017 as an indirect tax."]
+    },
+    "Biology": {
+      hi: ["वसा में घुलनशील विटामिन: A, D, E, K (ट्रिक: कीड़ा/KEDA) | जल में घुलनशील: B, C।", "माइटोकॉन्ड्रिया = कोशिका का पावरहाउस | लाइसोसोम = आत्महत्या की थैली।"],
+      en: ["Fat-soluble vitamins: A, D, E, K | Water-soluble: B, C.", "Mitochondria = Powerhouse of cell | Lysosome = Suicidal bag."]
+    },
+    "Physics & Chemistry": {
+      hi: ["ध्वनि अनुदैर्ध्य तरंग है (निर्वात में 0 m/s), प्रकाश अनुप्रस्थ तरंग है (3×10⁸ m/s)।", "अम्ल (Acid) का pH < 7, क्षार (Base) का pH > 7 और शुद्ध जल का pH = 7 होता है।"],
+      en: ["Sound is longitudinal (0 m/s in vacuum); Light is transverse (3×10⁸ m/s).", "Acid pH < 7, Base pH > 7, Neutral water pH = 7."]
+    },
+    "Static GK & Culture": {
+      hi: ["भारत के 8 शास्त्रीय नृत्य: भरतनाट्यम (TN), कथक (UP), कथकली व मोहिनीअट्टम (केरल), कुचिपुड़ी (AP), ओडिसी, मणिपुरी, सत्रिया (असम)।", "ISRO स्थापना: 15 अगस्त 1969 (बेंगलुरु) | DRDO: 1958 (नई दिल्ली)।"],
+      en: ["8 Classical Dances: Bharatanatyam, Kathak, Kathakali, Mohiniyattam, Kuchipudi, Odissi, Manipuri, Sattriya.", "ISRO founded: 15 Aug 1969 (Bengaluru) | DRDO: 1958."]
+    },
+    "MP GK": {
+      hi: ["म.प्र. का गठन: 1 नवंबर 1956 | राजकीय वृक्ष: बरगद | राजकीय नृत्य: राई | राजकीय खेल: मलखंभ।", "म.प्र. को 'टाइगर स्टेट' और 'सोया स्टेट' कहा जाता है; सर्वाधिक राष्ट्रीय उद्यान यहीं हैं।"],
+      en: ["MP formed: 1 Nov 1956 | State Tree: Banyan | State Dance: Rai | Sport: Mallakhamb.", "MP is known as the Tiger State & Soya State of India."]
+    },
+    "Clock & Mirror": {
+      hi: ["सुइयों के बीच कोण θ = |30H - 5.5M|।", "दर्पण प्रतिबिंब: 11:60 से घटाएँ | जल प्रतिबिंब: 18:30 से घटाएँ।"],
+      en: ["Angle between hands θ = |30H - 5.5M|.", "Mirror image: subtract from 11:60 | Water image: subtract from 18:30."]
+    },
+    "Coding-Decoding": {
+      hi: ["EJOTY = 5, 10, 15, 20, 25 | विपरीत अक्षर जोड़ी का योग हमेशा 27 होता है।"],
+      en: ["EJOTY = 5, 10, 15, 20, 25 | Opposite letter pairs always sum to 27."]
+    },
+    "Number/Letter Series": {
+      hi: ["पहले अंतर (Difference), फिर वर्ग/घन (n², n³) और गुणा (×2±1) का पैटर्न चेक करें।"],
+      en: ["Check difference first, then squares/cubes (n², n³) and multiplication patterns."]
+    }
+  };
+
   function detectTopic(secName, qObj) {
     if (qObj.topic) return qObj.topic;
     const txt = ((qObj.q.en || '') + ' ' + (qObj.exp.en || '')).toLowerCase();
@@ -1803,7 +1918,39 @@
         if (ua === null) { totalSkip++; status = 'छोड़ा गया'; }
         else if (ua === q.ans) { totalCorrect++; sCor++; status = '<span class="correct">सही</span>'; }
         else { totalWrong++; sWrg++; status = '<span class="wrong">गलत</span>'; }
-        revBox.innerHTML += `<div class="review-item"><b>${qIdx+1}. ${q.q[activeLang]}</b><br>आपका जवाब: ${ua !== null ? q.opts[activeLang][ua] : 'कोई नहीं'} (${status})<br><span class="correct">सही जवाब: ${q.opts[activeLang][q.ans]}</span><div class="exp-box"><b>सॉल्यूशन:</b> ${q.exp[activeLang]}</div></div>`;
+        const qTopic = detectTopic(sec.name, q);
+        const optLabels = ['A', 'B', 'C', 'D'];
+        const optBreakdownHtml = q.opts[activeLang].map((optTxt, oIdx) => {
+          const isCor = (oIdx === q.ans);
+          const isUserWrg = (ua === oIdx && !isCor);
+          const rowCls = isCor ? 'is-cor' : (isUserWrg ? 'is-wrg' : '');
+          const badge = isCor ? '✅ सही उत्तर' : (isUserWrg ? '❌ आपका गलत उत्तर' : '⚪ अन्य विकल्प');
+          const customDesc = (q.optExp && q.optExp[activeLang] && q.optExp[activeLang][oIdx])
+            ? `<div class="tb-opt-desc">${q.optExp[activeLang][oIdx]}</div>` : '';
+          return `<div class="tb-opt-row ${rowCls}"><div class="tb-opt-lbl"><span>(${optLabels[oIdx]}) ${optTxt}</span><span style="font-size:0.72rem;">${badge}</span></div>${customDesc}</div>`;
+        }).join('');
+
+        const kpArr = (q.keyPoints && q.keyPoints[activeLang])
+          ? q.keyPoints[activeLang]
+          : (TOPIC_KEY_FACTS[qTopic] ? (TOPIC_KEY_FACTS[qTopic][activeLang] || TOPIC_KEY_FACTS[qTopic].hi) : null);
+        const kpHtml = kpArr
+          ? `<div class="tb-kp-box"><div class="tb-kp-title">📌 मुख्य परीक्षा तथ्य (Key Points — ${qTopic})</div><ul class="tb-kp-list">${kpArr.map(pt => `<li>${pt}</li>`).join('')}</ul></div>`
+          : '';
+
+        revBox.innerHTML += `
+          <div class="review-item">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+              <span class="ca-date" style="margin:0;">${qTopic}</span>
+              <span style="font-size:0.76rem; font-weight:700;">${status}</span>
+            </div>
+            <b>${qIdx+1}. ${q.q[activeLang]}</b>
+            <div class="tb-opt-box">
+              <div class="tb-opt-head">🔍 चारों विकल्पों का विश्लेषण (All 4 Options)</div>
+              ${optBreakdownHtml}
+            </div>
+            <div class="exp-box"><b>💡 विस्तृत सॉल्यूशन:</b> ${q.exp[activeLang]}</div>
+            ${kpHtml}
+          </div>`;
       });
       const sScore = (sCor * curExam.pos) - (sWrg * curExam.neg);
       tblBody.innerHTML += `<tr><td><b>${sec.name}</b></td><td class="correct">${sCor}</td><td class="wrong">${sWrg}</td><td><b>${sScore.toFixed(2)}</b></td></tr>`;
