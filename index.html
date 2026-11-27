@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Prep Pro - Testbook Style</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root {
     --bg: #f1f5f9;
@@ -576,6 +580,10 @@
     isResultView = false;
     document.getElementById('result-screen').classList.add('hidden');
     document.getElementById('home-screen').classList.remove('hidden');
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
   }
 </script>
 </body>
