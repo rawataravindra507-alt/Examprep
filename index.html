@@ -102,9 +102,18 @@
   .hub-title-wrap h2 { margin: 0; font-size: 1.12rem; font-weight: 800; }
   .hub-title-wrap p { margin: 2px 0 0; font-size: 0.75rem; color: var(--muted); font-weight: 600; }
 
-  .pill-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+  .pill-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
   .pill-tab { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); font-weight: 700; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
   .pill-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* 4 Subject Columns Grid for Sectional Tests */
+  .sub-col-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .sub-col-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 12px; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; }
+  .sub-col-card.active { border-color: var(--primary); background: var(--primary-soft); }
+  .sub-col-ico { font-size: 1.4rem; }
+  .sub-col-name { font-weight: 800; font-size: 0.9rem; }
+  .sub-col-cnt { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  [data-theme="dark"] .sub-col-card.active .sub-col-name { color: #e0e7ff; }
 
   .test-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 11px; box-shadow: var(--shadow); }
   .test-badge { display: inline-block; font-size: 0.68rem; font-weight: 800; padding: 3px 9px; border-radius: 20px; margin-bottom: 7px; text-transform: uppercase; }
@@ -196,9 +205,33 @@
   .btn-prev { background: #64748b; }
   .btn-next { background: var(--primary); }
 
-  .score-box { background: var(--success-soft); padding: 18px; border-radius: 14px; text-align: center; margin-bottom: 16px; border: 1px solid var(--success); }
+  /* Result Screen, Cutoff & 3-Level Analysis */
+  .score-box { background: var(--success-soft); padding: 18px; border-radius: 14px; text-align: center; margin-bottom: 14px; border: 1px solid var(--success); }
   .score-num { font-size: 2.1rem; font-weight: 800; color: var(--success); }
-  .stats { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.86rem; flex-wrap: wrap; gap: 8px; }
+  .stats { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.84rem; flex-wrap: wrap; gap: 8px; }
+
+  .cutoff-card { background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+  .cutoff-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+  .cutoff-title { font-weight: 800; font-size: 0.94rem; }
+  .cutoff-badge { font-size: 0.74rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+  .badge-pass { background: var(--success-soft); color: var(--success); border: 1px solid var(--success); }
+  .badge-fail { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); }
+  .cutoff-bar-wrap { background: var(--border); height: 10px; border-radius: 10px; overflow: hidden; margin: 8px 0 12px; position: relative; }
+  .cutoff-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s; }
+  .cat-cutoff-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .cat-cut-box { background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 7px 4px; text-align: center; font-size: 0.72rem; }
+  .cat-cut-box.passed { border-color: var(--success); background: var(--success-soft); }
+  .cat-cut-box b { display: block; font-size: 0.84rem; margin-top: 2px; }
+
+  .analysis-box { background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+  .lvl-card { border-radius: 11px; padding: 10px 12px; margin-bottom: 9px; border-left: 4px solid; background: var(--card); }
+  .lvl-strong { border-color: var(--success); }
+  .lvl-avg { border-color: var(--amber); }
+  .lvl-weak { border-color: var(--danger); }
+  .lvl-title { font-weight: 800; font-size: 0.84rem; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .topic-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .topic-chip { font-size: 0.74rem; font-weight: 700; padding: 4px 9px; border-radius: 16px; background: var(--soft-bg); border: 1px solid var(--border); }
+
   table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.84rem; }
   th, td { border: 1px solid var(--border); padding: 9px 6px; text-align: center; }
   th { background: var(--soft-bg); }
@@ -208,7 +241,7 @@
   .exp-box { margin-top: 8px; padding: 9px 11px; background: var(--exp-bg); border-left: 4px solid var(--exp-border); border-radius: 6px; font-size: 0.83rem; color: var(--exp-text); }
   .correct { color: var(--success); font-weight: 700; }
   .wrong { color: var(--danger); font-weight: 700; }
-  .empty-state { text-align: center; padding: 30px 15px; color: var(--muted); font-size: 0.9rem; }
+  .empty-state { text-align: center; padding: 26px 15px; color: var(--muted); font-size: 0.88rem; }
 </style>
 </head>
 <body>
@@ -251,7 +284,7 @@
         <div class="sec-label"><h3>🚆 रेलवे (Railway) परीक्षाएँ</h3></div>
         <div id="list-rrb"></div>
 
-        <div class="sec-label"><h3>🛡️ पुलिस व अन्य परीक्षाएँ</h3></div>
+        <div class="sec-label"><h3>🛡️ पुलिस व डिफेंस परीक्षाएँ</h3></div>
         <div id="list-other"></div>
       </div>
     </div>
@@ -272,6 +305,9 @@
         <button class="pill-tab" id="flt-pyq" onclick="filterHubTests('pyq')">PYQ (प्रीवियस ईयर)</button>
         <button class="pill-tab" id="flt-sectional" onclick="filterHubTests('sectional')">Sectional</button>
       </div>
+
+      <!-- 4 Subject Columns (Shown when Sectional tab is active) -->
+      <div id="sectional-subject-cols" class="sub-col-grid hidden"></div>
 
       <div id="hub-tests-list"></div>
     </div>
@@ -333,19 +369,31 @@
             <select id="input-target" class="form-input">
               <option value="SSC CGL Tier 1 & 2">SSC CGL Tier 1 & 2</option>
               <option value="RRB NTPC CBT 1 & 2">RRB NTPC CBT 1 & 2</option>
-              <option value="SSC CHSL / MTS">SSC CHSL / MTS</option>
-              <option value="SSC GD / Police">SSC GD / Police</option>
-              <option value="RRB Group D / ALP">RRB Group D / ALP</option>
+              <option value="SSC CHSL / MTS / CPO">SSC CHSL / MTS / CPO</option>
+              <option value="SSC GD Constable">SSC GD Constable</option>
+              <option value="Delhi Police Constable">Delhi Police Constable</option>
+              <option value="RRB Group D / ALP / RPF">RRB Group D / ALP / RPF</option>
+              <option value="State Police / Agniveer">State Police / Agniveer</option>
             </select>
           </div>
           <div class="form-group">
-            <label>माध्यम (Medium)</label>
-            <select id="input-medium" class="form-input">
-              <option value="हिंदी माध्यम">हिंदी माध्यम</option>
-              <option value="English Medium">English Medium</option>
-              <option value="Bilingual">Bilingual</option>
+            <label>कैटेगरी (Cutoff के लिए)</label>
+            <select id="input-cat" class="form-input">
+              <option value="UR">UR (General)</option>
+              <option value="OBC">OBC</option>
+              <option value="EWS">EWS</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
             </select>
           </div>
+        </div>
+        <div class="form-group">
+          <label>माध्यम (Medium)</label>
+          <select id="input-medium" class="form-input">
+            <option value="हिंदी माध्यम">हिंदी माध्यम</option>
+            <option value="English Medium">English Medium</option>
+            <option value="Bilingual">Bilingual</option>
+          </select>
         </div>
         <button class="btn-start" onclick="saveProfile()">प्रोफाइल सेव करें ✓</button>
       </div>
@@ -406,8 +454,9 @@
         <button class="icon-btn" id="theme-btn-res" onclick="toggleTheme()">🌙</button>
       </div>
     </div>
+
     <div class="score-box">
-      <div style="font-size:0.86rem; color:var(--muted);">कुल स्कोर</div>
+      <div style="font-size:0.86rem; color:var(--muted);">कुल स्कोर (<span id="res-max-marks">200</span> में से)</div>
       <div class="score-num" id="final-score">0</div>
       <div class="stats">
         <span class="correct">सही: <b id="res-correct">0</b></span>
@@ -416,7 +465,17 @@
         <span>सटीकता: <b id="res-acc">0%</b></span>
       </div>
     </div>
+
+    <!-- TESTBOOK-STYLE CUTOFF COMPARISON -->
+    <div id="cutoff-box" class="cutoff-card"></div>
+
+    <!-- SECTION-WISE SCORE TABLE -->
     <table><thead><tr><th>सेक्शन</th><th>सही</th><th>गलत</th><th>स्कोर</th></tr></thead><tbody id="sec-table-body"></tbody></table>
+
+    <!-- 3-LEVEL SUBJECT & TOPIC ANALYSIS -->
+    <div id="three-level-analysis" class="analysis-box"></div>
+
+    <!-- DETAILED SOLUTIONS -->
     <div id="review-box"></div>
     <button class="btn-start" style="margin-top:15px;" onclick="goHome()">होम पेज पर जाएँ</button>
   </div>
@@ -432,29 +491,34 @@
 <script src="cgl_full_pack2.js"></script>
 <script src="cgl_full_pack3.js"></script>
 <script src="cgl_pyq_pack1.js"></script>
+<script src="ntpc_tests.js"></script>
+<script src="other_exams.js"></script>
 
 <script>
   const qBank = {
     maths: [
       { q:{hi:"यदि x + 1/x = 5 है, तो x³ + 1/x³ का मान क्या होगा?", en:"If x + 1/x = 5, find the value of x³ + 1/x³."}, opts:{hi:["110","115","125","140"], en:["110","115","125","140"]}, ans:0, exp:{hi:"ट्रिक: k³ - 3k = 5³ - 3(5) = 125 - 15 = 110।", en:"Trick: k³ - 3k = 125 - 15 = 110."} },
       { q:{hi:"यदि secθ + tanθ = 4 है, तो secθ - tanθ का मान क्या होगा?", en:"If secθ + tanθ = 4, what is the value of secθ - tanθ?"}, opts:{hi:["0.25","0.5","4","1"], en:["0.25","0.5","4","1"]}, ans:0, exp:{hi:"sec²θ - tan²θ = 1 ⇒ secθ - tanθ = 1/4 = 0.25।", en:"secθ - tanθ = 1 / (secθ + tanθ) = 1/4 = 0.25."} },
-      { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = (√3/4) × 64 = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} },
-      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} }
+      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} },
+      { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} }
     ],
     reasoning: [
       { q:{hi:"श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en:"Complete the series: 2, 6, 12, 20, 30, ?"}, opts:{hi:["38","40","42","44"], en:["38","40","42","44"]}, ans:2, exp:{hi:"अंतर +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en:"Differences: +4, +6, +8, +10, +12. So 30 + 12 = 42."} },
       { q:{hi:"यदि CAT = 24 है, तो DOG का मान क्या होगा?", en:"If CAT = 24, what is the value of DOG?"}, opts:{hi:["24","26","28","30"], en:["24","26","28","30"]}, ans:1, exp:{hi:"D(4) + O(15) + G(7) = 26।", en:"D(4) + O(15) + G(7) = 26."} },
-      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} }
+      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} },
+      { q:{hi:"विषम चुनें (Odd one out): 27, 64, 125, 144", en:"Find the odd one out: 27, 64, 125, 144"}, opts:{hi:["27","64","125","144"], en:["27","64","125","144"]}, ans:3, exp:{hi:"144 वर्ग है, बाकी घन हैं।", en:"144 is a square; others are cubes."} }
     ],
     gs: [
       { q:{hi:"भारतीय संविधान के किस अनुच्छेद में 'वित्तीय आपातकाल' है?", en:"Which Article provides for 'Financial Emergency'?"}, opts:{hi:["अनुच्छेद 352","अनुच्छेद 356","अनुच्छेद 360","अनुच्छेद 368"], en:["Article 352","Article 356","Article 360","Article 368"]}, ans:2, exp:{hi:"अनुच्छेद 360 में वित्तीय आपातकाल का प्रावधान है।", en:"Article 360 deals with Financial Emergency."} },
       { q:{hi:"हड़प्पा सभ्यता का प्रसिद्ध बंदरगाह 'लोथल' किस राज्य में है?", en:"In which state is the Harappan port 'Lothal' located?"}, opts:{hi:["राजस्थान","गुजरात","पंजाब","हरियाणा"], en:["Rajasthan","Gujarat","Punjab","Haryana"]}, ans:1, exp:{hi:"लोथल गुजरात में भोगवा नदी के किनारे स्थित था।", en:"Lothal is located in Gujarat on the Bhogava river."} },
-      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} }
+      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} },
+      { q:{hi:"भारत में पहली रेलगाड़ी 1853 में किन दो शहरों के बीच चली थी?", en:"Between which two cities did India's first train run in 1853?"}, opts:{hi:["दिल्ली से आगरा","मुंबई से ठाणे","कोलकाता से हावड़ा","चेन्नई से बेंगलुरु"], en:["Delhi to Agra","Mumbai to Thane","Kolkata to Howrah","Chennai to Bengaluru"]}, ans:1, exp:{hi:"16 अप्रैल 1853 को मुंबई से ठाणे चली थी।", en:"Ran from Mumbai to Thane in 1853."} }
     ],
     english: [
       { q:{hi:"One Word: A doctor who treats children's diseases.", en:"One Word: A doctor who treats children's diseases."}, opts:{hi:["Cardiologist","Paediatrician","Dermatologist","Neurologist"], en:["Cardiologist","Paediatrician","Dermatologist","Neurologist"]}, ans:1, exp:{hi:"Paediatrician = बच्चों का डॉक्टर।", en:"Paediatrician treats children."} },
       { q:{hi:"Synonym of 'ABUNDANT':", en:"Synonym of 'ABUNDANT':"}, opts:{hi:["Scarce","Plentiful","Rare","Empty"], en:["Scarce","Plentiful","Rare","Empty"]}, ans:1, exp:{hi:"Abundant = प्रचुर मात्रा में (Plentiful)।", en:"Abundant means existing in large quantities."} },
-      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} }
+      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} },
+      { q:{hi:"Antonym of 'OPTIMISTIC':", en:"Antonym of 'OPTIMISTIC':"}, opts:{hi:["Hopeful","Pessimistic","Bright","Cheerful"], en:["Hopeful","Pessimistic","Bright","Cheerful"]}, ans:1, exp:{hi:"Optimistic का विलोम Pessimistic है।", en:"Opposite of optimistic is pessimistic."} }
     ]
   };
 
@@ -472,59 +536,138 @@
     }));
   }
 
+  // --- ALL SEPARATE EXAMS DIRECTORY (GD & Delhi Police Separated + Remaining Exams Added) ---
   const examDirectory = [
+    // SSC EXAMS
     {
       id: "ssc_cgl_t1", group: "ssc", icon: "🎯", icoClass: "ico-ssc",
-      title: "SSC CGL Tier 1", sub: "15-15 Min Section Lock • Full Test • PYQ • Sectional", pos: 2, neg: 0.5,
+      title: "SSC CGL Tier 1", sub: "15-15 Min Lock • Full Test • PYQ • 4 Subject Sectionals (+2 / -0.5)", pos: 2, neg: 0.5,
       tests: []
     },
     {
       id: "ssc_cgl_t2", group: "ssc", icon: "🏆", icoClass: "ico-ssc",
       title: "SSC CGL Tier 2 (Mains)", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
       tests: [
-        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 3 }
+        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 4 },
+        { title: "SSC CGL Tier 2 - PYQ Mains Paper", type: "pyq", time: 900, secs: ['maths','reasoning','english','gs'], off: 2, cnt: 4 }
       ]
     },
     {
       id: "ssc_chsl", group: "ssc", icon: "📝", icoClass: "ico-ssc",
       title: "SSC CHSL (10+2)", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
       tests: [
-        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 3 }
+        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 },
+        { title: "SSC CHSL - Previous Year Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 4 }
       ]
     },
     {
       id: "ssc_mts", group: "ssc", icon: "📘", icoClass: "ico-ssc",
       title: "SSC MTS & Havaldar", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
       tests: [
-        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 3 }
+        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 4 },
+        { title: "SSC MTS - PYQ Paper", type: "pyq", time: 600, secs: ['gs','english'], off: 0, cnt: 4 }
       ]
     },
+    {
+      id: "ssc_cpo", group: "ssc", icon: "⭐", icoClass: "ico-ssc",
+      title: "SSC CPO (SI in Delhi Police & CAPF)", sub: "Full Test • PYQ • Sectional (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "SSC CPO Paper 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 2, cnt: 4 },
+        { title: "SSC CPO - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_steno", group: "ssc", icon: "⌨️", icoClass: "ico-ssc",
+      title: "SSC Stenographer (Grade C & D)", sub: "Full Test • PYQ • English & GK (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "SSC Stenographer - Full Mock #1", type: "full", time: 600, secs: ['reasoning','gs','english'], off: 1, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_gd", group: "ssc", icon: "🪖", icoClass: "ico-ssc",
+      title: "SSC GD Constable", sub: "Full Test • PYQ • Sectional (+2 / -0.25)", pos: 2, neg: 0.25,
+      tests: [
+        { title: "SSC GD Constable - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 },
+        { title: "SSC GD Constable - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
+      ]
+    },
+
+    // RAILWAY (RRB) EXAMS
     {
       id: "rrb_ntpc_cbt1", group: "rrb", icon: "🚆", icoClass: "ico-rrb",
       title: "RRB NTPC CBT 1", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
+        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 },
+        { title: "RRB NTPC CBT 1 - PYQ Shift Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
       ]
     },
     {
       id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
       title: "RRB NTPC CBT 2", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 3 }
+        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 4 },
+        { title: "RRB NTPC CBT 2 - PYQ Level 5/6", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
       ]
     },
     {
       id: "rrb_groupd", group: "rrb", icon: "🛤️", icoClass: "ico-rrb",
-      title: "RRB Group D", sub: "Full Test • PYQ • Science (+1 / -0.33)", pos: 1, neg: 0.33,
+      title: "RRB Group D", sub: "Full Test • PYQ • Science Special (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "RRB Group D - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 2, cnt: 3 }
+        { title: "RRB Group D - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 },
+        { title: "RRB Group D - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 }
       ]
     },
     {
-      id: "ssc_gd", group: "other", icon: "🪖", icoClass: "ico-def",
-      title: "SSC GD & Delhi Police", sub: "Full Test • PYQ • Sectional", pos: 2, neg: 0.25,
+      id: "rrb_alp", group: "rrb", icon: "⚙️", icoClass: "ico-rrb",
+      title: "RRB ALP & Technician", sub: "CBT 1 & 2 Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
       tests: [
-        { title: "SSC GD - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
+        { title: "RRB ALP CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 4 },
+        { title: "RRB ALP - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_rpf", group: "rrb", icon: "🚔", icoClass: "ico-rrb",
+      title: "RPF Constable & SI", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RPF Constable / SI - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_je", group: "rrb", icon: "🔧", icoClass: "ico-rrb",
+      title: "RRB JE (CBT 1)", sub: "Full Test • PYQ • Science & Maths (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB JE CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
+      ]
+    },
+
+    // POLICE & DEFENCE EXAMS (Separate Columns)
+    {
+      id: "delhi_police", group: "other", icon: "🛡️", icoClass: "ico-def",
+      title: "Delhi Police Constable", sub: "Full Test • PYQ • GK & Reasoning (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "Delhi Police Constable - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 1, cnt: 4 },
+        { title: "Delhi Police Constable - PYQ Paper", type: "pyq", time: 600, secs: ['gs','reasoning','maths'], off: 2, cnt: 4 }
+      ]
+    },
+    {
+      id: "up_police", group: "other", icon: "👮", icoClass: "ico-def",
+      title: "UP Police Constable & SI", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "UP Police Constable - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "rajasthan_police", group: "other", icon: "🏰", icoClass: "ico-def",
+      title: "Rajasthan Police & CET", sub: "Full Test • PYQ • GK Special (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "Rajasthan Police / CET - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 2, cnt: 4 }
+      ]
+    },
+    {
+      id: "agniveer", group: "other", icon: "🎖️", icoClass: "ico-def",
+      title: "Indian Army Agniveer (GD)", sub: "Full Test • PYQ • Science & Maths (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "Army Agniveer GD - Full Mock #1", type: "full", time: 480, secs: ['gs','maths','reasoning'], off: 1, cnt: 4 }
       ]
     }
   ];
@@ -557,6 +700,7 @@
     { type: "OWS • 25", word: "Aviary", meaning: "पक्षीशाला (Place where birds are kept)", trick: "Avi = Bird (पक्षी)। Aviation (उड़ना) से याद रखें।" }
   ];
 
+  // Full 7-Chapter Advance Maths Tricky Formula Sheet
   const formulaGroups = [
     { topic: "1. बीजगणित (Algebra Shortcuts)", items: [
       { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2" },
@@ -613,16 +757,77 @@
     { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' कहा जाता है।" }
   ];
 
-  let activeHubExam = null, activeHubFilter = 'all';
+  let activeHubExam = null, activeHubFilter = 'all', activeSecSubject = 'Maths';
   let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
   let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
 
   function getProfile() {
-    return JSON.parse(localStorage.getItem('ep_profile')) || { name:'स्टूडेंट', city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', medium:'हिंदी माध्यम' };
+    return JSON.parse(localStorage.getItem('ep_profile')) || { name:'स्टूडेंट', city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', cat:'UR', medium:'हिंदी माध्यम' };
   }
   function getHistory() { return JSON.parse(localStorage.getItem('ep_history')) || []; }
 
-  // Register all external tests into examDirectory
+  function getTestSubject(t) {
+    const title = (t.title || '').toLowerCase();
+    const secName = (t.fullData && t.fullData.sections && t.fullData.sections[0] ? t.fullData.sections[0].name : '').toLowerCase();
+    const s = title + ' ' + secName;
+    if (s.includes('math')) return 'Maths';
+    if (s.includes('reason')) return 'Reasoning';
+    if (s.includes('english')) return 'English';
+    if (s.includes('gs') || s.includes('gk') || s.includes('ga') || s.includes('general')) return 'GS / GA';
+    return 'Maths';
+  }
+
+  function detectTopic(secName, qObj) {
+    if (qObj.topic) return qObj.topic;
+    const txt = ((qObj.q.en || '') + ' ' + (qObj.exp.en || '')).toLowerCase();
+    const sec = secName.toLowerCase();
+
+    if (sec.includes('math')) {
+      if (/sin|cos|tan|sec|cosec|cot|elevation|shadow|tower|pole/.test(txt)) return 'Trigonometry';
+      if (/x\+|x-|x²|x³|a³|b³|a\+b|algebra|equation/.test(txt)) return 'Algebra';
+      if (/triangle|circle|chord|tangent|polygon|angle|incentre|cyclic|bpt|centroid|slope|midpoint|origin/.test(txt)) return 'Geometry';
+      if (/area|volume|cylinder|cone|sphere|hemisphere|cube|cuboid|rhombus|trapezium|perimeter|rectangle|square|sector/.test(txt)) return 'Mensuration';
+      if (/profit|loss|discount|cp|sp|mp|selling|cost price|marked/.test(txt)) return 'Profit & Loss';
+      if (/compound|simple interest|ci|si|principal|rate p\.a/.test(txt)) return 'SI & CI';
+      if (/work|days|pipe|tank|efficient/.test(txt)) return 'Time & Work';
+      if (/train|boat|stream|speed|km\/h|distance|late|early/.test(txt)) return 'Time, Speed & Dist.';
+      if (/percent|%|election|income|expenditure|marks/.test(txt)) return 'Percentage';
+      if (/ratio|mixture|milk|water|alligation|age|salary|invested/.test(txt)) return 'Ratio & Mixture';
+      if (/average|avg/.test(txt)) return 'Average';
+      return 'Number System & HCF/LCM';
+    }
+    if (sec.includes('english')) {
+      if (/synonym/.test(txt)) return 'Synonyms';
+      if (/antonym/.test(txt)) return 'Antonyms';
+      if (/one word/.test(txt)) return 'One Word (OWS)';
+      if (/idiom/.test(txt)) return 'Idioms & Phrases';
+      if (/spot the error/.test(txt)) return 'Error Spotting';
+      if (/improvement/.test(txt)) return 'Sentence Improvement';
+      if (/passive|active voice/.test(txt)) return 'Active / Passive';
+      if (/indirect|direct speech/.test(txt)) return 'Narration';
+      if (/spelt|spelling/.test(txt)) return 'Spelling Test';
+      if (/rearrange|pqrs/.test(txt)) return 'Para Jumbles (PQRS)';
+      return 'Fill in the Blanks';
+    }
+    if (sec.includes('reason')) {
+      if (/series/.test(txt)) return 'Number/Letter Series';
+      if (/coded|cat|dog|pen|rose|water/.test(txt)) return 'Coding-Decoding';
+      if (/mirror|clock|angle/.test(txt)) return 'Clock & Mirror';
+      if (/odd one out/.test(txt)) return 'Classification (Odd One)';
+      if (/::/.test(txt)) return 'Analogy';
+      if (/north|south|east|west|walk/.test(txt)) return 'Direction Sense';
+      if (/brother|mother|son|father|wife/.test(txt)) return 'Blood Relation';
+      return 'Logical & Misc.';
+    }
+    if (/article|constitution|amendment|parliament|president|lok sabha|rajya sabha|election|panchayat|schedule|bill/.test(txt)) return 'Polity';
+    if (/harappan|indus|maurya|mughal|battle|plassey|buxar|panipat|gandhi|revolt|1857|ashoka|akbar|vijayanagara|samaj|congress|sultan|gupta|buddha/.test(txt)) return 'History';
+    if (/river|lake|peak|pass|desert|strait|delta|tropic|coastline|planet|atmosphere|troposphere|stratosphere|volcano|national park|dam|highway/.test(txt)) return 'Geography';
+    if (/rbi|gst|tax|bank|slr|repo|niti|nabard|sebi|income|unemployment|five-year|revolution/.test(txt)) return 'Economy';
+    if (/vitamin|blood|cell|gland|heart|kidney|liver|bone|plant|disease|insulin|malaria|vaccine|penicillin|chlorophyll/.test(txt)) return 'Biology';
+    if (/unit|si |ohm|pascal|joule|ampere|light|sound|lens|myopia|newton|acid|soda|alloy|brass|mercury|gas|periodic|gypsum|dry ice/.test(txt)) return 'Physics & Chemistry';
+    return 'Static GK & Culture';
+  }
+
   function loadExternalPacks() {
     const allExternal = [];
     if (window.CGL_FULL_TESTS) {
@@ -633,8 +838,7 @@
     if (window.EXTERNAL_TEST_PACKS && window.EXTERNAL_TEST_PACKS.length) {
       window.EXTERNAL_TEST_PACKS.forEach(t => allExternal.push(t));
     }
-
-    allExternal.forEach((t, idx) => {
+    allExternal.forEach(t => {
       const targetExam = examDirectory.find(e => e.id === (t.examId || 'ssc_cgl_t1'));
       if (targetExam) {
         const qCount = t.sections.reduce((s, sec) => s + sec.questions.length, 0);
@@ -686,17 +890,61 @@
     document.getElementById('tab-home').classList.remove('hidden');
   }
 
+  function selectSectionalSubject(subj) {
+    activeSecSubject = subj;
+    renderSectionalColumns();
+    renderHubTestsList();
+  }
+
+  function renderSectionalColumns() {
+    const secTests = activeHubExam.tests.filter(t => t.type === 'sectional');
+    const subjects = [
+      { key: 'Maths', ico: '📐', label: 'Maths' },
+      { key: 'Reasoning', ico: '🧠', label: 'Reasoning' },
+      { key: 'GS / GA', ico: '🌍', label: 'GS / GK' },
+      { key: 'English', ico: '📖', label: 'English' }
+    ];
+    document.getElementById('sectional-subject-cols').innerHTML = subjects.map(s => {
+      const cnt = secTests.filter(t => getTestSubject(t) === s.key).length;
+      return `
+        <div class="sub-col-card ${activeSecSubject === s.key ? 'active' : ''}" onclick="selectSectionalSubject('${s.key}')">
+          <div class="sub-col-ico">${s.ico}</div>
+          <div>
+            <div class="sub-col-name">${s.label}</div>
+            <div class="sub-col-cnt">${cnt} टेस्ट</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   function filterHubTests(type) {
     activeHubFilter = type;
     ['all', 'full', 'pyq', 'sectional'].forEach(t => document.getElementById('flt-' + t).classList.toggle('active', t === type));
-    const filtered = activeHubExam.tests.filter(t => type === 'all' || t.type === type);
-    const list = document.getElementById('hub-tests-list');
-    if (!filtered.length) { list.innerHTML = `<div class="empty-state">इस कैटेगरी में अभी टेस्ट नहीं हैं।</div>`; return; }
+    const subColBox = document.getElementById('sectional-subject-cols');
+    if (type === 'sectional') {
+      subColBox.classList.remove('hidden');
+      renderSectionalColumns();
+    } else {
+      subColBox.classList.add('hidden');
+    }
+    renderHubTestsList();
+  }
 
+  function renderHubTestsList() {
+    let filtered = activeHubExam.tests.filter(t => activeHubFilter === 'all' || t.type === activeHubFilter);
+    if (activeHubFilter === 'sectional') {
+      filtered = filtered.filter(t => getTestSubject(t) === activeSecSubject);
+    }
+    const list = document.getElementById('hub-tests-list');
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state">${activeHubFilter === 'sectional' ? activeSecSubject + ' के सेक्शनल टेस्ट अभी अपलोड नहीं हुए हैं।' : 'इस कैटेगरी में अभी टेस्ट नहीं हैं।'}</div>`;
+      return;
+    }
     list.innerHTML = filtered.map(t => {
       const realIdx = activeHubExam.tests.indexOf(t);
       const badgeCls = t.type === 'full' ? 'badge-full' : t.type === 'pyq' ? 'badge-pyq' : 'badge-sec';
-      const badgeTxt = t.type === 'full' ? 'Full Test' : t.type === 'pyq' ? 'PYQ Paper' : 'Sectional';
+      const badgeTxt = t.type === 'full' ? 'Full Test' : t.type === 'pyq' ? 'PYQ Paper' : 'Sectional • ' + getTestSubject(t);
       const qTotal = t.qCount || (t.secs ? t.secs.length * t.cnt : 25);
       const lockBadge = t.secLock ? `<span>🔒 15m/सेक्शन</span>` : '';
       return `
@@ -748,11 +996,12 @@
     document.getElementById('prof-avatar').innerText = p.name.charAt(0).toUpperCase();
     document.getElementById('prof-name-display').innerText = p.name;
     document.getElementById('prof-target-display').innerText = `Target: ${p.target}`;
-    document.getElementById('prof-tags').innerHTML = `<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
+    document.getElementById('prof-tags').innerHTML = `<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🏷️ ${p.cat || 'UR'}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
     document.getElementById('input-name').value = p.name;
     document.getElementById('input-city').value = p.city;
     document.getElementById('input-goal').value = p.goal;
     document.getElementById('input-target').value = p.target;
+    document.getElementById('input-cat').value = p.cat || 'UR';
     document.getElementById('input-medium').value = p.medium;
     document.getElementById('stat-tests').innerText = h.length;
     document.getElementById('stat-acc').innerText = h.length ? Math.round(h.reduce((s,x)=>s+x.acc,0)/h.length)+'%' : '0%';
@@ -765,6 +1014,7 @@
       city: document.getElementById('input-city').value.trim() || 'भारत',
       goal: document.getElementById('input-goal').value || '6',
       target: document.getElementById('input-target').value,
+      cat: document.getElementById('input-cat').value,
       medium: document.getElementById('input-medium').value
     }));
     renderProfileUI();
@@ -845,12 +1095,9 @@
       timeLeft--;
       if (timeLeft <= 0) {
         if (curExam.secLock && curSec < curExam.sections.length - 1) {
-          curSec++;
-          curQ = 0;
-          visited[curSec][0] = true;
+          curSec++; curQ = 0; visited[curSec][0] = true;
           timeLeft = curExam.secTime;
-          renderAll();
-          updateTimerDisplay();
+          renderAll(); updateTimerDisplay();
           alert(`समय समाप्त! अब अगला सेक्शन (${curExam.sections[curSec].name}) शुरू हो गया है।`);
         } else {
           submitTest();
@@ -884,10 +1131,7 @@
       btn.className = 'sec-tab' + (idx === curSec ? ' active' : '') + (isLocked ? ' locked' : '');
       btn.innerText = isLocked ? `🔒 ${s.name}` : s.name;
       btn.onclick = () => {
-        if (isLocked) {
-          alert('सेक्शन लॉक है! 15 मिनट पूरे होने के बाद ही अगला सेक्शन खुलेगा।');
-          return;
-        }
+        if (isLocked) { alert('सेक्शन लॉक है! 15 मिनट पूरे होने के बाद ही अगला सेक्शन खुलेगा।'); return; }
         curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll();
       };
       tabs.appendChild(btn);
@@ -935,26 +1179,13 @@
 
   function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
   function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
-
-  function prevQ() {
-    if (curQ > 0) curQ--;
-    else if (!curExam.secLock && curSec > 0) {
-      curSec--; curQ = curExam.sections[curSec].questions.length - 1;
-    }
-    renderAll();
-  }
-
+  function prevQ() { if (curQ > 0) curQ--; else if (!curExam.secLock && curSec > 0) { curSec--; curQ = curExam.sections[curSec].questions.length - 1; } renderAll(); }
   function nextQ() {
     const secLen = curExam.sections[curSec].questions.length;
-    if (curQ < secLen - 1) {
-      curQ++; renderAll();
-    } else if (curExam.secLock && curSec < curExam.sections.length - 1) {
-      alert('यह इस सेक्शन का आखिरी सवाल है। 15 मिनट पूरे होते ही अगला सेक्शन अपने आप खुल जाएगा।');
-    } else if (!curExam.secLock && curSec < curExam.sections.length - 1) {
-      curSec++; curQ = 0; renderAll();
-    } else {
-      confirmSubmit();
-    }
+    if (curQ < secLen - 1) { curQ++; renderAll(); }
+    else if (curExam.secLock && curSec < curExam.sections.length - 1) { alert('यह इस सेक्शन का आखिरी सवाल है। 15 मिनट पूरे होते ही अगला सेक्शन अपने आप खुल जाएगा।'); }
+    else if (!curExam.secLock && curSec < curExam.sections.length - 1) { curSec++; curQ = 0; renderAll(); }
+    else { confirmSubmit(); }
   }
 
   function submitTest() {
@@ -969,14 +1200,92 @@
     window.scrollTo(0, 0);
   }
 
+  function renderCutoffBox(score, maxMarks) {
+    const p = getProfile();
+    const userCat = p.cat || 'UR';
+    const cutoffs = [
+      { cat: 'UR', val: +(maxMarks * 0.75).toFixed(1) },
+      { cat: 'OBC', val: +(maxMarks * 0.72).toFixed(1) },
+      { cat: 'EWS', val: +(maxMarks * 0.70).toFixed(1) },
+      { cat: 'SC', val: +(maxMarks * 0.63).toFixed(1) },
+      { cat: 'ST', val: +(maxMarks * 0.58).toFixed(1) }
+    ];
+    const myCut = cutoffs.find(c => c.cat === userCat) || cutoffs[0];
+    const isPassed = score >= myCut.val;
+    const diff = (score - myCut.val).toFixed(2);
+    const pct = Math.max(0, Math.min(100, (score / maxMarks) * 100));
+
+    document.getElementById('cutoff-box').innerHTML = `
+      <div class="cutoff-head">
+        <span class="cutoff-title">🎯 Cutoff तुलना (${userCat} Cutoff: ${myCut.val})</span>
+        <span class="cutoff-badge ${isPassed ? 'badge-pass' : 'badge-fail'}">
+          ${isPassed ? '✅ Cutoff क्लियर (+' + diff + ')' : '❌ ' + Math.abs(diff) + ' अंक कम'}
+        </span>
+      </div>
+      <div class="cutoff-bar-wrap">
+        <div class="cutoff-bar-fill" style="width:${pct}%; background:${isPassed ? 'var(--success)' : 'var(--danger)'};"></div>
+      </div>
+      <div class="cat-cutoff-grid">
+        ${cutoffs.map(c => `
+          <div class="cat-cut-box ${score >= c.val ? 'passed' : ''}">
+            <span>${c.cat}</span>
+            <b>${c.val}</b>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderThreeLevelAnalysis() {
+    let html = `<div style="font-weight:800; font-size:0.95rem; margin-bottom:10px;">📊 3-लेवल टॉपिक एनालिसिस</div>`;
+
+    curExam.sections.forEach((sec, sIdx) => {
+      const topicStats = {};
+      sec.questions.forEach((q, qIdx) => {
+        const topic = detectTopic(sec.name, q);
+        if (!topicStats[topic]) topicStats[topic] = { total: 0, correct: 0 };
+        topicStats[topic].total++;
+        if (userAns[sIdx][qIdx] === q.ans) topicStats[topic].correct++;
+      });
+
+      const strong = [], avg = [], weak = [];
+      Object.entries(topicStats).forEach(([tName, st]) => {
+        const pct = Math.round((st.correct / st.total) * 100);
+        const label = `${tName} (${st.correct}/${st.total})`;
+        if (pct >= 75) strong.push(label);
+        else if (pct >= 45) avg.push(label);
+        else weak.push(label);
+      });
+
+      html += `<div class="sec-heading" style="margin-top:10px;">${sec.name}</div>`;
+      html += `
+        <div class="lvl-card lvl-strong">
+          <div class="lvl-title"><span class="correct">🟢 1. ये टॉपिक अच्छे हैं (Strong)</span><span>${strong.length}</span></div>
+          <div class="topic-chips">${strong.length ? strong.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">कोई नहीं</span>'}</div>
+        </div>
+        <div class="lvl-card lvl-avg">
+          <div class="lvl-title"><span style="color:var(--amber);">🟡 2. ये थोड़े कम अच्छे हैं (Average)</span><span>${avg.length}</span></div>
+          <div class="topic-chips">${avg.length ? avg.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">कोई नहीं</span>'}</div>
+        </div>
+        <div class="lvl-card lvl-weak">
+          <div class="lvl-title"><span class="wrong">🔴 3. इनमें बहुत वीक हैं (Weak)</span><span>${weak.length}</span></div>
+          <div class="topic-chips">${weak.length ? weak.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">बढ़िया! कोई वीक टॉपिक नहीं</span>'}</div>
+        </div>
+      `;
+    });
+
+    document.getElementById('three-level-analysis').innerHTML = html;
+  }
+
   function renderResultContent() {
-    let totalCorrect = 0, totalWrong = 0, totalSkip = 0;
+    let totalCorrect = 0, totalWrong = 0, totalSkip = 0, totalQs = 0;
     const tblBody = document.getElementById('sec-table-body'), revBox = document.getElementById('review-box');
     tblBody.innerHTML = ''; revBox.innerHTML = '';
 
     curExam.sections.forEach((sec, sIdx) => {
       let sCor = 0, sWrg = 0; const activeLang = sec.allowLang ? lang : 'en';
-      revBox.innerHTML += `<div class="sec-heading">${sec.name}</div>`;
+      totalQs += sec.questions.length;
+      revBox.innerHTML += `<div class="sec-heading">${sec.name} - सॉल्यूशन</div>`;
       sec.questions.forEach((q, qIdx) => {
         const ua = userAns[sIdx][qIdx];
         let status = '';
@@ -990,13 +1299,20 @@
     });
 
     const totalScore = (totalCorrect * curExam.pos) - (totalWrong * curExam.neg);
+    const maxMarks = totalQs * curExam.pos;
     const attempted = totalCorrect + totalWrong;
     const acc = attempted > 0 ? Math.round((totalCorrect / attempted) * 100) : 0;
+
+    document.getElementById('res-max-marks').innerText = maxMarks;
     document.getElementById('final-score').innerText = totalScore.toFixed(2);
     document.getElementById('res-correct').innerText = totalCorrect;
     document.getElementById('res-wrong').innerText = totalWrong;
     document.getElementById('res-skip').innerText = totalSkip;
     document.getElementById('res-acc').innerText = acc + '%';
+
+    renderCutoffBox(totalScore, maxMarks);
+    renderThreeLevelAnalysis();
+
     return { totalScore, totalCorrect, totalWrong, acc };
   }
 
