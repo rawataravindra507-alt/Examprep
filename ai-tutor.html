@@ -83,7 +83,7 @@
     </div>
 
     <!-- Status / Error Message Box -->
-    <div id="status-box" class="hidden rounded-xl px-3.5 py-2 text-xs font-medium bg-amber-950/80 text-amber-200 border border-amber-800"></div>
+    <div id="status-box" class="hidden rounded-xl px-3.5 py-2 text-xs font-medium bg-amber-950/80 text-amber-200 border border-amber-800 break-words"></div>
 
     <!-- Input Form -->
     <form id="chat-form" class="flex items-end gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-2.5">
@@ -104,6 +104,7 @@
   </main>
 
   <script>
+    // Cloudflare Worker Proxy URL
     const WORKER_URL = 'https://gemini-proxy.rawataravindra507.workers.dev';
 
     const chatMessagesEl = document.getElementById('chat-messages');
@@ -155,7 +156,7 @@
       chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
     }
 
-    async function fetchWithBackoff(url, payload, maxRetries = 3) {
+    async function fetchWithBackoff(url, payload, maxRetries = 2) {
       let delayMs = 1000;
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
@@ -164,6 +165,12 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
+
+          const rawText = await response.text();
+          let data = null;
+          try {
+            data = JSON.parse(rawText);
+          } catch (e) {}
 
           if (response.status === 429 || response.status >= 500) {
             if (attempt < maxRetries) {
@@ -174,10 +181,11 @@
           }
 
           if (!response.ok) {
-            throw new Error(`Server error (${response.status})`);
+            const apiMsg = data?.error?.message || rawText.slice(0, 140) || `HTTP ${response.status}`;
+            throw new Error(apiMsg);
           }
 
-          return await response.json();
+          return data;
         } catch (err) {
           if (attempt === maxRetries) {
             throw err;
@@ -215,7 +223,7 @@
         const replyText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (!replyText) {
-          throw new Error('Empty response from model');
+          throw new Error('मॉडल से खाली जवाब मिला।');
         }
 
         showStatus('');
@@ -225,7 +233,7 @@
           parts: [{ text: replyText }]
         });
       } catch (error) {
-        showStatus('जवाब लाने में समस्या आई। कृपया Cloudflare में GEMINI_API_KEY और इंटरनेट जांचें।');
+        showStatus('Error: ' + (error?.message || 'कनेक्शन फेल हुआ'));
       } finally {
         isGenerating = false;
         sendBtnEl.disabled = false;
