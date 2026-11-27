@@ -1,910 +1,1990 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Gemini ExamPro — AI Doubt Solver</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    :root {
-      --bg: #131314;
-      --sidebar: #1e1f20;
-      --surface: #1e1f20;
-      --surface-hover: #282a2c;
-      --user-bubble: #282a2c;
-      --text: #e3e3e3;
-      --muted: #9aa0a6;
-      --border: #333537;
-      --accent: #8ab4f8;
-      --grad: linear-gradient(74deg, #4285f4 0%, #9b72cb 50%, #d96570 100%);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ExamPrep Pro - All Govt Exams</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --soft-bg: #f8fafc;
+    --primary: #4f46e5;
+    --primary-soft: #eef2ff;
+    --secondary: #0d9488;
+    --secondary-soft: #f0fdfa;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --purple: #9333ea;
+    --amber: #d97706;
+    --amber-soft: #fef3c7;
+    --exp-bg: #fffbeb;
+    --exp-border: #f59e0b;
+    --exp-text: #78350f;
+    --shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+  [data-theme="dark"] {
+    --bg: #0b1120;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: #334155;
+    --soft-bg: #0f172a;
+    --primary: #6366f1;
+    --primary-soft: #312e81;
+    --secondary: #14b8a6;
+    --secondary-soft: #134e4a;
+    --danger: #f87171;
+    --danger-soft: #450a0a;
+    --success: #34d399;
+    --success-soft: #064e3b;
+    --purple: #a855f7;
+    --amber: #fbbf24;
+    --amber-soft: #451a03;
+    --exp-bg: #292524;
+    --exp-border: #d97706;
+    --exp-text: #fde68a;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      height: 100dvh;
-      display: flex;
-      overflow: hidden;
-    }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; min-height: 100vh; }
 
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: var(--sidebar);
-      display: flex;
-      flex-direction: column;
-      padding: 14px 12px;
-      border-right: 1px solid var(--border);
-      transition: transform 0.25s ease;
-      z-index: 50;
-    }
+  .app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; padding: 14px 14px 88px; }
+  .hidden { display: none !important; }
 
-    .new-chat-btn {
-      background: #282a2c;
-      color: var(--text);
-      border: none;
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      margin-bottom: 16px;
-    }
+  .top-app-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 4px 2px; }
+  .brand-wrap { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+  .brand-title { font-size: 1.15rem; font-weight: 800; line-height: 1.1; }
+  .brand-sub { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  .icon-btn { background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 7px 11px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.82rem; box-shadow: var(--shadow); }
+  .icon-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-    .new-chat-btn:hover { background: #333537; }
+  .hero-banner { background: linear-gradient(135deg, #4f46e5, #0d9488); color: #fff; padding: 16px 18px; border-radius: 18px; margin-bottom: 14px; box-shadow: 0 10px 25px -5px rgba(79,70,229,0.35); }
+  .hero-greeting { font-size: 0.82rem; opacity: 0.92; font-weight: 600; }
+  .hero-title { font-size: 1.2rem; font-weight: 800; margin: 4px 0 8px; }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .hero-pill { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; }
 
-    .sidebar-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      padding: 6px 10px;
-      font-weight: 600;
-    }
+  .search-wrap { position: relative; margin-bottom: 14px; }
+  .search-input { width: 100%; padding: 12px 14px 12px 40px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-size: 0.92rem; outline: none; box-shadow: var(--shadow); }
+  .search-input:focus { border-color: var(--primary); }
+  .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.65; }
 
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+  .sec-label { display: flex; justify-content: space-between; align-items: center; margin: 16px 2px 10px; }
+  .sec-label h3 { margin: 0; font-size: 0.98rem; font-weight: 800; }
+  .sec-label span { font-size: 0.76rem; color: var(--primary); font-weight: 700; cursor: pointer; }
 
-    .chat-item {
-      padding: 9px 12px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--text);
-      cursor: pointer;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .exam-col-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 14px 16px; margin-bottom: 11px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+  .exam-col-card:active { transform: scale(0.985); }
+  .exam-col-left { display: flex; align-items: center; gap: 12px; }
+  .exam-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .ico-ssc { background: var(--primary-soft); }
+  .ico-rrb { background: var(--secondary-soft); }
+  .ico-def { background: var(--amber-soft); }
+  .exam-col-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 3px; }
+  .exam-col-sub { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .exam-arrow { font-size: 1.1rem; color: var(--muted); font-weight: 800; }
 
-    .chat-item:hover, .chat-item.active {
-      background: #004a77;
-      color: #c2e7ff;
-    }
+  .hub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .back-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; }
+  .hub-title-wrap h2 { margin: 0; font-size: 1.12rem; font-weight: 800; }
+  .hub-title-wrap p { margin: 2px 0 0; font-size: 0.75rem; color: var(--muted); font-weight: 600; }
 
-    .sidebar-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+  .pill-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
+  .pill-tab { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); font-weight: 700; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
+  .pill-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    .settings-btn {
-      width: 100%;
-      background: transparent;
-      color: var(--text);
-      border: none;
-      padding: 10px 12px;
-      border-radius: 10px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.88rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
+  /* 4 Subject Columns Grid for Sectional Tests */
+  .sub-col-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .sub-col-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 12px; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px; }
+  .sub-col-card.active { border-color: var(--primary); background: var(--primary-soft); }
+  .sub-col-ico { font-size: 1.4rem; }
+  .sub-col-name { font-weight: 800; font-size: 0.9rem; }
+  .sub-col-cnt { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  [data-theme="dark"] .sub-col-card.active .sub-col-name { color: #e0e7ff; }
 
-    .settings-btn:hover { background: var(--surface-hover); }
+  .test-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 11px; box-shadow: var(--shadow); }
+  .test-badge { display: inline-block; font-size: 0.68rem; font-weight: 800; padding: 3px 9px; border-radius: 20px; margin-bottom: 7px; text-transform: uppercase; }
+  .badge-full { background: var(--primary-soft); color: var(--primary); }
+  .badge-pyq { background: var(--amber-soft); color: var(--amber); }
+  .badge-sec { background: var(--secondary-soft); color: var(--secondary); }
+  [data-theme="dark"] .badge-full { color: #c7d2fe; }
+  [data-theme="dark"] .badge-sec { color: #99f6e4; }
+  .test-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 5px; }
+  .test-meta { font-size: 0.76rem; color: var(--muted); margin-bottom: 11px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-start { width: 100%; padding: 10px; border: none; border-radius: 10px; font-weight: 800; font-size: 0.9rem; color: #fff; cursor: pointer; background: linear-gradient(135deg, var(--primary), #3b82f6); }
 
-    /* Main Area */
-    .main-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100dvh;
-      position: relative;
-      min-width: 0;
-    }
+  .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 11px; box-shadow: var(--shadow); }
+  .ca-date { font-size: 0.72rem; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+  [data-theme="dark"] .ca-date { color: #c7d2fe; }
+  .ca-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 6px; line-height: 1.4; }
+  .ca-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.5; margin: 0; }
 
-    header {
-      height: 56px;
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
+  .formula-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--border); gap: 10px; font-size: 0.84rem; }
+  .formula-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .formula-name { color: var(--muted); font-weight: 600; flex: 1; }
+  .formula-eq { font-weight: 800; color: var(--primary); text-align: right; background: var(--soft-bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
+  .vocab-word { font-size: 1rem; font-weight: 800; color: var(--primary); }
+  .vocab-meaning { font-size: 0.86rem; margin: 4px 0; font-weight: 600; }
+  .vocab-trick { font-size: 0.8rem; background: var(--exp-bg); color: var(--exp-text); border-left: 3px solid var(--exp-border); padding: 6px 9px; border-radius: 6px; margin-top: 6px; }
 
-    .back-link {
-      background: var(--surface);
-      color: var(--text);
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      white-space: nowrap;
-    }
+  .profile-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow); text-align: center; }
+  .avatar-circle { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .prof-tags { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .prof-tag { font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; background: var(--soft-bg); border: 1px solid var(--border); color: var(--muted); }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat-box { background: var(--soft-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; }
+  .stat-val { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+  .stat-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
 
-    .back-link:hover { background: var(--surface-hover); }
+  .form-group { text-align: left; margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+  .form-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--text); font-size: 0.92rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    .icon-btn {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 1.2rem;
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); z-index: 100; max-width: 600px; margin: 0 auto; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); }
+  .bnav-btn { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 12px; border-radius: 10px; }
+  .bnav-btn .bnav-ico { font-size: 1.2rem; }
+  .bnav-btn.active { color: var(--primary); background: var(--primary-soft); }
+  [data-theme="dark"] .bnav-btn.active { color: #c7d2fe; }
 
-    .icon-btn:hover { background: var(--surface-hover); }
+  .card { width: 100%; background: var(--card); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; gap: 6px; flex-wrap: wrap; }
+  .exam-name { font-weight: 800; font-size: 0.88rem; }
+  .top-controls { display: flex; align-items: center; gap: 6px; }
+  .timer { background: var(--danger-soft); color: var(--danger); padding: 5px 10px; border-radius: 20px; font-weight: 800; font-size: 0.84rem; }
+  .btn-top-submit { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
 
-    .brand-title {
-      font-size: 1.05rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .lock-notice { background: var(--amber-soft); color: var(--amber); font-size: 0.76rem; font-weight: 700; padding: 7px 11px; border-radius: 9px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
-    .badge {
-      font-size: 0.68rem;
-      background: #282a2c;
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
+  .sec-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; }
+  .sec-tab { padding: 7px 14px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--muted); border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .sec-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .sec-tab.locked { opacity: 0.5; cursor: not-allowed; }
 
-    /* Chat Container */
-    .chat-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; padding: 10px; background: var(--soft-bg); border-radius: 10px; border: 1px solid var(--border); max-height: 140px; overflow-y: auto; }
+  .p-btn { width: 34px; height: 34px; border-radius: 8px; border: 2px solid transparent; font-weight: 700; cursor: pointer; font-size: 0.86rem; }
+  .p-not-visited { background: var(--border); color: var(--text); }
+  .p-not-answered { background: var(--danger); color: white; }
+  .p-answered { background: var(--success); color: white; }
+  .p-marked { background: var(--purple); color: white; }
+  .p-ans-marked { background: var(--purple); color: white; box-shadow: inset 0 -4px 0 var(--success); }
+  .p-active { border-color: var(--primary); transform: scale(1.08); }
 
-    .chat-inner {
-      width: 100%;
-      max-width: 780px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding-bottom: 24px;
-    }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.72rem; color: var(--muted); margin-bottom: 14px; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 
-    /* Welcome Screen */
-    .welcome {
-      margin-top: 6vh;
-      width: 100%;
-    }
+  .q-meta { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
+  .q-text { font-size: 1.02rem; font-weight: 700; margin-bottom: 14px; line-height: 1.5; }
+  .option { display: block; width: 100%; padding: 12px 14px; margin-bottom: 9px; background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 10px; text-align: left; font-size: 0.94rem; cursor: pointer; color: var(--text); }
+  .option.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 700; }
+  [data-theme="dark"] .option.selected { color: #e0e7ff; }
 
-    .welcome h1 {
-      font-size: 2.2rem;
-      font-weight: 500;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 6px;
-    }
+  .action-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .act-btn { flex: 1; padding: 9px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; border: 1.5px solid; background: transparent; }
+  .btn-clear { border-color: var(--muted); color: var(--muted); }
+  .btn-review { border-color: var(--purple); color: var(--purple); }
+  .btn-review.active-mark { background: var(--purple); color: white; }
 
-    .welcome p {
-      font-size: 1.25rem;
-      color: #8e918f;
-      margin-bottom: 24px;
-    }
+  .nav-btns { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; color: white; font-size: 0.92rem; }
+  .btn-prev { background: #64748b; }
+  .btn-next { background: var(--primary); }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-    }
+  /* Result Screen, Cutoff & 3-Level Analysis */
+  .score-box { background: var(--success-soft); padding: 18px; border-radius: 14px; text-align: center; margin-bottom: 14px; border: 1px solid var(--success); }
+  .score-num { font-size: 2.1rem; font-weight: 800; color: var(--success); }
+  .stats { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.84rem; flex-wrap: wrap; gap: 8px; }
 
-    .card {
-      background: var(--surface);
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 0.88rem;
-      line-height: 1.45;
-      color: var(--text);
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: background 0.15s;
-    }
+  .cutoff-card { background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+  .cutoff-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+  .cutoff-title { font-weight: 800; font-size: 0.94rem; }
+  .cutoff-badge { font-size: 0.74rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+  .badge-pass { background: var(--success-soft); color: var(--success); border: 1px solid var(--success); }
+  .badge-fail { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); }
+  .cutoff-bar-wrap { background: var(--border); height: 10px; border-radius: 10px; overflow: hidden; margin: 8px 0 12px; position: relative; }
+  .cutoff-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s; }
+  .cat-cutoff-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .cat-cut-box { background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 7px 4px; text-align: center; font-size: 0.72rem; }
+  .cat-cut-box.passed { border-color: var(--success); background: var(--success-soft); }
+  .cat-cut-box b { display: block; font-size: 0.84rem; margin-top: 2px; }
 
-    .card:hover { background: var(--surface-hover); border-color: var(--border); }
+  .analysis-box { background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+  .lvl-card { border-radius: 11px; padding: 10px 12px; margin-bottom: 9px; border-left: 4px solid; background: var(--card); }
+  .lvl-strong { border-color: var(--success); }
+  .lvl-avg { border-color: var(--amber); }
+  .lvl-weak { border-color: var(--danger); }
+  .lvl-title { font-weight: 800; font-size: 0.84rem; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .topic-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .topic-chip { font-size: 0.74rem; font-weight: 700; padding: 4px 9px; border-radius: 16px; background: var(--soft-bg); border: 1px solid var(--border); }
 
-    /* Messages */
-    .msg-row {
-      display: flex;
-      width: 100%;
-      gap: 12px;
-    }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.84rem; }
+  th, td { border: 1px solid var(--border); padding: 9px 6px; text-align: center; }
+  th { background: var(--soft-bg); }
+  .sec-heading { background: var(--primary-soft); color: var(--primary); padding: 8px 12px; border-radius: 8px; font-weight: 700; margin: 14px 0 8px; font-size: 0.9rem; }
+  [data-theme="dark"] .sec-heading { color: #c7d2fe; }
+  .review-item { border: 1px solid var(--border); background: var(--soft-bg); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.88rem; line-height: 1.5; }
+  .exp-box { margin-top: 8px; padding: 9px 11px; background: var(--exp-bg); border-left: 4px solid var(--exp-border); border-radius: 6px; font-size: 0.83rem; color: var(--exp-text); }
+  .correct { color: var(--success); font-weight: 700; }
+  .wrong { color: var(--danger); font-weight: 700; }
+  .empty-state { text-align: center; padding: 26px 15px; color: var(--muted); font-size: 0.88rem; }
 
-    .msg-row.user {
-      justify-content: flex-end;
-    }
+  /* Login Modal / Screen */
+  .login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; box-shadow: var(--shadow); text-align: center; }
+  .login-logo { width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .login-err { color: var(--danger); font-size: 0.78rem; font-weight: 700; margin-top: 6px; display: none; }
 
-    .user-box {
-      background: var(--user-bubble);
-      padding: 12px 18px;
-      border-radius: 20px 20px 4px 20px;
-      max-width: 85%;
-      font-size: 0.95rem;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
+  /* PDF Download & Share Buttons */
+  .pdf-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); padding: 10px 12px; border-radius: 12px; box-shadow: var(--shadow); }
+  .pdf-bar-title { font-weight: 800; font-size: 0.86rem; }
+  .btn-pdf { background: linear-gradient(135deg, #dc2626, #ea580c); color: #fff; border: none; padding: 7px 12px; border-radius: 9px; font-weight: 800; font-size: 0.78rem; cursor: pointer; white-space: nowrap; }
+  .btn-share { background: var(--secondary-soft); color: var(--secondary); border: 1px solid var(--secondary); padding: 7px 10px; border-radius: 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+  [data-theme="dark"] .btn-share { color: #5eead4; }
+  .btn-logout { width: 100%; margin-top: 10px; padding: 10px; border-radius: 10px; border: 1.5px solid var(--danger); background: transparent; color: var(--danger); font-weight: 800; font-size: 0.88rem; cursor: pointer; }
 
-    .user-box img {
-      max-width: 220px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      display: block;
-    }
+  /* 2-Column Maths Formula Selector */
+  .math-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .math-col-btn { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 12px 10px; cursor: pointer; text-align: center; box-shadow: var(--shadow); }
+  .math-col-btn.active { border-color: var(--primary); background: var(--primary-soft); }
+  .math-col-btn b { display: block; font-size: 0.92rem; margin-top: 4px; color: var(--text); }
+  .math-col-btn span { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  [data-theme="dark"] .math-col-btn.active b { color: #e0e7ff; }
 
-    .ai-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--grad);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      margin-top: 2px;
-    }
 
-    .ai-box {
-      flex: 1;
-      min-width: 0;
-      font-size: 0.95rem;
-      line-height: 1.65;
-      color: var(--text);
-    }
+  /* Real CBT Exam-Specific Official Themes */
+  .cbt-header { color: #fff; padding: 12px 14px; border-radius: 12px 12px 0 0; margin: -18px -18px 14px -18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .cbt-cand-bar { display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; padding: 7px 10px; border-radius: 8px; margin-bottom: 12px; font-weight: 700; border: 1px solid var(--border); background: var(--soft-bg); }
+  .inst-list { font-size: 0.84rem; line-height: 1.55; padding-left: 18px; margin: 10px 0 14px; color: var(--text); }
+  .inst-list li { margin-bottom: 6px; }
+  .decl-box { background: var(--soft-bg); border: 1.5px solid var(--border); padding: 11px 12px; border-radius: 10px; margin: 12px 0; display: flex; align-items: flex-start; gap: 9px; font-size: 0.8rem; cursor: pointer; }
+  .decl-box input { margin-top: 3px; width: 17px; height: 17px; cursor: pointer; }
+  .btn-ready { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 800; font-size: 0.94rem; color: #fff; cursor: pointer; opacity: 1; }
+  .btn-ready:disabled { opacity: 0.45; cursor: not-allowed; }
 
-    .ai-box h1, .ai-box h2, .ai-box h3 {
-      margin: 14px 0 8px;
-      font-weight: 600;
-      color: #fff;
-    }
+  /* Exam Color Themes */
+  .theme-ssc .cbt-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
+  .theme-ssc .sec-tab.active, .theme-ssc .btn-next, .theme-ssc .btn-ready { background: #1d4ed8 !important; border-color: #1d4ed8 !important; }
+  .theme-ssc .option.selected { border-color: #1d4ed8; background: #eff6ff; color: #1e3a8a; }
+  [data-theme="dark"] .theme-ssc .option.selected { background: #1e3a8a; color: #dbeafe; }
 
-    .ai-box p { margin-bottom: 10px; }
-    .ai-box ul, .ai-box ol { margin: 8px 0 12px 20px; }
-    .ai-box li { margin-bottom: 5px; }
-    .ai-box code {
-      background: #282a2c;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-size: 0.86rem;
-    }
-    .ai-box pre {
-      background: #1e1f20;
-      padding: 12px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin: 10px 0;
-    }
-    .ai-box table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px 0;
-      font-size: 0.88rem;
-      display: block;
-      overflow-x: auto;
-    }
-    .ai-box th, .ai-box td {
-      border: 1px solid var(--border);
-      padding: 8px;
-      text-align: left;
-    }
-    .ai-box th { background: #1e1f20; }
+  .theme-rrb .cbt-header { background: linear-gradient(135deg, #0b3d60, #0284c7); }
+  .theme-rrb .sec-tab.active, .theme-rrb .btn-next, .theme-rrb .btn-ready { background: #0369a1 !important; border-color: #0369a1 !important; }
+  .theme-rrb .option.selected { border-color: #0369a1; background: #e0f2fe; color: #0c4a6e; }
+  [data-theme="dark"] .theme-rrb .option.selected { background: #0c4a6e; color: #e0f2fe; }
 
-    .msg-actions {
-      margin-top: 8px;
-      display: flex;
-      gap: 8px;
-    }
+  .theme-mp .cbt-header { background: linear-gradient(135deg, #1e293b, #b45309); }
+  .theme-mp .sec-tab.active, .theme-mp .btn-next, .theme-mp .btn-ready { background: #b45309 !important; border-color: #b45309 !important; }
+  .theme-mp .option.selected { border-color: #b45309; background: #fef3c7; color: #78350f; }
+  [data-theme="dark"] .theme-mp .option.selected { background: #78350f; color: #fef3c7; }
 
-    .copy-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
+  .theme-police .cbt-header { background: linear-gradient(135deg, #111827, #b91c1c); }
+  .theme-police .sec-tab.active, .theme-police .btn-next, .theme-police .btn-ready { background: #b91c1c !important; border-color: #b91c1c !important; }
+  .theme-police .option.selected { border-color: #b91c1c; background: #fee2e2; color: #7f1d1d; }
+  [data-theme="dark"] .theme-police .option.selected { background: #7f1d1d; color: #fee2e2; }
 
-    .copy-btn:hover { color: var(--text); border-color: var(--text); }
 
-    /* Bottom Composer */
-    .composer-wrap {
-      padding: 10px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--bg);
-    }
+  /* Testbook-Style Detailed Solution, 4-Option Breakdown & Key Points */
+  .tb-opt-box { margin-top: 9px; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--card); }
+  .tb-opt-head { background: var(--soft-bg); padding: 6px 10px; font-size: 0.76rem; font-weight: 800; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .tb-opt-row { padding: 7px 10px; font-size: 0.81rem; border-bottom: 1px dashed var(--border); display: flex; flex-direction: column; gap: 2px; }
+  .tb-opt-row:last-child { border-bottom: none; }
+  .tb-opt-row.is-cor { background: var(--success-soft); }
+  .tb-opt-row.is-wrg { background: var(--danger-soft); }
+  .tb-opt-lbl { font-weight: 700; display: flex; justify-content: space-between; gap: 6px; }
+  .tb-opt-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.4; }
+  [data-theme="dark"] .tb-opt-row.is-cor .tb-opt-desc { color: #a7f3d0; }
+  [data-theme="dark"] .tb-opt-row.is-wrg .tb-opt-desc { color: #fecaca; }
 
-    .preview-strip {
-      width: 100%;
-      max-width: 780px;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      padding: 6px 12px;
-      background: var(--surface);
-      border-radius: 12px;
-      font-size: 0.82rem;
-    }
+  .tb-kp-box { margin-top: 9px; padding: 9px 11px; background: var(--secondary-soft); border-left: 4px solid var(--secondary); border-radius: 7px; font-size: 0.8rem; }
+  .tb-kp-title { font-weight: 800; color: var(--secondary); margin-bottom: 5px; font-size: 0.82rem; }
+  [data-theme="dark"] .tb-kp-title { color: #5eead4; }
+  .tb-kp-list { margin: 0; padding-left: 16px; line-height: 1.5; color: var(--text); }
+  .tb-kp-list li { margin-bottom: 3px; }
 
-    .preview-strip img {
-      height: 44px;
-      border-radius: 6px;
-    }
-
-    .composer {
-      width: 100%;
-      max-width: 780px;
-      background: var(--surface);
-      border-radius: 28px;
-      padding: 8px 12px;
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      border: 1px solid var(--border);
-    }
-
-    .composer textarea {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 0.96rem;
-      padding: 8px 6px;
-      resize: none;
-      max-height: 140px;
-      outline: none;
-      line-height: 1.4;
-    }
-
-    .send-btn {
-      background: var(--accent);
-      color: #062033;
-      border: none;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .disclaimer {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 8px;
-      text-align: center;
-    }
-
-    /* Settings Modal */
-    .modal-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 16px;
-    }
-
-    .modal {
-      background: var(--sidebar);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      width: 100%;
-      max-width: 420px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .modal h2 { font-size: 1.1rem; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label { font-size: 0.82rem; color: var(--muted); }
-    .field input, .field select {
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    .btn-save {
-      background: var(--accent);
-      color: #062033;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-cancel {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 9px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    /* Mobile Sidebar */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 40;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        transform: translateX(-100%);
-      }
-      .sidebar.open { transform: translateX(0); }
-      .overlay.open { display: block; }
-      .welcome h1 { font-size: 1.85rem; }
-      .welcome p { font-size: 1.05rem; }
-      .badge { display: none; }
-    }
-  </style>
+</style>
 </head>
 <body>
 
-  <div class="overlay" id="overlay"></div>
-
-  <aside class="sidebar" id="sidebar">
-    <button class="new-chat-btn" id="newChatBtn">＋ New chat</button>
-    <div class="sidebar-label">Recent Chats</div>
-    <div class="chat-list" id="chatList"></div>
-    <div class="sidebar-footer">
-      <a class="settings-btn" href="index.html">← Back to ExamPrep Pro</a>
-      <button class="settings-btn" id="openSettingsBtn">⚙️ API Key &amp; Exam Settings</button>
+<!-- MOBILE NUMBER LOGIN SCREEN -->
+<div id="login-screen" class="login-overlay hidden">
+  <div class="login-card">
+    <div class="login-logo">EP</div>
+    <h2 style="margin:0 0 4px; font-size:1.3rem;">ExamPrep Pro</h2>
+    <p style="margin:0 0 18px; font-size:0.82rem; color:var(--muted);">अपने मोबाइल नंबर से लॉगिन करें ताकि आपका प्रोफाइल और टेस्ट रिकॉर्ड सेव रहे</p>
+    <div class="form-group">
+      <label>मोबाइल नंबर (10 अंक)</label>
+      <input type="tel" id="login-mobile" class="form-input" maxlength="10" placeholder="जैसे: 9876543210" inputmode="numeric">
     </div>
-  </aside>
+    <div class="form-group">
+      <label>आपका नाम (नए यूज़र के लिए)</label>
+      <input type="text" id="login-name" class="form-input" placeholder="अपना नाम लिखें">
+    </div>
+    <div id="login-err" class="login-err">कृपया सही 10 अंकों का मोबाइल नंबर डालें।</div>
+    <button class="btn-start" style="margin-top:10px;" onclick="doMobileLogin()">लॉगिन / शुरू करें →</button>
+  </div>
+</div>
 
-  <div class="main-wrap">
-    <header>
-      <div class="header-left">
-        <button class="icon-btn" id="menuBtn" title="Menu">☰</button>
-        <a href="index.html" class="back-link">← ExamPrep</a>
-        <div class="brand-title">
-          Gemini <span class="badge" id="headerBadge">SSC &amp; NTPC</span>
+
+<div class="app-shell">
+  <div id="main-app">
+    <div class="top-app-bar">
+      <div class="brand-wrap">
+        <div class="brand-logo">EP</div>
+        <div>
+          <div class="brand-title">ExamPrep Pro</div>
+          <div class="brand-sub" id="header-target">Target: SSC CGL & RRB NTPC</div>
         </div>
       </div>
-      <button class="icon-btn" id="topSettingsBtn" title="Settings">⚙️</button>
-    </header>
-
-    <div class="chat-area" id="chatArea">
-      <div class="chat-inner" id="chatInner"></div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button class="btn-share" onclick="shareApp()">📤 Share</button>
+        <button class="icon-btn" id="theme-btn-main" onclick="toggleTheme()">🌙 Dark</button>
+      </div>
     </div>
 
-    <div class="composer-wrap">
-      <div class="preview-strip" id="previewStrip">
-        <img id="previewImg" src="" alt="preview" />
-        <span>Photo attached</span>
-        <button class="copy-btn" id="removeImgBtn" style="margin-left:auto;">Remove</button>
+    <!-- TAB 1: HOME -->
+    <div id="tab-home">
+      <div class="hero-banner">
+        <div class="hero-greeting" id="hero-greeting">नमस्ते, स्टूडेंट 👋</div>
+        <div class="hero-title">अपना एग्ज़ाम चुनें और तैयारी शुरू करें</div>
+        <div class="hero-pills">
+          <span class="hero-pill" id="hero-tests-pill">📊 0 टेस्ट पूरे</span>
+          <span class="hero-pill" id="hero-goal-pill">⏱️ लक्ष्य: 6 घंटे/दिन</span>
+        </div>
       </div>
 
-      <div class="composer">
-        <input type="file" id="fileInput" accept="image/*" hidden />
-        <button class="icon-btn" id="uploadBtn" title="Photo upload karo">＋</button>
-        <textarea id="promptInput" rows="1" placeholder="Ask Gemini ExamPro..."></textarea>
-        <button class="icon-btn" id="micBtn" title="Bolkar pucho">🎤</button>
-        <button class="send-btn" id="sendBtn" title="Send">➤</button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" class="search-input" placeholder="एग्ज़ाम, फॉर्मूला या वोकैबुलरी खोजें..." oninput="handleSearch(this.value)">
       </div>
-      <div class="disclaimer">Exam facts ko apni standard books/notes se bhi cross-check karein.</div>
+
+      <div id="search-results-box" class="hidden"></div>
+
+      <div id="home-default-content">
+        <div class="sec-label"><h3>🎯 SSC परीक्षाएँ</h3></div>
+        <div id="list-ssc"></div>
+
+        <div class="sec-label"><h3>🚆 रेलवे (Railway) परीक्षाएँ</h3></div>
+        <div id="list-rrb"></div>
+
+        <div class="sec-label"><h3>🛡️ पुलिस व डिफेंस परीक्षाएँ</h3></div>
+        <div id="list-other"></div>
+      </div>
+    </div>
+
+    <!-- EXAM DETAIL HUB -->
+    <div id="exam-hub" class="hidden">
+      <div class="hub-header">
+        <button class="back-btn" onclick="closeExamHub()">← वापस</button>
+        <div class="hub-title-wrap">
+          <h2 id="hub-exam-title">SSC CGL Tier 1</h2>
+          <p id="hub-exam-sub">Full Test • PYQ • Sectional</p>
+        </div>
+      </div>
+
+      <div class="pill-tabs">
+        <button class="pill-tab active" id="flt-all" onclick="filterHubTests('all')">सभी टेस्ट</button>
+        <button class="pill-tab" id="flt-full" onclick="filterHubTests('full')">Full Test</button>
+        <button class="pill-tab" id="flt-pyq" onclick="filterHubTests('pyq')">PYQ (प्रीवियस ईयर)</button>
+        <button class="pill-tab" id="flt-sectional" onclick="filterHubTests('sectional')">Sectional</button>
+      </div>
+
+      <!-- 4 Subject Columns (Shown when Sectional tab is active) -->
+      <div id="sectional-subject-cols" class="sub-col-grid hidden"></div>
+
+      <div id="hub-tests-list"></div>
+    </div>
+
+    <!-- TAB 2: STUDY HUB -->
+    <div id="tab-study" class="hidden">
+      <div class="pill-tabs">
+        <button class="pill-tab active" id="st-btn-formula" onclick="switchStudyTab('formula')">📐 Maths फॉर्मूला</button>
+        <button class="pill-tab" id="st-btn-reasoning" onclick="switchStudyTab('reasoning')">🧠 Reasoning फैक्ट्स</button>
+        <button class="pill-tab" id="st-btn-vocab" onclick="switchStudyTab('vocab')">📚 Vocab (OWS)</button>
+        <button class="pill-tab" id="st-btn-ca" onclick="switchStudyTab('ca')">📰 करंट व GK</button>
+      </div>
+
+      <!-- Maths Formulas (2 Columns: 1. Advance, 2. Arithmetic) -->
+      <div id="study-formula">
+        <div class="math-col-grid">
+          <div class="math-col-btn active" id="mcol-adv" onclick="switchMathCol('adv')">
+            <div style="font-size:1.3rem;">📐</div>
+            <b>1. Advance Maths</b>
+            <span>7 Chapters • SSC CGL</span>
+          </div>
+          <div class="math-col-btn" id="mcol-arith" onclick="switchMathCol('arith')">
+            <div style="font-size:1.3rem;">🔢</div>
+            <b>2. Arithmetic</b>
+            <span>10 Chapters • Complete</span>
+          </div>
+        </div>
+        <div class="pdf-bar">
+          <span class="pdf-bar-title" id="math-pdf-title">📐 Advance Maths Complete Sheet</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF(activeMathCol === 'adv' ? 'adv_maths' : 'arith_maths')">📥 PDF Download</button>
+        </div>
+        <div id="study-formula-list"></div>
+      </div>
+
+      <!-- Reasoning Formulas & Facts -->
+      <div id="study-reasoning" class="hidden">
+        <div class="pdf-bar">
+          <span class="pdf-bar-title">🧠 Reasoning Formulas & Facts</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF('reasoning')">📥 PDF Download</button>
+        </div>
+        <div id="study-reasoning-list"></div>
+      </div>
+
+      <!-- Vocab -->
+      <div id="study-vocab" class="hidden">
+        <div class="pdf-bar">
+          <span class="pdf-bar-title">📚 25 OWS + Tricks Sheet</span>
+          <button class="btn-pdf" onclick="downloadStudyPDF('vocab')">📥 PDF Download</button>
+        </div>
+        <div id="study-vocab-list"></div>
+      </div>
+
+      <!-- Current Affairs -->
+      <div id="study-ca" class="hidden"></div>
+    </div>
+
+    <!-- TAB 3: HISTORY -->
+    <div id="tab-history" class="hidden">
+      <div class="sec-label">
+        <h3>आपके पिछले टेस्ट</h3>
+        <span onclick="clearHistory()">क्लियर करें</span>
+      </div>
+      <div id="history-list"></div>
+    </div>
+
+    <!-- TAB 4: PROFILE -->
+    <div id="tab-profile" class="hidden">
+      <div class="profile-card">
+        <div class="avatar-circle" id="prof-avatar">S</div>
+        <h3 style="margin:0;" id="prof-name-display">स्टूडेंट</h3>
+        <div style="font-size:0.82rem; color:var(--muted); margin-top:3px;" id="prof-target-display">Target: SSC CGL Tier 1</div>
+        <div class="prof-tags" id="prof-tags"></div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-val" id="stat-tests">0</div><div class="stat-lbl">कुल टेस्ट</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-acc">0%</div><div class="stat-lbl">औसत सटीकता</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-best">0</div><div class="stat-lbl">बेस्ट स्कोर</div></div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4 style="margin:0 0 12px;">अपनी प्रोफाइल बनाएँ / अपडेट करें</h4>
+        <div class="form-group">
+          <label>आपका पूरा नाम</label>
+          <input type="text" id="input-name" class="form-input" placeholder="अपना नाम लिखें">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>शहर / राज्य</label>
+            <input type="text" id="input-city" class="form-input" placeholder="जैसे: जयपुर">
+          </div>
+          <div class="form-group">
+            <label>डेली पढ़ाई (घंटे)</label>
+            <input type="number" id="input-goal" class="form-input" min="1" max="18" placeholder="6">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>टारगेट एग्ज़ाम</label>
+            <select id="input-target" class="form-input">
+              <option value="SSC CGL Tier 1 & 2">SSC CGL Tier 1 & 2</option>
+              <option value="RRB NTPC CBT 1 & 2">RRB NTPC CBT 1 & 2</option>
+              <option value="SSC CHSL / MTS / CPO">SSC CHSL / MTS / CPO</option>
+              <option value="SSC GD Constable">SSC GD Constable</option>
+              <option value="Delhi Police Constable">Delhi Police Constable</option>
+              <option value="MP Police Constable & SI">MP Police Constable & SI</option>
+              <option value="RRB Group D / ALP / RPF">RRB Group D / ALP / RPF</option>
+              <option value="State Police / Agniveer">State Police / Agniveer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>कैटेगरी (Cutoff के लिए)</label>
+            <select id="input-cat" class="form-input">
+              <option value="UR">UR (General)</option>
+              <option value="OBC">OBC</option>
+              <option value="EWS">EWS</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>माध्यम (Medium)</label>
+          <select id="input-medium" class="form-input">
+            <option value="हिंदी माध्यम">हिंदी माध्यम</option>
+            <option value="English Medium">English Medium</option>
+            <option value="Bilingual">Bilingual</option>
+          </select>
+        </div>
+        <button class="btn-start" onclick="saveProfile()">प्रोफाइल सेव करें ✓</button>
+        <button class="btn-start" style="margin-top:9px; background:linear-gradient(135deg,#0d9488,#059669);" onclick="shareApp()">📤 ऐप लिंक शेयर करें (Share App)</button>
+        <button class="btn-logout" onclick="logoutUser()">🔄 नंबर बदलें / लॉगआउट करें</button>
+      </div>
     </div>
   </div>
 
-  <!-- Settings Modal -->
-  <div class="modal-bg" id="modalBg">
-    <div class="modal">
-      <h2>Settings</h2>
-      <div class="field">
-        <label>Gemini API Key (Google AI Studio)</label>
-        <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bnav-btn active" id="nav-home" onclick="switchMainTab('home')"><span class="bnav-ico">🏠</span><span>होम</span></button>
+    <button class="bnav-btn" id="nav-study" onclick="switchMainTab('study')"><span class="bnav-ico">📚</span><span>स्टडी</span></button>
+    <button class="bnav-btn" id="nav-history" onclick="switchMainTab('history')"><span class="bnav-ico">📊</span><span>हिस्ट्री</span></button>
+    <button class="bnav-btn" id="nav-profile" onclick="switchMainTab('profile')"><span class="bnav-ico">👤</span><span>प्रोफाइल</span></button>
+  </nav>
+
+  <!-- REAL CBT EXAM ENTRY / INSTRUCTIONS SCREEN -->
+  <div class="card hidden" id="inst-screen">
+    <div class="cbt-header" id="inst-header">
+      <div>
+        <div style="font-size:0.72rem; opacity:0.88; font-weight:700;" id="inst-board">OFFICIAL CBT EXAM PORTAL</div>
+        <div style="font-size:1rem; font-weight:800;" id="inst-exam-title">Mock Test</div>
       </div>
-      <div class="field">
-        <label>Model Name</label>
-        <input type="text" id="modelInput" value="gemini-3.8-flash" />
+      <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border:1px solid rgba(255,255,255,0.35);" onclick="cancelExamEntry()">✕ बाहर</button>
+    </div>
+
+    <div class="cbt-cand-bar">
+      <span id="inst-cand-name">👤 Candidate: स्टूडेंट</span>
+      <span id="inst-cand-sys">💻 System: CBT-01</span>
+    </div>
+
+    <h4 style="margin:0 0 6px; font-size:0.94rem;">📋 सामान्य निर्देश (General Instructions)</h4>
+    <ol class="inst-list" id="inst-details"></ol>
+
+    <div class="legend" style="background:var(--soft-bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
+      <span><i class="dot" style="background:var(--border)"></i>देखा नहीं (Not Visited)</span>
+      <span><i class="dot" style="background:var(--danger)"></i>उत्तर नहीं दिया (Not Answered)</span>
+      <span><i class="dot" style="background:var(--success)"></i>उत्तर दिया (Answered)</span>
+      <span><i class="dot" style="background:var(--purple)"></i>रिव्यू (Marked)</span>
+    </div>
+
+    <div class="form-group" style="margin-top:10px;">
+      <label>डिफ़ॉल्ट भाषा चुनें (Choose Default Language)</label>
+      <select id="inst-lang-select" class="form-input">
+        <option value="hi">हिंदी (Hindi)</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <label class="decl-box">
+      <input type="checkbox" id="inst-agree" onchange="document.getElementById('btn-begin-exam').disabled = !this.checked;">
+      <span>मैंने सभी निर्देश ध्यान से पढ़ और समझ लिए हैं। मैं वास्तविक परीक्षा के नियमों के अनुसार टेस्ट शुरू करने के लिए तैयार हूँ।</span>
+    </label>
+
+    <button class="btn-ready" id="btn-begin-exam" disabled onclick="beginActualTest()">I am ready to begin / टेस्ट शुरू करें →</button>
+  </div>
+
+  <!-- TEST SCREEN -->
+  <div class="card hidden" id="test-screen">
+    <div class="cbt-header">
+      <div>
+        <div style="font-size:0.68rem; opacity:0.88; font-weight:700;" id="test-board-tag">CBT EXAM</div>
+        <span class="exam-name" id="exam-title">Mock Test</span>
       </div>
-      <div class="field">
-        <label>Target Exam</label>
-        <select id="examSelect">
-          <option value="SSC CGL & RRB NTPC">SSC CGL &amp; RRB NTPC</option>
-          <option value="MP Police Constable & SI">MP Police Constable &amp; SI</option>
-          <option value="SSC GD & Delhi Police">SSC GD &amp; Delhi Police</option>
-          <option value="All Competitive Exams">All Competitive Exams</option>
-        </select>
+      <div class="top-controls">
+        <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border-color:rgba(255,255,255,0.35);" id="lang-btn" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border-color:rgba(255,255,255,0.35);" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
+        <span class="timer" style="background:#fff; color:#dc2626;" id="timer">15:00</span>
+        <button class="btn-top-submit" onclick="confirmSubmit()">सबमिट</button>
       </div>
-      <div class="field">
-        <label>Language Style</label>
-        <select id="langSelect">
-          <option value="Simple Hinglish (Hindi + English exam terms)">Simple Hinglish</option>
-          <option value="Clear Hindi">Clear Hindi</option>
-          <option value="Clear English">Clear English</option>
-        </select>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" id="closeModalBtn">Cancel</button>
-        <button class="btn-save" id="saveSettingsBtn">Save</button>
-      </div>
+    </div>
+    <div class="cbt-cand-bar">
+      <span id="test-cand-name">👤 स्टूडेंट</span>
+      <span id="test-status-mini">✅ 0 | ❌ 0</span>
+    </div>
+
+    <div id="lock-notice" class="lock-notice hidden" style="justify-content:space-between; flex-wrap:wrap;">
+      <span>🔒 सभी 25 सवाल देखने के बाद आप सेक्शन सबमिट कर सकते हैं (वापस नहीं आ सकेंगे)।</span>
+      <button id="btn-submit-sec" onclick="trySubmitSection()" style="background:var(--amber); color:#fff; border:none; padding:5px 10px; border-radius:7px; font-weight:800; font-size:0.74rem; cursor:pointer;">सेक्शन सबमिट →</button>
+    </div>
+
+    <div class="sec-tabs" id="sec-tabs"></div>
+    <div class="palette" id="palette"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--success)"></i>हल किया</span>
+      <span><i class="dot" style="background:var(--danger)"></i>छोड़ा</span>
+      <span><i class="dot" style="background:var(--purple)"></i>रिव्यू</span>
+      <span><i class="dot" style="background:var(--border)"></i>देखा नहीं</span>
+    </div>
+    <div class="q-meta"><span id="q-count">Q 1</span><span id="q-marks">+2 / -0.5</span></div>
+    <div class="q-text" id="q-text"></div>
+    <div id="options-box"></div>
+    <div class="action-btns">
+      <button class="act-btn btn-clear" onclick="clearResponse()">जवाब हटाएँ</button>
+      <button class="act-btn btn-review" id="review-btn" onclick="toggleReview()">Mark for Review</button>
+    </div>
+    <div class="nav-btns">
+      <button class="nav-btn btn-prev" id="prev-btn" onclick="prevQ()">पिछला</button>
+      <button class="nav-btn btn-next" id="next-btn" onclick="nextQ()">सेव और अगला</button>
     </div>
   </div>
 
-  <script>
-    const LS_KEY = "gemini_exampro_key_v2";
-    const LS_MODEL = "gemini_exampro_model_v2";
-    const LS_EXAM = "gemini_exampro_exam_v2";
-    const LS_LANG = "gemini_exampro_lang_v2";
-    const LS_CHATS = "gemini_exampro_chats_v2";
+  <!-- RESULT SCREEN -->
+  <div class="card hidden" id="result-screen">
+    <div class="top-bar">
+      <span class="exam-name">रिज़ल्ट एनालिसिस</span>
+      <div class="top-controls">
+        <button class="icon-btn" id="lang-btn-res" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" id="theme-btn-res" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
 
-    let chats = JSON.parse(localStorage.getItem(LS_CHATS) || "[]");
-    let currentChatId = null;
-    let attachedImage = null;
-    let currentController = null;
+    <div class="score-box">
+      <div style="font-size:0.86rem; color:var(--muted);">कुल स्कोर (<span id="res-max-marks">200</span> में से)</div>
+      <div class="score-num" id="final-score">0</div>
+      <div class="stats">
+        <span class="correct">सही: <b id="res-correct">0</b></span>
+        <span class="wrong">गलत: <b id="res-wrong">0</b></span>
+        <span>छोड़े: <b id="res-skip">0</b></span>
+        <span>सटीकता: <b id="res-acc">0%</b></span>
+      </div>
+    </div>
 
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const chatList = document.getElementById("chatList");
-    const chatInner = document.getElementById("chatInner");
-    const chatArea = document.getElementById("chatArea");
-    const promptInput = document.getElementById("promptInput");
-    const sendBtn = document.getElementById("sendBtn");
-    const modalBg = document.getElementById("modalBg");
-    const apiKeyInput = document.getElementById("apiKeyInput");
-    const modelInput = document.getElementById("modelInput");
-    const examSelect = document.getElementById("examSelect");
-    const langSelect = document.getElementById("langSelect");
-    const headerBadge = document.getElementById("headerBadge");
-    const fileInput = document.getElementById("fileInput");
-    const previewStrip = document.getElementById("previewStrip");
-    const previewImg = document.getElementById("previewImg");
+    <!-- TESTBOOK-STYLE CUTOFF COMPARISON -->
+    <div id="cutoff-box" class="cutoff-card"></div>
 
-    function loadSettings() {
-      apiKeyInput.value = localStorage.getItem(LS_KEY) || "";
-      modelInput.value = localStorage.getItem(LS_MODEL) || "gemini-3.8-flash";
-      examSelect.value = localStorage.getItem(LS_EXAM) || "SSC CGL & RRB NTPC";
-      langSelect.value = localStorage.getItem(LS_LANG) || "Simple Hinglish (Hindi + English exam terms)";
-      headerBadge.textContent = examSelect.value;
+    <!-- SECTION-WISE SCORE TABLE -->
+    <table><thead><tr><th>सेक्शन</th><th>सही</th><th>गलत</th><th>स्कोर</th></tr></thead><tbody id="sec-table-body"></tbody></table>
+
+    <!-- 3-LEVEL SUBJECT & TOPIC ANALYSIS -->
+    <div id="three-level-analysis" class="analysis-box"></div>
+
+    <!-- DETAILED SOLUTIONS -->
+    <div id="review-box"></div>
+    <button class="btn-start" style="margin-top:15px;" onclick="goHome()">होम पेज पर जाएँ</button>
+  </div>
+</div>
+
+<!-- External Test Packs (Auto-loaded when uploaded to GitHub) -->
+<script>window.EXTERNAL_TEST_PACKS = [];</script>
+<script src="cgl_tests.js"></script>
+<script src="cgl_maths_sec.js"></script>
+<script src="cgl_reasoning_sec.js"></script>
+<script src="cgl_gs_sec.js"></script>
+<script src="cgl_english_sec.js"></script>
+<script src="cgl_full_pack2.js"></script>
+<script src="cgl_full_pack3.js"></script>
+<script src="cgl_pyq_pack1.js"></script>
+<script src="ntpc_tests.js"></script>
+<script src="other_exams.js"></script>
+<script src="mp_police_tests.js"></script>
+
+<script>
+  const qBank = {
+    maths: [
+      { q:{hi:"यदि x + 1/x = 5 है, तो x³ + 1/x³ का मान क्या होगा?", en:"If x + 1/x = 5, find the value of x³ + 1/x³."}, opts:{hi:["110","115","125","140"], en:["110","115","125","140"]}, ans:0, exp:{hi:"ट्रिक: k³ - 3k = 5³ - 3(5) = 125 - 15 = 110।", en:"Trick: k³ - 3k = 125 - 15 = 110."} },
+      { q:{hi:"यदि secθ + tanθ = 4 है, तो secθ - tanθ का मान क्या होगा?", en:"If secθ + tanθ = 4, what is the value of secθ - tanθ?"}, opts:{hi:["0.25","0.5","4","1"], en:["0.25","0.5","4","1"]}, ans:0, exp:{hi:"sec²θ - tan²θ = 1 ⇒ secθ - tanθ = 1/4 = 0.25।", en:"secθ - tanθ = 1 / (secθ + tanθ) = 1/4 = 0.25."} },
+      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} },
+      { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} }
+    ],
+    reasoning: [
+      { q:{hi:"श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en:"Complete the series: 2, 6, 12, 20, 30, ?"}, opts:{hi:["38","40","42","44"], en:["38","40","42","44"]}, ans:2, exp:{hi:"अंतर +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en:"Differences: +4, +6, +8, +10, +12. So 30 + 12 = 42."} },
+      { q:{hi:"यदि CAT = 24 है, तो DOG का मान क्या होगा?", en:"If CAT = 24, what is the value of DOG?"}, opts:{hi:["24","26","28","30"], en:["24","26","28","30"]}, ans:1, exp:{hi:"D(4) + O(15) + G(7) = 26।", en:"D(4) + O(15) + G(7) = 26."} },
+      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} },
+      { q:{hi:"विषम चुनें (Odd one out): 27, 64, 125, 144", en:"Find the odd one out: 27, 64, 125, 144"}, opts:{hi:["27","64","125","144"], en:["27","64","125","144"]}, ans:3, exp:{hi:"144 वर्ग है, बाकी घन हैं।", en:"144 is a square; others are cubes."} }
+    ],
+    gs: [
+      { q:{hi:"भारतीय संविधान के किस अनुच्छेद में 'वित्तीय आपातकाल' है?", en:"Which Article provides for 'Financial Emergency'?"}, opts:{hi:["अनुच्छेद 352","अनुच्छेद 356","अनुच्छेद 360","अनुच्छेद 368"], en:["Article 352","Article 356","Article 360","Article 368"]}, ans:2, exp:{hi:"अनुच्छेद 360 में वित्तीय आपातकाल का प्रावधान है।", en:"Article 360 deals with Financial Emergency."} },
+      { q:{hi:"हड़प्पा सभ्यता का प्रसिद्ध बंदरगाह 'लोथल' किस राज्य में है?", en:"In which state is the Harappan port 'Lothal' located?"}, opts:{hi:["राजस्थान","गुजरात","पंजाब","हरियाणा"], en:["Rajasthan","Gujarat","Punjab","Haryana"]}, ans:1, exp:{hi:"लोथल गुजरात में भोगवा नदी के किनारे स्थित था।", en:"Lothal is located in Gujarat on the Bhogava river."} },
+      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} },
+      { q:{hi:"भारत में पहली रेलगाड़ी 1853 में किन दो शहरों के बीच चली थी?", en:"Between which two cities did India's first train run in 1853?"}, opts:{hi:["दिल्ली से आगरा","मुंबई से ठाणे","कोलकाता से हावड़ा","चेन्नई से बेंगलुरु"], en:["Delhi to Agra","Mumbai to Thane","Kolkata to Howrah","Chennai to Bengaluru"]}, ans:1, exp:{hi:"16 अप्रैल 1853 को मुंबई से ठाणे चली थी।", en:"Ran from Mumbai to Thane in 1853."} }
+    ],
+    english: [
+      { q:{hi:"One Word: A doctor who treats children's diseases.", en:"One Word: A doctor who treats children's diseases."}, opts:{hi:["Cardiologist","Paediatrician","Dermatologist","Neurologist"], en:["Cardiologist","Paediatrician","Dermatologist","Neurologist"]}, ans:1, exp:{hi:"Paediatrician = बच्चों का डॉक्टर।", en:"Paediatrician treats children."} },
+      { q:{hi:"Synonym of 'ABUNDANT':", en:"Synonym of 'ABUNDANT':"}, opts:{hi:["Scarce","Plentiful","Rare","Empty"], en:["Scarce","Plentiful","Rare","Empty"]}, ans:1, exp:{hi:"Abundant = प्रचुर मात्रा में (Plentiful)।", en:"Abundant means existing in large quantities."} },
+      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} },
+      { q:{hi:"Antonym of 'OPTIMISTIC':", en:"Antonym of 'OPTIMISTIC':"}, opts:{hi:["Hopeful","Pessimistic","Bright","Cheerful"], en:["Hopeful","Pessimistic","Bright","Cheerful"]}, ans:1, exp:{hi:"Optimistic का विलोम Pessimistic है।", en:"Opposite of optimistic is pessimistic."} }
+    ]
+  };
+
+  function getSlice(arr, start, count) {
+    let res = [];
+    for (let i = 0; i < count; i++) res.push(arr[(start + i) % arr.length]);
+    return res;
+  }
+
+  function makeSections(secKeys, offset = 0, perSec = 3) {
+    return secKeys.map(k => ({
+      name: k === 'maths' ? 'Maths' : k === 'reasoning' ? 'Reasoning' : k === 'gs' ? 'GS / GA' : 'English',
+      allowLang: k !== 'english',
+      questions: getSlice(qBank[k], offset, perSec)
+    }));
+  }
+
+  // --- ALL SEPARATE EXAMS DIRECTORY (GD & Delhi Police Separated + Remaining Exams Added) ---
+  const examDirectory = [
+    // SSC EXAMS
+    {
+      id: "ssc_cgl_t1", group: "ssc", icon: "🎯", icoClass: "ico-ssc",
+      title: "SSC CGL Tier 1", sub: "15-15 Min Lock • Full Test • PYQ • 4 Subject Sectionals (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: []
+    },
+    {
+      id: "ssc_cgl_t2", group: "ssc", icon: "🏆", icoClass: "ico-ssc",
+      title: "SSC CGL Tier 2 (Mains)", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
+      tests: [
+        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 4 },
+        { title: "SSC CGL Tier 2 - PYQ Mains Paper", type: "pyq", time: 900, secs: ['maths','reasoning','english','gs'], off: 2, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_chsl", group: "ssc", icon: "📝", icoClass: "ico-ssc",
+      title: "SSC CHSL (10+2)", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 },
+        { title: "SSC CHSL - Previous Year Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_mts", group: "ssc", icon: "📘", icoClass: "ico-ssc",
+      title: "SSC MTS & Havaldar", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
+      tests: [
+        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 4 },
+        { title: "SSC MTS - PYQ Paper", type: "pyq", time: 600, secs: ['gs','english'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_cpo", group: "ssc", icon: "⭐", icoClass: "ico-ssc",
+      title: "SSC CPO (SI in Delhi Police & CAPF)", sub: "Full Test • PYQ • Sectional (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "SSC CPO Paper 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 2, cnt: 4 },
+        { title: "SSC CPO - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_steno", group: "ssc", icon: "⌨️", icoClass: "ico-ssc",
+      title: "SSC Stenographer (Grade C & D)", sub: "Full Test • PYQ • English & GK (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "SSC Stenographer - Full Mock #1", type: "full", time: 600, secs: ['reasoning','gs','english'], off: 1, cnt: 4 }
+      ]
+    },
+    {
+      id: "ssc_gd", group: "ssc", icon: "🪖", icoClass: "ico-ssc",
+      title: "SSC GD Constable", sub: "Full Test • PYQ • Sectional (+2 / -0.25)", pos: 2, neg: 0.25,
+      tests: [
+        { title: "SSC GD Constable - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 4 },
+        { title: "SSC GD Constable - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
+      ]
+    },
+
+    // RAILWAY (RRB) EXAMS
+    {
+      id: "rrb_ntpc_cbt1", group: "rrb", icon: "🚆", icoClass: "ico-rrb",
+      title: "RRB NTPC CBT 1", sub: "5 Full Tests (100 Qs • 90 Min) • Real CBT (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: []
+    },
+    {
+      id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
+      title: "RRB NTPC CBT 2", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 4 },
+        { title: "RRB NTPC CBT 2 - PYQ Level 5/6", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_groupd", group: "rrb", icon: "🛤️", icoClass: "ico-rrb",
+      title: "RRB Group D", sub: "Full Test • PYQ • Science Special (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB Group D - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 },
+        { title: "RRB Group D - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_alp", group: "rrb", icon: "⚙️", icoClass: "ico-rrb",
+      title: "RRB ALP & Technician", sub: "CBT 1 & 2 Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB ALP CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 4 },
+        { title: "RRB ALP - PYQ Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 3, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_rpf", group: "rrb", icon: "🚔", icoClass: "ico-rrb",
+      title: "RPF Constable & SI", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RPF Constable / SI - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "rrb_je", group: "rrb", icon: "🔧", icoClass: "ico-rrb",
+      title: "RRB JE (CBT 1)", sub: "Full Test • PYQ • Science & Maths (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB JE CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
+      ]
+    },
+
+    // POLICE & DEFENCE EXAMS (Separate Columns)
+    {
+      id: "mp_police_constable", group: "other", icon: "🚔", icoClass: "ico-def",
+      title: "MP Police Constable", sub: "100 Qs • 120 Min • No Negative Marking (+1 / 0)", pos: 1, neg: 0,
+      tests: []
+    },
+    {
+      id: "mp_police_si", group: "other", icon: "⭐⭐", icoClass: "ico-def",
+      title: "MP Police SI (Sub-Inspector)", sub: "200 Qs • 180 Min • Hindi, English & GK (+1 / 0)", pos: 1, neg: 0,
+      tests: []
+    },
+    {
+      id: "delhi_police", group: "other", icon: "🛡️", icoClass: "ico-def",
+      title: "Delhi Police Constable", sub: "Full Test • PYQ • GK & Reasoning (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "Delhi Police Constable - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 1, cnt: 4 },
+        { title: "Delhi Police Constable - PYQ Paper", type: "pyq", time: 600, secs: ['gs','reasoning','maths'], off: 2, cnt: 4 }
+      ]
+    },
+    {
+      id: "up_police", group: "other", icon: "👮", icoClass: "ico-def",
+      title: "UP Police Constable & SI", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "UP Police Constable - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 0, cnt: 4 }
+      ]
+    },
+    {
+      id: "rajasthan_police", group: "other", icon: "🏰", icoClass: "ico-def",
+      title: "Rajasthan Police & CET", sub: "Full Test • PYQ • GK Special (+1 / -0.25)", pos: 1, neg: 0.25,
+      tests: [
+        { title: "Rajasthan Police / CET - Full Mock #1", type: "full", time: 600, secs: ['gs','reasoning','maths'], off: 2, cnt: 4 }
+      ]
+    },
+    {
+      id: "agniveer", group: "other", icon: "🎖️", icoClass: "ico-def",
+      title: "Indian Army Agniveer (GD)", sub: "Full Test • PYQ • Science & Maths (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "Army Agniveer GD - Full Mock #1", type: "full", time: 480, secs: ['gs','maths','reasoning'], off: 1, cnt: 4 }
+      ]
     }
+  ];
 
-    function saveChats() {
-      localStorage.setItem(LS_CHATS, JSON.stringify(chats));
-      renderSidebar();
+  const vocabList = [
+    { type: "OWS • 1", word: "Abdicate", meaning: "राजगद्दी या पद त्याग देना (Give up a throne/power)", trick: "Ab (दूर) + Dicate (बोलना) = पद से दूर होने की घोषणा करना।" },
+    { type: "OWS • 2", word: "Abolish", meaning: "कानूनी रूप से समाप्त करना (Formally put an end to)", trick: "A + Polish = पुरानी प्रथा को पूरी तरह मिटा देना।" },
+    { type: "OWS • 3", word: "Aborigines", meaning: "मूल निवासी (Original inhabitants of a country)", trick: "Ab + Origin (शुरुआत) = जो शुरुआत से वहीं रह रहे हों।" },
+    { type: "OWS • 4", word: "Abridge", meaning: "संक्षिप्त करना (To shorten a book/text)", trick: "Bridge (पुल) रास्ता छोटा करता है, Abridge किताब को छोटा करता है।" },
+    { type: "OWS • 5", word: "Accomplice", meaning: "सह-अपराधी (A partner in crime)", trick: "Ac + Com + Police = जिसके साथ मिलकर जुर्म किया और पुलिस ने पकड़ा।" },
+    { type: "OWS • 6", word: "Acronym", meaning: "संक्षिप्त नाम (Word formed from initial letters, e.g., ISRO)", trick: "Acro (शुरुआती सिरा) + Nym (नाम) = पहले अक्षरों से बना नाम।" },
+    { type: "OWS • 7", word: "Acrobat", meaning: "कलाबाज़ (One who performs gymnastic feats)", trick: "Acro (ऊँचाई) + Bat = ऊँचाई पर लटककर करतब दिखाने वाला।" },
+    { type: "OWS • 8", word: "Aesthetics", meaning: "सौंदर्यशास्त्र (Study of art and beauty)", trick: "सुंदरता और कला की समझ रखने वाला शास्त्र।" },
+    { type: "OWS • 9", word: "Agnostic", meaning: "अज्ञेयवादी (Unsure about God's existence)", trick: "A (नहीं) + Gnos (जानना) = जो ईश्वर के होने पर संशय में हो।" },
+    { type: "OWS • 10", word: "Alimony", meaning: "गुजारा भत्ता (Allowance paid after divorce)", trick: "Ali + Money = तलाक के बाद दिया जाने वाला पैसा (Money)।" },
+    { type: "OWS • 11", word: "Altruist", meaning: "परोपकारी (One who helps others selflessly)", trick: "All + True = जो सबके लिए सच्चा और भला सोचे।" },
+    { type: "OWS • 12", word: "Amateur", meaning: "शौकिया (Does something for pleasure, not money)", trick: "A + Mature = जो प्रोफेशनल न हो, सिर्फ शौक से करे।" },
+    { type: "OWS • 13", word: "Ambidextrous", meaning: "दोनों हाथों से निपुण (Uses both hands equally well)", trick: "Ambi (दोनों) + Dexter (कुशल) = 3 Idiots के वायरस सर।" },
+    { type: "OWS • 14", word: "Ambiguous", meaning: "अस्पष्ट / दो अर्थों वाला (Having more than one meaning)", trick: "Ambi (दो) = जिसके दो मतलब निकलें, यानी साफ न हो।" },
+    { type: "OWS • 15", word: "Amnesia", meaning: "भूलने की बीमारी (Loss of memory)", trick: "A (नहीं) + Mnes (याददाश्त) = याददाश्त चले जाना (गजिनी)।" },
+    { type: "OWS • 16", word: "Amnesty", meaning: "राजक्षमा (Official pardon for political offenders)", trick: "सरकार द्वारा राजनीतिक कैदियों को दी गई आम माफी।" },
+    { type: "OWS • 17", word: "Amphibian", meaning: "उभयचर (Lives on both land and water)", trick: "Amphi (दोनों) + Bio (जीवन) = ज़मीन व पानी दोनों में रहने वाला।" },
+    { type: "OWS • 18", word: "Anarchist", meaning: "अराजकतावादी (Believes in no government)", trick: "An (बिना) + Archy (शासन) = जो कोई सरकार/नियम न माने।" },
+    { type: "OWS • 19", word: "Anecdote", meaning: "छोटा मनोरंजक किस्सा (Short amusing real story)", trick: "एक छोटा-सा असली और मज़ेदार किस्सा।" },
+    { type: "OWS • 20", word: "Anonymous", meaning: "गुमनाम (Without a name)", trick: "An (बिना) + Onym (नाम) = जिसका नाम न पता हो।" },
+    { type: "OWS • 21", word: "Anthology", meaning: "काव्य/साहित्य संग्रह (Collection of poems/writings)", trick: "Antho (फूल) + Logy = जैसे फूलों का गुलदस्ता, वैसे कविताओं का संग्रह।" },
+    { type: "OWS • 22", word: "Antidote", meaning: "विषहर दवा (Medicine to counteract poison)", trick: "Anti (खिलाफ) + Dote (डोज़) = ज़हर के खिलाफ दी जाने वाली दवा।" },
+    { type: "OWS • 23", word: "Apathy", meaning: "उदासीनता (Lack of feeling or emotion)", trick: "A (नहीं) + Pathy (भावना) = कोई फीलिंग या दिलचस्पी न होना।" },
+    { type: "OWS • 24", word: "Apiary", meaning: "मधुमक्खी पालन स्थान (Place where bees are kept)", trick: "Api = Bee (मधुमक्खी)। Apiculture से याद रखें।" },
+    { type: "OWS • 25", word: "Aviary", meaning: "पक्षीशाला (Place where birds are kept)", trick: "Avi = Bird (पक्षी)। Aviation (उड़ना) से याद रखें।" }
+  ];
+
+  // 1. ADVANCE MATHS - HIGH LEVEL COMPLETE SSC CGL / TIER 2 SHEET
+  const advanceFormulas = [
+    { topic: "1. बीजगणित (Algebra - Complete SSC CGL)", items: [
+      { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2  |  x³ + 1/x³ = k³ - 3k" },
+      { name: "यदि x - 1/x = k", eq: "x² + 1/x² = k² + 2  |  x³ - 1/x³ = k³ + 3k" },
+      { name: "x⁵ + 1/x⁵ का सीधा सूत्र", eq: "(x² + 1/x²)(x³ + 1/x³) - (x + 1/x)" },
+      { name: "x + 1/x = ±√3 (मानक परिणाम)", eq: "x⁶ = -1  (या x⁶ + 1 = 0)" },
+      { name: "x + 1/x = 1  |  x + 1/x = -1", eq: "x³ = -1  |  x³ = +1" },
+      { name: "a³ + b³ + c³ - 3abc (फॉर्मूला 1)", eq: "(a+b+c)(a²+b²+c²-ab-bc-ca)" },
+      { name: "a³ + b³ + c³ - 3abc (फॉर्मूला 2)", eq: "½(a+b+c)[(a-b)²+(b-c)²+(c-a)²]" },
+      { name: "यदि a+b+c = 0 या a=b=c", eq: "a³ + b³ + c³ = 3abc" },
+      { name: "(a + b)² - (a - b)²", eq: "4ab  |  (a+b)²+(a-b)² = 2(a²+b²)" },
+      { name: "द्विघात समीकरण ax²+bx+c=0 के मूल", eq: "α+β = -b/a  |  αβ = c/a" }
+    ]},
+    { topic: "2. त्रिकोणमिति व ऊँचाई-दूरी (Trigonometry)", items: [
+      { name: "मूल सर्वसमिकाएँ (Identities)", eq: "sin²θ+cos²θ=1 | sec²θ-tan²θ=1 | cosec²θ-cot²θ=1" },
+      { name: "यदि A + B = 90°", eq: "sinA=cosB, tanA·tanB=1, sin²A+sin²B=1" },
+      { name: "यदि secθ + tanθ = k", eq: "secθ - tanθ = 1/k  ⇒  secθ = (k²+1)/2k" },
+      { name: "यदि a sinθ + b cosθ = c", eq: "a cosθ - b sinθ = ±√(a² + b² - c²)" },
+      { name: "a sinθ + b cosθ का Max / Min", eq: "+√(a² + b²)  /  -√(a² + b²)" },
+      { name: "a sin²θ + b cos²θ का Max / Min", eq: "Max = बड़ा(a,b)  |  Min = छोटा(a,b)" },
+      { name: "a tan²θ + b cot²θ का Min मान", eq: "2√(ab)  (हमेशा)" },
+      { name: "sin 2θ / cos 2θ / tan 2θ", eq: "2sinθcosθ | 2cos²θ-1 | 2tanθ/(1-tan²θ)" },
+      { name: "sin 3θ / cos 3θ", eq: "3sinθ - 4sin³θ  |  4cos³θ - 3cosθ" },
+      { name: "ऊँचाई-दूरी अनुपात (30°:60°:90°)", eq: "1 : √3 : 2  |  (45°:45°:90° = 1:1:√2)" }
+    ]},
+    { topic: "3. ज्यामिति (Geometry - Triangles & Circles)", items: [
+      { name: "कोण समद्विभाजक प्रमेय (Angle Bisector)", eq: "AB / AC = BD / DC" },
+      { name: "अंतःकेंद्र (∠BIC) / बाह्य केंद्र (∠BOC)", eq: "90° + ∠A/2  |  90° - ∠A/2" },
+      { name: "लंबकेंद्र (Orthocentre ∠BHC)", eq: "180° - ∠A" },
+      { name: "समरूप त्रिभुज (Similar Δ) क्षेत्रफल", eq: "Area₁/Area₂ = (Side₁/Side₂)²" },
+      { name: "कोसाइन नियम (Cosine Rule)", eq: "cos A = (b² + c² - a²) / 2bc" },
+      { name: "साइन नियम (Sine Rule)", eq: "a/sinA = b/sinB = c/sinC = 2R" },
+      { name: "वृत्त: अंतः प्रतिच्छेदी जीवाएँ", eq: "AP × PB = CP × PD" },
+      { name: "वृत्त: स्पर्श व छेदक रेखा (Tangent-Secant)", eq: "PT² = PA × PB" },
+      { name: "DCT (सीधी उभयनिष्ठ स्पर्श रेखा)", eq: "√[d² - (R - r)²]" },
+      { name: "TCT (तिर्यक उभयनिष्ठ स्पर्श रेखा)", eq: "√[d² - (R + r)²]" },
+      { name: "बहुभुज: अंतः कोण योग / विकर्ण", eq: "(n-2)×180°  |  n(n-3)/2" }
+    ]},
+    { topic: "4. क्षेत्रमिति 2D (Mensuration 2D)", items: [
+      { name: "त्रिभुज: हेरोन सूत्र / अंतःत्रिज्या (r)", eq: "√[s(s-a)(s-b)(s-c)]  |  r = Area / s" },
+      { name: "परित्रिज्या (R) / समकोण Δ की r", eq: "R = abc/(4·Area)  |  r = (P+B-H)/2" },
+      { name: "समबाहु त्रिभुज (Equilateral) Area / h", eq: "(√3/4)a²  |  (√3/2)a  |  R:r = 2:1" },
+      { name: "समचतुर्भुज (Rhombus) Area / भुजा", eq: "½ d₁d₂  |  4a² = d₁² + d₂²" },
+      { name: "समलंब (Trapezium) क्षेत्रफल", eq: "½ × (a + b) × h" },
+      { name: "त्रिज्यखंड (Sector) Area / चाप (Arc)", eq: "(θ/360)πr²  |  (θ/360)2πr" },
+      { name: "अर्धवृत्त का परिमाप (Direct Trick)", eq: "r(π + 2) = r × (36 / 7)" }
+    ]},
+    { topic: "5. क्षेत्रमिति 3D (Mensuration 3D)", items: [
+      { name: "घनाभ (Cuboid) V / TSA / विकर्ण", eq: "lbh | 2(lb+bh+hl) | √(l²+b²+h²)" },
+      { name: "बेलन (Cylinder) V / CSA / TSA", eq: "πr²h | 2πrh | 2πr(h+r)" },
+      { name: "शंकु (Cone) V / CSA / TSA", eq: "⅓πr²h | πrl | πr(l+r)" },
+      { name: "छिन्नक (Frustum) आयतन (Volume)", eq: "⅓πh(R² + r² + Rr)" },
+      { name: "छिन्नक (Frustum) CSA", eq: "π(R + r)l, जहाँ l = √[h²+(R-r)²]" },
+      { name: "गोला (Sphere) V / SA", eq: "(4/3)πr³  |  4πr²" },
+      { name: "अर्धगोला (Hemisphere) V / CSA / TSA", eq: "(2/3)πr³  |  2πr²  |  3πr²" },
+      { name: "प्रिज्म (Prism) आयतन / LSA", eq: "आधार क्षेत्रफल × h  |  आधार परिमाप × h" },
+      { name: "पिरामिड (Pyramid) आयतन / LSA", eq: "⅓ × आधार क्षेत्रफल × h | ½ × परिमाप × l" }
+    ]},
+    { topic: "6. निर्देशांक ज्यामिति (Coordinate Geometry)", items: [
+      { name: "दूरी सूत्र (Distance Formula)", eq: "√[(x₂ - x₁)² + (y₂ - y₁)²]" },
+      { name: "विभाजन सूत्र (Section Formula m:n)", eq: "((mx₂+nx₁)/(m+n) , (my₂+ny₁)/(m+n))" },
+      { name: "रेखा की ढाल (Slope) / लंबवत शर्त", eq: "m = -a/b  |  लंबवत: m₁ × m₂ = -1" },
+      { name: "त्रिभुज का क्षेत्रफल (3 बिंदुओं से)", eq: "½|x₁(y₂-y₃)+x₂(y₃-y₁)+x₃(y₁-y₂)|" },
+      { name: "केंद्रक (Centroid) / परावर्तन (Reflection)", eq: "((x₁+x₂+x₃)/3 , (y₁+y₂+y₃)/3)" }
+    ]},
+    { topic: "7. संख्या पद्धति व करणी (Number System)", items: [
+      { name: "प्रथम n प्राकृतिक / वर्ग / घन योग", eq: "n(n+1)/2 | n(n+1)(2n+1)/6 | [n(n+1)/2]²" },
+      { name: "समान्तर श्रेणी (AP) nवाँ पद व योग", eq: "a+(n-1)d  |  (n/2)[2a+(n-1)d]" },
+      { name: "गुणोत्तर श्रेणी (GP) nवाँ पद व अनंत योग", eq: "arⁿ⁻¹  |  S∞ = a / (1 - r)" },
+      { name: "कुल गुणनखंड (N = aᵖ·bᵠ·cʳ)", eq: "(p + 1)(q + 1)(r + 1)" },
+      { name: "शून्यों की संख्या (n! में)", eq: "[n/5] + [n/25] + [n/125] + ..." },
+      { name: "शेषफल प्रमेय (Euler's / Fermat)", eq: "aᵖ⁻¹ ≡ 1 (mod p), p अभाज्य" }
+    ]}
+  ];
+
+  // 2. ARITHMETIC MATHS - COMPLETE SSC CGL / RAILWAY SHEET
+  const arithmeticFormulas = [
+    { topic: "1. प्रतिशत (Percentage)", items: [
+      { name: "क्रमिक % परिवर्तन (Successive)", eq: "x + y + (xy / 100) %" },
+      { name: "दाम R% बढ़े ⇒ खपत में कमी %", eq: "[R / (100 + R)] × 100" },
+      { name: "दाम R% घटे ⇒ खपत में वृद्धि %", eq: "[R / (100 - R)] × 100" },
+      { name: "प्रमुख भिन्न मान (Fractions)", eq: "1/6=16.67% | 1/7=14.28% | 1/8=12.5% | 1/12=8.33%" }
+    ]},
+    { topic: "2. लाभ-हानि व बट्टा (Profit, Loss & Discount)", items: [
+      { name: "CP व MP का सीधा अनुपात", eq: "CP / MP = (100 - D%) / (100 + P%)" },
+      { name: "समान SP पर x% लाभ व x% हानि", eq: "हमेशा हानि = x² / 100 %" },
+      { name: "बेईमान दुकानदार (गलत बाट)", eq: "लाभ % = (त्रुटि / तौला गया वजन) × 100" },
+      { name: "दो क्रमिक छूट (x% और y%)", eq: "एकल छूट = x + y - (xy / 100) %" },
+      { name: "Buy x Get y Free में छूट %", eq: "[y / (x + y)] × 100" }
+    ]},
+    { topic: "3. साधारण व चक्रवृद्धि ब्याज (SI & CI)", items: [
+      { name: "साधारण ब्याज (SI) / मिश्रधन", eq: "SI = PRT/100  |  A = P(1 + RT/100)" },
+      { name: "2 वर्ष के CI व SI का अंतर", eq: "Diff = P × (R / 100)²" },
+      { name: "3 वर्ष के CI व SI का अंतर", eq: "Diff = P(R/100)² × (300 + R)/100" },
+      { name: "अर्धवार्षिक / त्रैमासिक CI", eq: "दर R/2, समय 2T  |  दर R/4, समय 4T" },
+      { name: "SI किस्त (Installment) सूत्र", eq: "x = [100·A] / [100t + Rt(t-1)/2]" },
+      { name: "CI किस्त (2 समान किस्तें)", eq: "P = x/(1+R/100) + x/(1+R/100)²" }
+    ]},
+    { topic: "4. अनुपात, समानुपात व साझेदारी (Ratio)", items: [
+      { name: "मध्यानुपाती (Mean Proportional)", eq: "√(a × b)" },
+      { name: "तृतीयानुपाती (Third Proportional)", eq: "b² / a" },
+      { name: "चतुर्थानुपाती (Fourth Proportional)", eq: "(b × c) / a" },
+      { name: "साझेदारी (Partnership) लाभ अनुपात", eq: "लाभ = पूँजी (Capital) × समय (Time)" }
+    ]},
+    { topic: "5. मिश्रण व एलिगेशन (Mixture & Alligation)", items: [
+      { name: "एलिगेशन नियम (Alligation Rule)", eq: "(महंगा - औसत) : (औसत - सस्ता)" },
+      { name: "बार-बार प्रतिस्थापन (Replacement)", eq: "बची मात्रा = प्रारंभिक × (1 - y/x)ⁿ" }
+    ]},
+    { topic: "6. समय-कार्य व नल-टंकी (Time & Work)", items: [
+      { name: "MDH मसाला सूत्र", eq: "(M₁·D₁·H₁·E₁) / W₁ = (M₂·D₂·H₂·E₂) / W₂" },
+      { name: "A व B मिलकर (x व y दिन)", eq: "(x × y) / (x + y) दिन" },
+      { name: "यदि A को (A+B) से x दिन व B को y दिन अधिक लगें", eq: "A+B का समय = √(x × y)" },
+      { name: "मजदूरी (Wages) का बंटवारा", eq: "हमेशा किए गए कार्य (या क्षमता) के अनुपात में" }
+    ]},
+    { topic: "7. समय, चाल, ट्रेन व नाव (TSD, Train & Boat)", items: [
+      { name: "औसत चाल (समान दूरी)", eq: "2xy / (x + y)  |  3xyz / (xy+yz+zx)" },
+      { name: "देर/जल्दी पहुँचने पर दूरी सूत्र", eq: "D = [S₁·S₂ / (S₁-S₂)] × ΔT" },
+      { name: "मिलने के बाद t₁ व t₂ समय लगें", eq: "S₁ / S₂ = √(t₂ / t₁)" },
+      { name: "नाव की चाल (B) व धारा की चाल (S)", eq: "B = (D+U)/2  |  S = (D-U)/2" },
+      { name: "चोर-पुलिस पकड़ने का समय", eq: "बीच की दूरी / सापेक्ष चाल (S₁ - S₂)" }
+    ]},
+    { topic: "8. औसत (Average)", items: [
+      { name: "लगातार n सम / विषम संख्याओं का औसत", eq: "सम = n + 1  |  विषम = n" },
+      { name: "1 से n तक वर्गों का औसत", eq: "(n + 1)(2n + 1) / 6" },
+      { name: "प्रतिस्थापन (Replacement) ट्रिक", eq: "नया मान = पुराना ± (कुल संख्या × औसत बदलाव)" }
+    ]},
+    { topic: "9. क्रमचय, संचय व प्रायिकता (P&C, Probability)", items: [
+      { name: "क्रमचय (Permutation ⁿPᵣ)", eq: "n! / (n - r)!" },
+      { name: "संचय (Combination ⁿCᵣ)", eq: "n! / [r! × (n - r)!]" },
+      { name: "प्रायिकता (Probability)", eq: "P(E) = अनुकूल परिणाम / कुल परिणाम" }
+    ]}
+  ];
+
+  // 3. REASONING FORMULAS & MEMORY FACTS (Downloadable PDF)
+  const reasoningFormulas = [
+    { topic: "1. वर्णमाला स्थान मान (Alphabet Place Values)", items: [
+      { name: "EJOTY ट्रिक (5 के गुणज)", eq: "E=5, J=10, O=15, T=20, Y=25" },
+      { name: "CFILORUX ट्रिक (3 के गुणज)", eq: "C=3, F=6, I=9, L=12, O=15, R=18, U=21, X=24" },
+      { name: "दाएँ से स्थान निकालने का सूत्र", eq: "बाएँ से स्थान = 27 - दाएँ से स्थान" },
+      { name: "विपरीत अक्षर जोड़ी (योग = 27)", eq: "AZ(आज), BY(बाय), CX(सिक्स), DW(दूधवाला), EV(ईव), FU(फू)" },
+      { name: "विपरीत जोड़ी (भाग 2)", eq: "GT(रोड), HS(हाईस्कूल), IR(इंडियन रेल), JQ(जंगल क्वीन), KP(कानपुर), LO(लव), MN(मन)" }
+    ]},
+    { topic: "2. वर्ग और घन (याद रखने वाले जरूरी मान)", items: [
+      { name: "वर्ग (11 से 20)", eq: "121, 144, 169, 196, 225, 256, 289, 324, 361, 400" },
+      { name: "वर्ग (21 से 30)", eq: "441, 484, 529, 576, 625, 676, 729, 784, 841, 900" },
+      { name: "घन / Cubes (1 से 10)", eq: "1, 8, 27, 64, 125, 216, 343, 512, 729, 1000" },
+      { name: "घन / Cubes (11 से 15)", eq: "1331, 1728, 2197, 2744, 3375" }
+    ]},
+    { topic: "3. घड़ी (Clock Shortcuts)", items: [
+      { name: "घंटे व मिनट सुई के बीच कोण (θ)", eq: "θ = |30H - (11/2)M|  या  |30H - 5.5M|" },
+      { name: "दर्पण प्रतिबिंब (Mirror Image)", eq: "11:60 (या 23:60) में से समय घटाएँ" },
+      { name: "जल प्रतिबिंब (Water Image)", eq: "18:30 (या 17:90) में से समय घटाएँ" },
+      { name: "12 घंटे / 24 घंटे में 0° व 180°", eq: "11 बार / 22 बार (90° = 22 बार / 44 बार)" }
+    ]},
+    { topic: "4. कैलेंडर (Calendar Facts & Codes)", items: [
+      { name: "साधारण वर्ष / लीप वर्ष में विषम दिन", eq: "साधारण = 1 विषम दिन | लीप = 2 विषम दिन" },
+      { name: "शताब्दी विषम दिन (100/200/300/400)", eq: "100→5, 200→3, 300→1, 400→0 (ट्रिक: 5310)" },
+      { name: "शताब्दी का अंतिम दिन नहीं हो सकता", eq: "मंगलवार, गुरुवार, शनिवार (कभी नहीं)" },
+      { name: "कैलेंडर रिपीट ट्रिक (वर्ष ÷ 4 का शेष)", eq: "शेष 0→+28 | शेष 1→+6 | शेष 2,3→+11 वर्ष" }
+    ]},
+    { topic: "5. पासा और घन (Dice & Cube)", items: [
+      { name: "मानक पासा (Standard Dice)", eq: "विपरीत फलकों का योग हमेशा 7 (1↔6, 2↔5, 3↔4)" },
+      { name: "1 अंक समान होने पर नियम", eq: "समान अंक से Clockwise घूमकर तुलना करें" },
+      { name: "रंगे हुए घन (n = बड़ा/छोटा भुजा)", eq: "कुल=n³ | 3-रंग=8 | 2-रंग=12(n-2) | 1-रंग=6(n-2)² | 0-रंग=(n-2)³" }
+    ]},
+    { topic: "6. आकृति गिनना (Counting Figures)", items: [
+      { name: "त्रिभुज के अंदर लंबवत रेखाएँ (n भाग)", eq: "कुल त्रिभुज = n(n + 1) / 2" },
+      { name: "वर्ग के अंदर दोनों विकर्ण (4 भाग)", eq: "4 × 2 = 8 त्रिभुज (8 भाग ⇒ 16 त्रिभुज)" },
+      { name: "n × n ग्रिड में कुल वर्ग (Squares)", eq: "1² + 2² + ... + n²" },
+      { name: "n × n ग्रिड में कुल आयत (Rectangles)", eq: "1³ + 2³ + ... + n³ = [n(n+1)/2]²" }
+    ]},
+    { topic: "7. क्रम व्यवस्था व न्याय निगमन (Ranking & Syllogism)", items: [
+      { name: "पंक्ति में कुल व्यक्ति", eq: "Total = Left + Right - 1" },
+      { name: "स्थान बदलने पर कुल व्यक्ति", eq: "एक का नया स्थान + दूसरे का पुराना स्थान - 1" },
+      { name: "Either-Or की 3 शर्तें (Syllogism)", eq: "1. दोनों गलत 2. समान शब्द 3. एक Positive + एक Negative" }
+    ]}
+  ];
+
+  const currentAffairs = [
+    { date: "Polity • Revision", title: "भारतीय संविधान और प्रमुख अनुच्छेद", desc: "अनुच्छेद 32 को 'संविधान की आत्मा' कहा गया है। अनुच्छेद 280 में वित्त आयोग और 360 में वित्तीय आपातकाल है।" },
+    { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' कहा जाता है।" }
+  ];
+
+  let activeHubExam = null, activeHubFilter = 'all', activeSecSubject = 'Maths', activeMathCol = 'adv';
+  let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
+  let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
+  let currentMobile = localStorage.getItem('ep_active_mobile') || '';
+
+  function getProfileKey() { return currentMobile ? 'ep_profile_' + currentMobile : 'ep_profile'; }
+  function getHistoryKey() { return currentMobile ? 'ep_history_' + currentMobile : 'ep_history'; }
+
+  function getProfile() {
+    return JSON.parse(localStorage.getItem(getProfileKey())) || { name:'स्टूडेंट', mobile: currentMobile, city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', cat:'UR', medium:'हिंदी माध्यम' };
+  }
+  function getHistory() { return JSON.parse(localStorage.getItem(getHistoryKey())) || []; }
+
+  function checkLoginStatus() {
+    const loginEl = document.getElementById('login-screen');
+    if (!currentMobile) {
+      loginEl.classList.remove('hidden');
+    } else {
+      loginEl.classList.add('hidden');
     }
+  }
 
-    function renderSidebar() {
-      chatList.innerHTML = "";
-      chats.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "chat-item" + (c.id === currentChatId ? " active" : "");
-        div.textContent = c.title || "New Chat";
-        div.onclick = () => {
-          currentChatId = c.id;
-          renderChat();
-          closeSidebar();
-        };
-        chatList.appendChild(div);
+  function doMobileLogin() {
+    const mob = document.getElementById('login-mobile').value.trim().replace(/\D/g, '');
+    const nm = document.getElementById('login-name').value.trim();
+    const errEl = document.getElementById('login-err');
+    if (mob.length !== 10) {
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    currentMobile = mob;
+    localStorage.setItem('ep_active_mobile', mob);
+    const existing = JSON.parse(localStorage.getItem(getProfileKey()));
+    if (!existing) {
+      localStorage.setItem(getProfileKey(), JSON.stringify({
+        name: nm || 'स्टूडेंट', mobile: mob, city: 'जयपुर', goal: '6', target: 'SSC CGL Tier 1 & 2', cat: 'UR', medium: 'हिंदी माध्यम'
+      }));
+    } else if (nm) {
+      existing.name = nm;
+      existing.mobile = mob;
+      localStorage.setItem(getProfileKey(), JSON.stringify(existing));
+    }
+    document.getElementById('login-screen').classList.add('hidden');
+    renderProfileUI();
+    renderHistoryUI();
+  }
+
+  function logoutUser() {
+    if (confirm('क्या आप लॉगआउट करके दूसरे नंबर से लॉगिन करना चाहते हैं? (आपका डेटा इस नंबर पर सुरक्षित रहेगा)')) {
+      localStorage.removeItem('ep_active_mobile');
+      currentMobile = '';
+      document.getElementById('login-mobile').value = '';
+      document.getElementById('login-name').value = '';
+      checkLoginStatus();
+    }
+  }
+
+  function shareApp() {
+    const appUrl = window.location.href.split('#')[0];
+    const shareText = 'ExamPrep Pro - SSC CGL, RRB NTPC, MP Police aur sabhi Govt Exams ke Free Mock Tests, PYQs, Maths & Reasoning Formulas PDF ke sath! Abhi try karein: ' + appUrl;
+    if (navigator.share) {
+      navigator.share({ title: 'ExamPrep Pro App', text: shareText, url: appUrl }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => alert('App link copy ho gaya! Ab WhatsApp ya Telegram par paste karke share karein.'));
+    } else {
+      prompt('Is link ko copy karke share karein:', appUrl);
+    }
+  }
+
+  function getTestSubject(t) {
+    const title = (t.title || '').toLowerCase();
+    const secName = (t.fullData && t.fullData.sections && t.fullData.sections[0] ? t.fullData.sections[0].name : '').toLowerCase();
+    const s = title + ' ' + secName;
+    if (s.includes('math')) return 'Maths';
+    if (s.includes('reason')) return 'Reasoning';
+    if (s.includes('english')) return 'English';
+    if (s.includes('gs') || s.includes('gk') || s.includes('ga') || s.includes('general')) return 'GS / GA';
+    return 'Maths';
+  }
+
+  // Testbook-Style Topic Key Facts (Auto-shown in Detailed Solutions)
+  const TOPIC_KEY_FACTS = {
+    "Algebra": {
+      hi: ["यदि x + 1/x = k ⇒ x² + 1/x² = k² - 2 और x³ + 1/x³ = k³ - 3k।", "यदि x + 1/x = √3 ⇒ x⁶ = -1 होता है।", "यदि a + b + c = 0 ⇒ a³ + b³ + c³ = 3abc।"],
+      en: ["If x + 1/x = k ⇒ x² + 1/x² = k² - 2 and x³ + 1/x³ = k³ - 3k.", "If x + 1/x = √3 ⇒ x⁶ = -1.", "If a + b + c = 0 ⇒ a³ + b³ + c³ = 3abc."]
+    },
+    "Trigonometry": {
+      hi: ["sin²θ + cos²θ = 1 | sec²θ - tan²θ = 1 | cosec²θ - cot²θ = 1।", "यदि A + B = 90° ⇒ sinA = cosB और tanA·tanB = 1।", "a tan²θ + b cot²θ का न्यूनतम मान हमेशा 2√(ab) होता है।"],
+      en: ["sin²θ + cos²θ = 1 | sec²θ - tan²θ = 1 | cosec²θ - cot²θ = 1.", "If A + B = 90° ⇒ sinA = cosB and tanA·tanB = 1.", "Min value of a tan²θ + b cot²θ is always 2√(ab)."]
+    },
+    "Geometry": {
+      hi: ["अंतःकेंद्र ∠BIC = 90° + ∠A/2 | लंबकेंद्र ∠BHC = 180° - ∠A।", "DCT = √[d² - (R-r)²] और TCT = √[d² - (R+r)²]।", "बहुभुज के विकर्ण = n(n-3)/2 और अंतः कोण योग = (n-2)×180°।"],
+      en: ["Incentre ∠BIC = 90° + ∠A/2 | Orthocentre ∠BHC = 180° - ∠A.", "DCT = √[d² - (R-r)²] and TCT = √[d² - (R+r)²].", "Polygon diagonals = n(n-3)/2; interior angle sum = (n-2)×180°."]
+    },
+    "Mensuration": {
+      hi: ["समबाहु त्रिभुज: Area = (√3/4)a², ऊँचाई = (√3/2)a।", "शंकु आयतन = ⅓πr²h, बेलन = πr²h, गोला = (4/3)πr³।", "समचतुर्भुज: Area = ½ d₁d₂ और 4a² = d₁² + d₂²।"],
+      en: ["Equilateral Δ: Area = (√3/4)a², Height = (√3/2)a.", "Volume: Cone = ⅓πr²h, Cylinder = πr²h, Sphere = (4/3)πr³.", "Rhombus: Area = ½ d₁d₂ and 4a² = d₁² + d₂²."]
+    },
+    "Profit & Loss": {
+      hi: ["सीधा अनुपात: CP / MP = (100 - D%) / (100 + P%)।", "समान SP पर x% लाभ व x% हानि में हमेशा x²/100 % हानि होती है।", "क्रमिक छूट (x%, y%) = x + y - xy/100 %।"],
+      en: ["Direct Ratio: CP / MP = (100 - D%) / (100 + P%).", "Same SP with x% gain & x% loss always gives x²/100 % loss.", "Successive discount = x + y - xy/100 %."]
+    },
+    "SI & CI": {
+      hi: ["2 वर्ष CI - SI = P(R/100)² | 3 वर्ष = P(R/100)² × (300+R)/100।", "यदि राशि CI पर t वर्ष में n गुनी हो, तो nᵏ गुनी होने में k×t वर्ष लगेंगे।"],
+      en: ["2-yr CI - SI = P(R/100)² | 3-yr = P(R/100)² × (300+R)/100.", "If a sum becomes n times in t yrs at CI, it becomes nᵏ times in k×t yrs."]
+    },
+    "Time & Work": {
+      hi: ["MDH सूत्र: (M₁·D₁·H₁)/W₁ = (M₂·D₂·H₂)/W₂।", "A और B मिलकर (x व y दिन) = (xy)/(x+y) दिन।"],
+      en: ["MDH Formula: (M₁·D₁·H₁)/W₁ = (M₂·D₂·H₂)/W₂.", "A and B together = (xy)/(x+y) days."]
+    },
+    "Time, Speed & Dist.": {
+      hi: ["km/h से m/s के लिए × 5/18 और m/s से km/h के लिए × 18/5 करें।", "नाव की चाल B = (D+U)/2 और धारा की चाल S = (D-U)/2।"],
+      en: ["km/h to m/s: multiply by 5/18; m/s to km/h: multiply by 18/5.", "Boat speed = (D+U)/2 and Stream speed = (D-U)/2."]
+    },
+    "Percentage": {
+      hi: ["क्रमिक % बदलाव = x + y + xy/100 %।", "दाम R% बढ़े ⇒ खपत कमी = [R/(100+R)] × 100 %।"],
+      en: ["Successive % change = x + y + xy/100 %.", "If price rises R%, consumption reduction = [R/(100+R)] × 100 %."]
+    },
+    "Ratio & Mixture": {
+      hi: ["मध्यानुपाती = √(ab), तृतीयानुपाती = b²/a, चतुर्थानुपाती = bc/a।", "साझेदारी में लाभ = पूँजी × समय।"],
+      en: ["Mean prop = √(ab), Third = b²/a, Fourth = bc/a.", "Partnership Profit = Capital × Time."]
+    },
+    "Average": {
+      hi: ["प्रथम n प्राकृतिक संख्याओं का औसत = (n+1)/2।", "लगातार n सम का औसत = n+1 और विषम का औसत = n।"],
+      en: ["Avg of first n natural numbers = (n+1)/2.", "Avg of first n even = n+1; first n odd = n."]
+    },
+    "Number System & HCF/LCM": {
+      hi: ["दो संख्याओं का गुणनफल = LCM × HCF।", "8 से विभाज्यता: अंतिम 3 अंक; 9 से विभाज्यता: अंकों का योग 9 से कटे।"],
+      en: ["Product of two numbers = LCM × HCF.", "Divisibility by 8: last 3 digits; by 9: sum of digits."]
+    },
+    "Polity": {
+      hi: ["मूल संविधान में 395 अनुच्छेद, 22 भाग और 8 अनुसूचियाँ थीं (अब 12 अनुसूचियाँ)।", "अनुच्छेद 32 (संवैधानिक उपचार) को डॉ. अंबेडकर ने संविधान की आत्मा कहा।", "42वाँ संशोधन (1976) 'लघु संविधान' कहलाता है।"],
+      en: ["Original Constitution had 395 Articles, 22 Parts, 8 Schedules (now 12).", "Article 32 was called the 'Heart and Soul' by Dr. Ambedkar.", "42nd Amendment (1976) is known as the Mini Constitution."]
+    },
+    "History": {
+      hi: ["प्लासी का युद्ध: 1757 | बक्सर का युद्ध: 1764 | 1857 की क्रांति: मेरठ से 10 मई।", "भारतीय राष्ट्रीय कांग्रेस की स्थापना 1885 में ए.ओ. ह्यूम ने मुंबई में की।", "गांधी-इरविन समझौता (1931) और पूना पैक्ट (1932) SSC के फेवरेट सवाल हैं।"],
+      en: ["Battle of Plassey: 1757 | Buxar: 1764 | Revolt of 1857 started in Meerut.", "INC was founded in 1885 by A.O. Hume in Bombay.", "Gandhi-Irwin Pact (1931) and Poona Pact (1932) are frequently asked."]
+    },
+    "Geography": {
+      hi: ["कर्क रेखा भारत के 8 राज्यों (गुजरात, राजस्थान, म.प्र., छ.ग., झारखंड, प.बंगाल, त्रिपुरा, मिज़ोरम) से गुजरती है।", "नर्मदा और ताप्ती पश्चिम की ओर बहकर अरब सागर में एश्चुअरी बनाती हैं।"],
+      en: ["Tropic of Cancer passes through 8 Indian states.", "Narmada and Tapi flow westward and form estuaries in the Arabian Sea."]
+    },
+    "Economy": {
+      hi: ["RBI की स्थापना 1 अप्रैल 1935 (हिल्टन यंग आयोग) और राष्ट्रीयकरण 1949 में हुआ।", "GST (101वाँ संशोधन) 1 जुलाई 2017 से लागू हुआ — यह एक अप्रत्यक्ष कर है।"],
+      en: ["RBI was established on 1 April 1935 and nationalized in 1949.", "GST (101st Amendment) rolled out on 1 July 2017 as an indirect tax."]
+    },
+    "Biology": {
+      hi: ["वसा में घुलनशील विटामिन: A, D, E, K (ट्रिक: कीड़ा/KEDA) | जल में घुलनशील: B, C।", "माइटोकॉन्ड्रिया = कोशिका का पावरहाउस | लाइसोसोम = आत्महत्या की थैली।"],
+      en: ["Fat-soluble vitamins: A, D, E, K | Water-soluble: B, C.", "Mitochondria = Powerhouse of cell | Lysosome = Suicidal bag."]
+    },
+    "Physics & Chemistry": {
+      hi: ["ध्वनि अनुदैर्ध्य तरंग है (निर्वात में 0 m/s), प्रकाश अनुप्रस्थ तरंग है (3×10⁸ m/s)।", "अम्ल (Acid) का pH < 7, क्षार (Base) का pH > 7 और शुद्ध जल का pH = 7 होता है।"],
+      en: ["Sound is longitudinal (0 m/s in vacuum); Light is transverse (3×10⁸ m/s).", "Acid pH < 7, Base pH > 7, Neutral water pH = 7."]
+    },
+    "Static GK & Culture": {
+      hi: ["भारत के 8 शास्त्रीय नृत्य: भरतनाट्यम (TN), कथक (UP), कथकली व मोहिनीअट्टम (केरल), कुचिपुड़ी (AP), ओडिसी, मणिपुरी, सत्रिया (असम)।", "ISRO स्थापना: 15 अगस्त 1969 (बेंगलुरु) | DRDO: 1958 (नई दिल्ली)।"],
+      en: ["8 Classical Dances: Bharatanatyam, Kathak, Kathakali, Mohiniyattam, Kuchipudi, Odissi, Manipuri, Sattriya.", "ISRO founded: 15 Aug 1969 (Bengaluru) | DRDO: 1958."]
+    },
+    "MP GK": {
+      hi: ["म.प्र. का गठन: 1 नवंबर 1956 | राजकीय वृक्ष: बरगद | राजकीय नृत्य: राई | राजकीय खेल: मलखंभ।", "म.प्र. को 'टाइगर स्टेट' और 'सोया स्टेट' कहा जाता है; सर्वाधिक राष्ट्रीय उद्यान यहीं हैं।"],
+      en: ["MP formed: 1 Nov 1956 | State Tree: Banyan | State Dance: Rai | Sport: Mallakhamb.", "MP is known as the Tiger State & Soya State of India."]
+    },
+    "Clock & Mirror": {
+      hi: ["सुइयों के बीच कोण θ = |30H - 5.5M|।", "दर्पण प्रतिबिंब: 11:60 से घटाएँ | जल प्रतिबिंब: 18:30 से घटाएँ।"],
+      en: ["Angle between hands θ = |30H - 5.5M|.", "Mirror image: subtract from 11:60 | Water image: subtract from 18:30."]
+    },
+    "Coding-Decoding": {
+      hi: ["EJOTY = 5, 10, 15, 20, 25 | विपरीत अक्षर जोड़ी का योग हमेशा 27 होता है।"],
+      en: ["EJOTY = 5, 10, 15, 20, 25 | Opposite letter pairs always sum to 27."]
+    },
+    "Number/Letter Series": {
+      hi: ["पहले अंतर (Difference), फिर वर्ग/घन (n², n³) और गुणा (×2±1) का पैटर्न चेक करें।"],
+      en: ["Check difference first, then squares/cubes (n², n³) and multiplication patterns."]
+    }
+  };
+
+  function detectTopic(secName, qObj) {
+    if (qObj.topic) return qObj.topic;
+    const txt = ((qObj.q.en || '') + ' ' + (qObj.exp.en || '')).toLowerCase();
+    const sec = secName.toLowerCase();
+
+    if (sec.includes('math')) {
+      if (/sin|cos|tan|sec|cosec|cot|elevation|shadow|tower|pole/.test(txt)) return 'Trigonometry';
+      if (/x\+|x-|x²|x³|a³|b³|a\+b|algebra|equation/.test(txt)) return 'Algebra';
+      if (/triangle|circle|chord|tangent|polygon|angle|incentre|cyclic|bpt|centroid|slope|midpoint|origin/.test(txt)) return 'Geometry';
+      if (/area|volume|cylinder|cone|sphere|hemisphere|cube|cuboid|rhombus|trapezium|perimeter|rectangle|square|sector/.test(txt)) return 'Mensuration';
+      if (/profit|loss|discount|cp|sp|mp|selling|cost price|marked/.test(txt)) return 'Profit & Loss';
+      if (/compound|simple interest|ci|si|principal|rate p\.a/.test(txt)) return 'SI & CI';
+      if (/work|days|pipe|tank|efficient/.test(txt)) return 'Time & Work';
+      if (/train|boat|stream|speed|km\/h|distance|late|early/.test(txt)) return 'Time, Speed & Dist.';
+      if (/percent|%|election|income|expenditure|marks/.test(txt)) return 'Percentage';
+      if (/ratio|mixture|milk|water|alligation|age|salary|invested/.test(txt)) return 'Ratio & Mixture';
+      if (/average|avg/.test(txt)) return 'Average';
+      return 'Number System & HCF/LCM';
+    }
+    if (sec.includes('english')) {
+      if (/synonym/.test(txt)) return 'Synonyms';
+      if (/antonym/.test(txt)) return 'Antonyms';
+      if (/one word/.test(txt)) return 'One Word (OWS)';
+      if (/idiom/.test(txt)) return 'Idioms & Phrases';
+      if (/spot the error/.test(txt)) return 'Error Spotting';
+      if (/improvement/.test(txt)) return 'Sentence Improvement';
+      if (/passive|active voice/.test(txt)) return 'Active / Passive';
+      if (/indirect|direct speech/.test(txt)) return 'Narration';
+      if (/spelt|spelling/.test(txt)) return 'Spelling Test';
+      if (/rearrange|pqrs/.test(txt)) return 'Para Jumbles (PQRS)';
+      return 'Fill in the Blanks';
+    }
+    if (sec.includes('reason')) {
+      if (/series/.test(txt)) return 'Number/Letter Series';
+      if (/coded|cat|dog|pen|rose|water/.test(txt)) return 'Coding-Decoding';
+      if (/mirror|clock|angle/.test(txt)) return 'Clock & Mirror';
+      if (/odd one out/.test(txt)) return 'Classification (Odd One)';
+      if (/::/.test(txt)) return 'Analogy';
+      if (/north|south|east|west|walk/.test(txt)) return 'Direction Sense';
+      if (/brother|mother|son|father|wife/.test(txt)) return 'Blood Relation';
+      return 'Logical & Misc.';
+    }
+    if (/article|constitution|amendment|parliament|president|lok sabha|rajya sabha|election|panchayat|schedule|bill/.test(txt)) return 'Polity';
+    if (/harappan|indus|maurya|mughal|battle|plassey|buxar|panipat|gandhi|revolt|1857|ashoka|akbar|vijayanagara|samaj|congress|sultan|gupta|buddha/.test(txt)) return 'History';
+    if (/river|lake|peak|pass|desert|strait|delta|tropic|coastline|planet|atmosphere|troposphere|stratosphere|volcano|national park|dam|highway/.test(txt)) return 'Geography';
+    if (/rbi|gst|tax|bank|slr|repo|niti|nabard|sebi|income|unemployment|five-year|revolution/.test(txt)) return 'Economy';
+    if (/vitamin|blood|cell|gland|heart|kidney|liver|bone|plant|disease|insulin|malaria|vaccine|penicillin|chlorophyll/.test(txt)) return 'Biology';
+    if (/unit|si |ohm|pascal|joule|ampere|light|sound|lens|myopia|newton|acid|soda|alloy|brass|mercury|gas|periodic|gypsum|dry ice/.test(txt)) return 'Physics & Chemistry';
+    return 'Static GK & Culture';
+  }
+
+  function loadExternalPacks() {
+    const allExternal = [];
+    if (window.CGL_FULL_TESTS) {
+      window.CGL_FULL_TESTS.forEach(t => {
+        allExternal.push({ examId: 'ssc_cgl_t1', ...t, secLock: true, secTime: 900 });
       });
     }
+    if (window.EXTERNAL_TEST_PACKS && window.EXTERNAL_TEST_PACKS.length) {
+      window.EXTERNAL_TEST_PACKS.forEach(t => allExternal.push(t));
+    }
+    allExternal.forEach(t => {
+      const targetExam = examDirectory.find(e => e.id === (t.examId || 'ssc_cgl_t1'));
+      if (targetExam) {
+        const qCount = t.sections.reduce((s, sec) => s + sec.questions.length, 0);
+        targetExam.tests.push({
+          title: t.title,
+          type: t.type || 'full',
+          time: t.time || (t.sections.length * (t.secTime || 900)),
+          qCount: qCount,
+          secLock: !!t.secLock,
+          secTime: t.secTime || 900,
+          fullData: t
+        });
+      }
+    });
+  }
 
-    function renderWelcome() {
-      chatInner.innerHTML = `
-        <div class="welcome">
-          <h1>Hello, Aravindra</h1>
-          <p>Aaj kis subject ya topic ki taiyari karni hai?</p>
-          <div class="cards">
-            <div class="card" onclick="quickAsk('Fundamental Rights (Art 12-35) ko ek table mein short revision notes ke saath samjhao.')">📜 Polity: Fundamental Rights Table</div>
-            <div class="card" onclick="quickAsk('Modern History 1857 se 1947 tak ke main events chronology mein batao.')">🏛️ History: 1857–1947 Timeline</div>
-            <div class="card" onclick="quickAsk('SSC CGL ke liye 5 important One-Word Substitutions aur unki yaad karne ki trick do.')">📚 English: OWS + Tricks</div>
-            <div class="card" onclick="quickAsk('RRB NTPC General Science ke 5 most repeated Biology questions MCQ format mein pucho.')">🔬 Science: 5 PYQ Quiz</div>
+  function initApp() {
+    loadExternalPacks();
+    checkLoginStatus();
+    if (isDark) { document.documentElement.setAttribute('data-theme', 'dark'); updateThemeIcons(); }
+    renderHomeExams(); renderProfileUI(); renderStudyHub(); renderHistoryUI();
+  }
+
+  function renderHomeExams() {
+    ['ssc', 'rrb', 'other'].forEach(grp => {
+      document.getElementById('list-' + grp).innerHTML = examDirectory.filter(e => e.group === grp).map(e => `
+        <div class="exam-col-card" onclick="openExamHub('${e.id}')">
+          <div class="exam-col-left">
+            <div class="exam-ico ${e.icoClass}">${e.icon}</div>
+            <div><div class="exam-col-title">${e.title}</div><div class="exam-col-sub">${e.sub}</div></div>
+          </div>
+          <div class="exam-arrow">›</div>
+        </div>
+      `).join('');
+    });
+  }
+
+  function openExamHub(examId) {
+    activeHubExam = examDirectory.find(e => e.id === examId);
+    document.getElementById('tab-home').classList.add('hidden');
+    document.getElementById('exam-hub').classList.remove('hidden');
+    document.getElementById('hub-exam-title').innerText = activeHubExam.title;
+    document.getElementById('hub-exam-sub').innerText = activeHubExam.sub;
+    filterHubTests('all');
+    window.scrollTo(0, 0);
+  }
+
+  function closeExamHub() {
+    document.getElementById('exam-hub').classList.add('hidden');
+    document.getElementById('tab-home').classList.remove('hidden');
+  }
+
+  function selectSectionalSubject(subj) {
+    activeSecSubject = subj;
+    renderSectionalColumns();
+    renderHubTestsList();
+  }
+
+  function renderSectionalColumns() {
+    const secTests = activeHubExam.tests.filter(t => t.type === 'sectional');
+    const subjects = [
+      { key: 'Maths', ico: '📐', label: 'Maths' },
+      { key: 'Reasoning', ico: '🧠', label: 'Reasoning' },
+      { key: 'GS / GA', ico: '🌍', label: 'GS / GK' },
+      { key: 'English', ico: '📖', label: 'English' }
+    ];
+    document.getElementById('sectional-subject-cols').innerHTML = subjects.map(s => {
+      const cnt = secTests.filter(t => getTestSubject(t) === s.key).length;
+      return `
+        <div class="sub-col-card ${activeSecSubject === s.key ? 'active' : ''}" onclick="selectSectionalSubject('${s.key}')">
+          <div class="sub-col-ico">${s.ico}</div>
+          <div>
+            <div class="sub-col-name">${s.label}</div>
+            <div class="sub-col-cnt">${cnt} टेस्ट</div>
           </div>
         </div>
       `;
+    }).join('');
+  }
+
+  function filterHubTests(type) {
+    activeHubFilter = type;
+    ['all', 'full', 'pyq', 'sectional'].forEach(t => document.getElementById('flt-' + t).classList.toggle('active', t === type));
+    const subColBox = document.getElementById('sectional-subject-cols');
+    if (type === 'sectional') {
+      subColBox.classList.remove('hidden');
+      renderSectionalColumns();
+    } else {
+      subColBox.classList.add('hidden');
+    }
+    renderHubTestsList();
+  }
+
+  function renderHubTestsList() {
+    let filtered = activeHubExam.tests.filter(t => activeHubFilter === 'all' || t.type === activeHubFilter);
+    if (activeHubFilter === 'sectional') {
+      filtered = filtered.filter(t => getTestSubject(t) === activeSecSubject);
+    }
+    const list = document.getElementById('hub-tests-list');
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state">${activeHubFilter === 'sectional' ? activeSecSubject + ' के सेक्शनल टेस्ट अभी अपलोड नहीं हुए हैं।' : 'इस कैटेगरी में अभी टेस्ट नहीं हैं।'}</div>`;
+      return;
+    }
+    list.innerHTML = filtered.map(t => {
+      const realIdx = activeHubExam.tests.indexOf(t);
+      const badgeCls = t.type === 'full' ? 'badge-full' : t.type === 'pyq' ? 'badge-pyq' : 'badge-sec';
+      const badgeTxt = t.type === 'full' ? 'Full Test' : t.type === 'pyq' ? 'PYQ Paper' : 'Sectional • ' + getTestSubject(t);
+      const qTotal = t.qCount || (t.secs ? t.secs.length * t.cnt : 25);
+      const lockBadge = t.secLock ? `<span>🔒 15m/सेक्शन</span>` : '';
+      return `
+        <div class="test-card">
+          <span class="test-badge ${badgeCls}">${badgeTxt}</span>
+          <div class="test-title">${t.title}</div>
+          <div class="test-meta"><span>📝 ${qTotal} सवाल</span><span>⏱️ ${Math.round(t.time/60)} मिनट</span>${lockBadge}<span>📊 +${activeHubExam.pos} / -${activeHubExam.neg}</span></div>
+          <button class="btn-start" onclick="launchTest('${activeHubExam.id}', ${realIdx})">टेस्ट शुरू करें →</button>
+        </div>`;
+    }).join('');
+  }
+
+  function switchMainTab(tab) {
+    document.getElementById('exam-hub').classList.add('hidden');
+    ['home', 'study', 'history', 'profile'].forEach(t => {
+      document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+      document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+    });
+    if (tab === 'history') renderHistoryUI();
+    if (tab === 'profile') renderProfileUI();
+    window.scrollTo(0, 0);
+  }
+
+  function switchStudyTab(sub) {
+    ['formula', 'reasoning', 'vocab', 'ca'].forEach(s => {
+      document.getElementById('study-' + s).classList.toggle('hidden', s !== sub);
+      document.getElementById('st-btn-' + s).classList.toggle('active', s === sub);
+    });
+  }
+
+  function switchMathCol(col) {
+    activeMathCol = col;
+    document.getElementById('mcol-adv').classList.toggle('active', col === 'adv');
+    document.getElementById('mcol-arith').classList.toggle('active', col === 'arith');
+    document.getElementById('math-pdf-title').innerText = col === 'adv' ? '📐 Advance Maths Complete Sheet' : '🔢 Arithmetic Complete Sheet';
+    const data = col === 'adv' ? advanceFormulas : arithmeticFormulas;
+    document.getElementById('study-formula-list').innerHTML = data.map(g => `
+      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">${col === 'adv' ? '📐' : '🔢'} ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
+    `).join('');
+  }
+
+  function renderStudyHub() {
+    switchMathCol('adv');
+    document.getElementById('study-reasoning-list').innerHTML = reasoningFormulas.map(g => `
+      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">🧠 ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
+    `).join('');
+    document.getElementById('study-vocab-list').innerHTML = vocabList.map(v => `
+      <div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 <b>ट्रिक:</b> ${v.trick}</div></div>
+    `).join('');
+    document.getElementById('study-ca').innerHTML = currentAffairs.map(c => `
+      <div class="info-card"><span class="ca-date">${c.date}</span><div class="ca-title">${c.title}</div><p class="ca-desc">${c.desc}</p></div>
+    `).join('');
+  }
+
+  function downloadStudyPDF(type) {
+    let title = '', bodyHtml = '';
+    if (type === 'adv_maths' || type === 'arith_maths' || type === 'reasoning') {
+      const list = type === 'adv_maths' ? advanceFormulas : type === 'arith_maths' ? arithmeticFormulas : reasoningFormulas;
+      title = type === 'adv_maths' ? 'Advance Maths - Complete Formula Sheet (ExamPrep Pro)'
+            : type === 'arith_maths' ? 'Arithmetic Maths - Complete Formula Sheet (ExamPrep Pro)'
+            : 'Reasoning - All Formulas & Memory Facts (ExamPrep Pro)';
+      bodyHtml = list.map(g => `
+        <div class="sec">
+          <h3>${g.topic}</h3>
+          <table>${g.items.map(i => `<tr><td class="k">${i.name}</td><td class="v">${i.eq}</td></tr>`).join('')}</table>
+        </div>
+      `).join('');
+    } else if (type === 'vocab') {
+      title = 'SSC One Word Substitutions (A-Series) with Tricks (ExamPrep Pro)';
+      bodyHtml = '<table><tr><th>#</th><th>Word</th><th>Meaning</th><th>Memory Trick</th></tr>' +
+        vocabList.map((v, i) => `<tr><td>${i+1}</td><td><b>${v.word}</b></td><td>${v.meaning}</td><td>${v.trick}</td></tr>`).join('') + '</table>';
     }
 
-    window.quickAsk = (text) => {
-      promptInput.value = text;
-      sendMessage();
-    };
+    const win = window.open('', '_blank');
+    if (!win) { alert('कृपया ब्राउज़र में Pop-up allow करें ताकि PDF खुल सके।'); return; }
+    win.document.write(`<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>${title}</title>
+      <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; color: #0f172a; line-height: 1.45; }
+        h1 { font-size: 18px; color: #4f46e5; border-bottom: 2px solid #4f46e5; padding-bottom: 6px; margin-bottom: 14px; }
+        .sec { margin-bottom: 14px; page-break-inside: avoid; }
+        h3 { font-size: 14px; background: #eef2ff; color: #312e81; padding: 6px 10px; border-radius: 6px; margin: 0 0 6px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 8px; }
+        th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+        th { background: #f1f5f9; }
+        .k { width: 45%; font-weight: 600; color: #334155; }
+        .v { width: 55%; font-weight: 700; color: #1e3a8a; }
+        .print-btn { background: #4f46e5; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 14px; font-size: 14px; }
+        @media print { .print-btn { display: none; } body { padding: 0; } }
+      </style></head><body>
+      <button class="print-btn" onclick="window.print()">📥 Save as PDF / Print</button>
+      <h1>${title}</h1>
+      ${bodyHtml}
+      <p style="font-size:11px; color:#64748b; margin-top:16px; text-align:center;">Generated by ExamPrep Pro • https://rawataravindra507-alt.github.io/Examprep/</p>
+      <script>setTimeout(() => window.print(), 400);<\/script>
+      </body></html>`);
+    win.document.close();
+  }
 
-    function renderChat() {
-      renderSidebar();
-      const chat = chats.find(c => c.id === currentChatId);
-      if (!chat || chat.messages.length === 0) {
-        renderWelcome();
-        return;
-      }
+  function renderProfileUI() {
+    const p = getProfile(), h = getHistory();
+    document.getElementById('hero-greeting').innerText = `नमस्ते, ${p.name} 👋`;
+    document.getElementById('header-target').innerText = `Target: ${p.target}`;
+    document.getElementById('hero-tests-pill').innerText = `📊 ${h.length} टेस्ट पूरे`;
+    document.getElementById('hero-goal-pill').innerText = `⏱️ लक्ष्य: ${p.goal || 6} घंटे/दिन`;
+    document.getElementById('prof-avatar').innerText = p.name.charAt(0).toUpperCase();
+    document.getElementById('prof-name-display').innerText = p.name;
+    document.getElementById('prof-target-display').innerText = `Target: ${p.target}`;
+    document.getElementById('prof-tags').innerHTML = `${currentMobile ? '<span class="prof-tag">📱 ' + currentMobile + '</span>' : ''}<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🏷️ ${p.cat || 'UR'}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
+    document.getElementById('input-name').value = p.name;
+    document.getElementById('input-city').value = p.city;
+    document.getElementById('input-goal').value = p.goal;
+    document.getElementById('input-target').value = p.target;
+    document.getElementById('input-cat').value = p.cat || 'UR';
+    document.getElementById('input-medium').value = p.medium;
+    document.getElementById('stat-tests').innerText = h.length;
+    document.getElementById('stat-acc').innerText = h.length ? Math.round(h.reduce((s,x)=>s+x.acc,0)/h.length)+'%' : '0%';
+    document.getElementById('stat-best').innerText = h.length ? Math.max(...h.map(x=>parseFloat(x.score))).toFixed(1) : '0';
+  }
 
-      chatInner.innerHTML = "";
-      chat.messages.forEach(m => {
-        const row = document.createElement("div");
-        row.className = "msg-row " + m.role;
+  function saveProfile() {
+    localStorage.setItem(getProfileKey(), JSON.stringify({
+      name: document.getElementById('input-name').value.trim() || 'स्टूडेंट',
+      city: document.getElementById('input-city').value.trim() || 'भारत',
+      goal: document.getElementById('input-goal').value || '6',
+      target: document.getElementById('input-target').value,
+      cat: document.getElementById('input-cat').value,
+      medium: document.getElementById('input-medium').value
+    }));
+    renderProfileUI();
+    alert('प्रोफाइल सेव हो गई!');
+  }
 
-        if (m.role === "user") {
-          const box = document.createElement("div");
-          box.className = "user-box";
-          if (m.image) {
-            const img = document.createElement("img");
-            img.src = m.image;
-            box.appendChild(img);
-          }
-          const txt = document.createElement("div");
-          txt.textContent = m.text;
-          box.appendChild(txt);
-          row.appendChild(box);
+  function renderHistoryUI() {
+    const h = getHistory(), box = document.getElementById('history-list');
+    if (!h.length) { box.innerHTML = `<div class="empty-state">अभी तक कोई टेस्ट सबमिट नहीं किया है।</div>`; return; }
+    box.innerHTML = h.map(item => `
+      <div class="info-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><b style="font-size:0.9rem;">${item.exam}</b><span style="font-size:0.74rem;color:var(--muted);">${item.date}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.84rem;"><span>स्कोर: <b style="color:var(--primary);">${item.score}</b></span><span class="correct">सही: ${item.correct}</span><span class="wrong">गलत: ${item.wrong}</span><span>सटीकता: <b>${item.acc}%</b></span></div>
+      </div>`).join('');
+  }
+
+  function clearHistory() {
+    if (confirm('क्या आप टेस्ट हिस्ट्री हटाना चाहते हैं?')) { localStorage.removeItem(getHistoryKey()); renderHistoryUI(); renderProfileUI(); }
+  }
+
+  function handleSearch(query) {
+    const q = query.trim().toLowerCase(), resBox = document.getElementById('search-results-box'), defBox = document.getElementById('home-default-content');
+    if (!q) { resBox.classList.add('hidden'); defBox.classList.remove('hidden'); return; }
+    defBox.classList.add('hidden'); resBox.classList.remove('hidden');
+    let html = '';
+    examDirectory.forEach(e => { if ((e.title+' '+e.sub).toLowerCase().includes(q)) html += `<div class="exam-col-card" onclick="openExamHub('${e.id}')"><div class="exam-col-left"><div class="exam-ico ${e.icoClass}">${e.icon}</div><div><div class="exam-col-title">${e.title}</div><div class="exam-col-sub">${e.sub}</div></div></div><div class="exam-arrow">›</div></div>`; });
+    vocabList.forEach(v => { if ((v.word+' '+v.meaning).toLowerCase().includes(q)) html += `<div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 ${v.trick}</div></div>`; });
+    resBox.innerHTML = html || `<div class="empty-state">"${query}" से जुड़ा कुछ नहीं मिला।</div>`;
+  }
+
+  function updateThemeIcons() {
+    document.getElementById('theme-btn-main').innerText = isDark ? '☀️ Light' : '🌙 Dark';
+    document.getElementById('theme-btn-test').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('theme-btn-res').innerText = isDark ? '☀️' : '🌙';
+  }
+  function toggleTheme() { isDark = !isDark; localStorage.setItem('ep_dark', isDark); document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light'); updateThemeIcons(); }
+  function toggleLang() { lang = (lang === 'hi') ? 'en' : 'hi'; document.getElementById('lang-btn').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; document.getElementById('lang-btn-res').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; if (isResultView) renderResultContent(); else renderAll(); }
+
+  function getExamThemeInfo(examId) {
+    if (examId.startsWith('ssc_')) return { cls: 'theme-ssc', board: 'SSC • TCS iON CBT PORTAL' };
+    if (examId.startsWith('rrb_')) return { cls: 'theme-rrb', board: 'INDIAN RAILWAYS • RRB CBT PORTAL' };
+    if (examId.startsWith('mp_police')) return { cls: 'theme-mp', board: 'MPESB • MP POLICE CBT PORTAL' };
+    return { cls: 'theme-police', board: 'POLICE & DEFENCE • CBT PORTAL' };
+  }
+
+  function applyExamTheme(themeCls) {
+    ['inst-screen', 'test-screen'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('theme-ssc', 'theme-rrb', 'theme-mp', 'theme-police');
+      el.classList.add(themeCls);
+    });
+  }
+
+  function launchTest(examId, testIdx) {
+    const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
+    const themeInfo = getExamThemeInfo(examId);
+    if (tObj.fullData) {
+      const ft = tObj.fullData;
+      curExam = {
+        examId: examId, themeInfo: themeInfo,
+        name: ft.title, pos: ft.pos || exObj.pos, neg: ft.neg || exObj.neg,
+        time: ft.time, sections: ft.sections,
+        secLock: !!ft.secLock && ft.sections.length > 1,
+        secTime: ft.secTime || 900
+      };
+    } else {
+      curExam = {
+        examId: examId, themeInfo: themeInfo,
+        name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time,
+        sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 3),
+        secLock: false, secTime: tObj.time
+      };
+    }
+
+    applyExamTheme(themeInfo.cls);
+    const p = getProfile();
+    const totalQs = curExam.sections.reduce((s, sec) => s + sec.questions.length, 0);
+    const totalMins = Math.round(curExam.time / 60);
+
+    document.getElementById('inst-board').innerText = themeInfo.board;
+    document.getElementById('inst-exam-title').innerText = curExam.name;
+    document.getElementById('inst-cand-name').innerText = `👤 ${p.name} (${currentMobile || 'Guest'})`;
+    document.getElementById('inst-cand-sys').innerText = `💻 C-01`;
+    document.getElementById('inst-details').innerHTML = `
+      <li>कुल प्रश्न: <b>${totalQs} सवाल</b> | कुल समय: <b>${totalMins} मिनट</b>।</li>
+      <li>अंक योजना: प्रत्येक सही उत्तर के लिए <b>+${curExam.pos}</b> और गलत उत्तर के लिए <b>-${curExam.neg}</b> अंक।</li>
+      <li>सेक्शन: <b>${curExam.sections.map(s => s.name).join(', ')}</b>।</li>
+      ${curExam.secLock ? '<li><b>🔒 सेक्शन नियम (15 मिनट/सेक्शन):</b> सभी 25 सवाल देखने (Visit) के बाद आप 15 मिनट से पहले भी सेक्शन सबमिट करके अगले सेक्शन में जा सकते हैं। एक बार सेक्शन बदलने पर वापस नहीं आ पाएँगे और बचा हुआ समय समाप्त हो जाएगा।</li>' : '<li>आप किसी भी सेक्शन या सवाल पर सीधे जा सकते हैं।</li>'}
+      <li>समय समाप्त होने पर आपका टेस्ट अपने आप सबमिट हो जाएगा।</li>
+    `;
+    document.getElementById('inst-lang-select').value = lang;
+    document.getElementById('inst-agree').checked = false;
+    document.getElementById('btn-begin-exam').disabled = true;
+
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('inst-screen').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function cancelExamEntry() {
+    document.getElementById('inst-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+  }
+
+  function beginActualTest() {
+    lang = document.getElementById('inst-lang-select').value || 'hi';
+    curSec = 0; curQ = 0; isResultView = false;
+    userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
+    marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited[0][0] = true;
+    timeLeft = curExam.secLock ? curExam.secTime : curExam.time;
+
+    const p = getProfile();
+    document.getElementById('inst-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.remove('hidden');
+    document.getElementById('lock-notice').classList.toggle('hidden', !curExam.secLock);
+    document.getElementById('test-board-tag').innerText = curExam.themeInfo.board;
+    document.getElementById('exam-title').innerText = curExam.name;
+    document.getElementById('test-cand-name').innerText = `👤 ${p.name}`;
+    document.getElementById('q-marks').innerText = `+${curExam.pos} / -${curExam.neg}`;
+    startTimer(); renderAll(); window.scrollTo(0, 0);
+  }
+
+  function startTimer() {
+    clearInterval(timerInt);
+    updateTimerDisplay();
+    timerInt = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        if (curExam.secLock && curSec < curExam.sections.length - 1) {
+          curSec++; curQ = 0; visited[curSec][0] = true;
+          timeLeft = curExam.secTime;
+          renderAll(); updateTimerDisplay();
+          alert(`समय समाप्त! अब अगला सेक्शन (${curExam.sections[curSec].name}) शुरू हो गया है।`);
         } else {
-          const av = document.createElement("div");
-          av.className = "ai-avatar";
-          av.textContent = "✦";
-
-          const box = document.createElement("div");
-          box.className = "ai-box";
-          box.innerHTML = window.marked ? marked.parse(m.text) : m.text.replace(/\n/g, "<br>");
-
-          const actions = document.createElement("div");
-          actions.className = "msg-actions";
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-btn";
-          copyBtn.textContent = "Copy";
-          copyBtn.onclick = () => {
-            navigator.clipboard.writeText(m.text);
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => copyBtn.textContent = "Copy", 1500);
-          };
-          actions.appendChild(copyBtn);
-          box.appendChild(actions);
-
-          row.appendChild(av);
-          row.appendChild(box);
+          submitTest();
         }
-        chatInner.appendChild(row);
+      } else {
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    document.getElementById('timer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+  }
+
+  function confirmSubmit() {
+    if (confirm('क्या आप टेस्ट सबमिट करना चाहते हैं?')) submitTest();
+  }
+
+  function renderAll() {
+    visited[curSec][curQ] = true;
+    const sec = curExam.sections[curSec], q = sec.questions[curQ], activeLang = sec.allowLang ? lang : (sec.fixedLang || 'en');
+    const langBtn = document.getElementById('lang-btn');
+    langBtn.disabled = !sec.allowLang;
+    langBtn.innerText = sec.allowLang ? (lang === 'hi' ? 'EN' : 'हिंदी') : (sec.fixedLang === 'hi' ? 'हिंदी Only' : 'EN Only');
+
+    const tabs = document.getElementById('sec-tabs'); tabs.innerHTML = '';
+    curExam.sections.forEach((s, idx) => {
+      const btn = document.createElement('button');
+      const isLocked = curExam.secLock && idx !== curSec;
+      btn.className = 'sec-tab' + (idx === curSec ? ' active' : '') + (isLocked ? ' locked' : '');
+      btn.innerText = isLocked ? `🔒 ${s.name}` : s.name;
+      btn.onclick = () => {
+        if (isLocked) {
+          if (idx < curSec) alert('यह सेक्शन पहले ही सबमिट हो चुका है। आप वापस नहीं जा सकते।');
+          else alert('अगले सेक्शन में जाने के लिए पहले इस सेक्शन के सभी सवाल देखकर "सेक्शन सबमिट" करें।');
+          return;
+        }
+        curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll();
+      };
+      tabs.appendChild(btn);
+    });
+
+    const pal = document.getElementById('palette'); pal.innerHTML = '';
+    sec.questions.forEach((_, i) => {
+      const btn = document.createElement('button'); btn.innerText = i + 1;
+      let cls = 'p-btn ';
+      if (marked[curSec][i] && userAns[curSec][i] !== null) cls += 'p-ans-marked';
+      else if (marked[curSec][i]) cls += 'p-marked';
+      else if (userAns[curSec][i] !== null) cls += 'p-answered';
+      else if (visited[curSec][i]) cls += 'p-not-answered';
+      else cls += 'p-not-visited';
+      if (i === curQ) cls += ' p-active';
+      btn.className = cls; btn.onclick = () => { curQ = i; visited[curSec][i] = true; renderAll(); };
+      pal.appendChild(btn);
+    });
+
+    document.getElementById('q-count').innerText = `${sec.name} - Q ${curQ + 1} / ${sec.questions.length}`;
+    const ansCnt = userAns[curSec].filter(x => x !== null).length;
+    const mkCnt = marked[curSec].filter(Boolean).length;
+    document.getElementById('test-status-mini').innerText = `🟢 ${ansCnt} | 🟣 ${mkCnt} | ⚪ ${sec.questions.length - ansCnt}`;
+    document.getElementById('q-text').innerText = q.q[activeLang];
+    const box = document.getElementById('options-box'); box.innerHTML = '';
+    q.opts[activeLang].forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option' + (userAns[curSec][curQ] === i ? ' selected' : '');
+      btn.innerText = opt; btn.onclick = () => { userAns[curSec][curQ] = i; renderAll(); };
+      box.appendChild(btn);
+    });
+
+    const revBtn = document.getElementById('review-btn');
+    revBtn.classList.toggle('active-mark', marked[curSec][curQ]);
+    revBtn.innerText = marked[curSec][curQ] ? 'रिव्यू में है ✓' : 'Mark for Review';
+
+    const isFirstInView = curExam.secLock ? (curQ === 0) : (curSec === 0 && curQ === 0);
+    const isLastInSec = (curQ === sec.questions.length - 1);
+    const isLastOverall = (curSec === curExam.sections.length - 1 && isLastInSec);
+
+    document.getElementById('prev-btn').style.visibility = isFirstInView ? 'hidden' : 'visible';
+    const subSecBtn = document.getElementById('btn-submit-sec');
+    if (subSecBtn) subSecBtn.style.display = (curExam.secLock && curSec < curExam.sections.length - 1) ? 'inline-block' : 'none';
+    if (curExam.secLock && isLastInSec && !isLastOverall) {
+      document.getElementById('next-btn').innerText = 'सेक्शन सबमिट व अगला →';
+    } else {
+      document.getElementById('next-btn').innerText = isLastOverall ? 'सबमिट करें' : 'सेव और अगला';
+    }
+  }
+
+  function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
+  function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
+  function prevQ() { if (curQ > 0) curQ--; else if (!curExam.secLock && curSec > 0) { curSec--; curQ = curExam.sections[curSec].questions.length - 1; } renderAll(); }
+  function trySubmitSection() {
+    if (!curExam.secLock || curSec >= curExam.sections.length - 1) return;
+    const totalInSec = curExam.sections[curSec].questions.length;
+    const unseenCount = visited[curSec].filter(v => !v).length;
+    if (unseenCount > 0) {
+      alert(`अगले सेक्शन में जाने के लिए पहले इस सेक्शन के सभी ${totalInSec} सवाल देखना (Visit करना) ज़रूरी है!\n\nअभी ${unseenCount} सवाल देखे नहीं गए हैं।`);
+      return;
+    }
+    const curSecName = curExam.sections[curSec].name;
+    const nextSecName = curExam.sections[curSec + 1].name;
+    const ok = confirm(
+      `क्या आप "${curSecName}" सेक्शन सबमिट करके अगले सेक्शन "${nextSecName}" में जाना चाहते हैं?\n\n⚠️ ध्यान दें:\n1. आप वापस "${curSecName}" सेक्शन में नहीं आ पाएँगे।\n2. इस सेक्शन का बचा हुआ समय समाप्त हो जाएगा (अगले सेक्शन में नहीं जुड़ेगा)।`
+    );
+    if (ok) {
+      curSec++;
+      curQ = 0;
+      visited[curSec][0] = true;
+      timeLeft = curExam.secTime;
+      updateTimerDisplay();
+      renderAll();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function nextQ() {
+    const secLen = curExam.sections[curSec].questions.length;
+    if (curQ < secLen - 1) { curQ++; renderAll(); }
+    else if (curExam.secLock && curSec < curExam.sections.length - 1) { trySubmitSection(); }
+    else if (!curExam.secLock && curSec < curExam.sections.length - 1) { curSec++; curQ = 0; renderAll(); }
+    else { confirmSubmit(); }
+  }
+
+  function submitTest() {
+    clearInterval(timerInt); isResultView = true;
+    const summary = renderResultContent();
+    const h = getHistory();
+    h.unshift({ exam: curExam.name, score: summary.totalScore.toFixed(2), correct: summary.totalCorrect, wrong: summary.totalWrong, acc: summary.acc, date: new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'short' }) });
+    localStorage.setItem(getHistoryKey(), JSON.stringify(h.slice(0, 25)));
+    renderProfileUI();
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function renderCutoffBox(score, maxMarks) {
+    const p = getProfile();
+    const userCat = p.cat || 'UR';
+    const cutoffs = [
+      { cat: 'UR', val: +(maxMarks * 0.75).toFixed(1) },
+      { cat: 'OBC', val: +(maxMarks * 0.72).toFixed(1) },
+      { cat: 'EWS', val: +(maxMarks * 0.70).toFixed(1) },
+      { cat: 'SC', val: +(maxMarks * 0.63).toFixed(1) },
+      { cat: 'ST', val: +(maxMarks * 0.58).toFixed(1) }
+    ];
+    const myCut = cutoffs.find(c => c.cat === userCat) || cutoffs[0];
+    const isPassed = score >= myCut.val;
+    const diff = (score - myCut.val).toFixed(2);
+    const pct = Math.max(0, Math.min(100, (score / maxMarks) * 100));
+
+    document.getElementById('cutoff-box').innerHTML = `
+      <div class="cutoff-head">
+        <span class="cutoff-title">🎯 Cutoff तुलना (${userCat} Cutoff: ${myCut.val})</span>
+        <span class="cutoff-badge ${isPassed ? 'badge-pass' : 'badge-fail'}">
+          ${isPassed ? '✅ Cutoff क्लियर (+' + diff + ')' : '❌ ' + Math.abs(diff) + ' अंक कम'}
+        </span>
+      </div>
+      <div class="cutoff-bar-wrap">
+        <div class="cutoff-bar-fill" style="width:${pct}%; background:${isPassed ? 'var(--success)' : 'var(--danger)'};"></div>
+      </div>
+      <div class="cat-cutoff-grid">
+        ${cutoffs.map(c => `
+          <div class="cat-cut-box ${score >= c.val ? 'passed' : ''}">
+            <span>${c.cat}</span>
+            <b>${c.val}</b>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderThreeLevelAnalysis() {
+    let html = `<div style="font-weight:800; font-size:0.95rem; margin-bottom:10px;">📊 3-लेवल टॉपिक एनालिसिस</div>`;
+
+    curExam.sections.forEach((sec, sIdx) => {
+      const topicStats = {};
+      sec.questions.forEach((q, qIdx) => {
+        const topic = detectTopic(sec.name, q);
+        if (!topicStats[topic]) topicStats[topic] = { total: 0, correct: 0 };
+        topicStats[topic].total++;
+        if (userAns[sIdx][qIdx] === q.ans) topicStats[topic].correct++;
       });
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
 
-    async function sendMessage() {
-      const text = promptInput.value.trim();
-      if (!text && !attachedImage) return;
+      const strong = [], avg = [], weak = [];
+      Object.entries(topicStats).forEach(([tName, st]) => {
+        const pct = Math.round((st.correct / st.total) * 100);
+        const label = `${tName} (${st.correct}/${st.total})`;
+        if (pct >= 75) strong.push(label);
+        else if (pct >= 45) avg.push(label);
+        else weak.push(label);
+      });
 
-      const apiKey = localStorage.getItem(LS_KEY);
-      if (!apiKey) {
-        modalBg.style.display = "flex";
-        return;
-      }
-
-      // Pichle pending answer ko turant rok do
-      if (currentController) {
-        currentController.abort();
-      }
-      currentController = new AbortController();
-      const signal = currentController.signal;
-
-      if (!currentChatId) {
-        const newChat = { id: Date.now().toString(), title: text.slice(0, 32) || "Photo Question", messages: [] };
-        chats.unshift(newChat);
-        currentChatId = newChat.id;
-      }
-
-      const chat = chats.find(c => c.id === currentChatId);
-      const userMsg = { role: "user", text: text || "Is image ko explain karo.", image: attachedImage?.dataUrl || null };
-      chat.messages.push(userMsg);
-
-      const currentImg = attachedImage;
-      attachedImage = null;
-      previewStrip.style.display = "none";
-      promptInput.value = "";
-      promptInput.style.height = "auto";
-
-      const aiMsg = { role: "ai", text: "Soch raha hoon..." };
-      chat.messages.push(aiMsg);
-      renderChat();
-
-      try {
-        const model = localStorage.getItem(LS_MODEL) || "gemini-3.8-flash";
-        const exam = localStorage.getItem(LS_EXAM) || "SSC CGL & RRB NTPC";
-        const lang = localStorage.getItem(LS_LANG) || "Simple Hinglish (Hindi + English exam terms)";
-
-        const validHistory = chat.messages.slice(0, -1).filter(
-          m => m.text !== "Soch raha hoon..." && !m.text.includes("Roka gaya")
-        );
-
-        const contents = validHistory.map((m, idx, arr) => {
-          const parts = [{ text: m.text }];
-          if (idx === arr.length - 1 && currentImg) {
-            parts.push({ inlineData: { mimeType: currentImg.mimeType, data: currentImg.base64 } });
-          }
-          return { role: m.role === "user" ? "user" : "model", parts };
-        });
-
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          signal: signal,
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{
-                text: `You are Gemini ExamPro, a helpful AI tutor for ${exam}. Respond in ${lang}. Use clean Markdown headings, bullet points, tables where helpful, and exam-focused tricks.`
-              }]
-            },
-            contents
-          })
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || "API Error");
-
-        aiMsg.text = data.candidates?.[0]?.content?.parts?.map(p => p.text).filter(Boolean).join("\n") || "Koi jawab nahi mila.";
-        saveChats();
-        renderChat();
-      } catch (err) {
-        if (err.name === "AbortError") {
-          aiMsg.text = "*(Roka gaya — naya sawal pucha gaya)*";
-        } else {
-          aiMsg.text = `**Error:** ${err.message}`;
-        }
-        renderChat();
-      }
-    }
-
-    // Events
-    sendBtn.onclick = sendMessage;
-    promptInput.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-    promptInput.addEventListener("input", () => {
-      promptInput.style.height = "auto";
-      promptInput.style.height = Math.min(promptInput.scrollHeight, 140) + "px";
+      html += `<div class="sec-heading" style="margin-top:10px;">${sec.name}</div>`;
+      html += `
+        <div class="lvl-card lvl-strong">
+          <div class="lvl-title"><span class="correct">🟢 1. ये टॉपिक अच्छे हैं (Strong)</span><span>${strong.length}</span></div>
+          <div class="topic-chips">${strong.length ? strong.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">कोई नहीं</span>'}</div>
+        </div>
+        <div class="lvl-card lvl-avg">
+          <div class="lvl-title"><span style="color:var(--amber);">🟡 2. ये थोड़े कम अच्छे हैं (Average)</span><span>${avg.length}</span></div>
+          <div class="topic-chips">${avg.length ? avg.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">कोई नहीं</span>'}</div>
+        </div>
+        <div class="lvl-card lvl-weak">
+          <div class="lvl-title"><span class="wrong">🔴 3. इनमें बहुत वीक हैं (Weak)</span><span>${weak.length}</span></div>
+          <div class="topic-chips">${weak.length ? weak.map(x => `<span class="topic-chip">${x}</span>`).join('') : '<span style="font-size:0.76rem;color:var(--muted);">बढ़िया! कोई वीक टॉपिक नहीं</span>'}</div>
+        </div>
+      `;
     });
 
-    document.getElementById("newChatBtn").onclick = () => {
-      if (currentController) currentController.abort();
-      currentChatId = null;
-      renderChat();
-      closeSidebar();
-    };
+    document.getElementById('three-level-analysis').innerHTML = html;
+  }
 
-    const openSidebar = () => { sidebar.classList.add("open"); overlay.classList.add("open"); };
-    const closeSidebar = () => { sidebar.classList.remove("open"); overlay.classList.remove("open"); };
-    document.getElementById("menuBtn").onclick = openSidebar;
-    overlay.onclick = closeSidebar;
+  function renderResultContent() {
+    let totalCorrect = 0, totalWrong = 0, totalSkip = 0, totalQs = 0;
+    const tblBody = document.getElementById('sec-table-body'), revBox = document.getElementById('review-box');
+    tblBody.innerHTML = ''; revBox.innerHTML = '';
 
-    const openSettings = () => { loadSettings(); modalBg.style.display = "flex"; closeSidebar(); };
-    document.getElementById("openSettingsBtn").onclick = openSettings;
-    document.getElementById("topSettingsBtn").onclick = openSettings;
-    document.getElementById("closeModalBtn").onclick = () => modalBg.style.display = "none";
+    curExam.sections.forEach((sec, sIdx) => {
+      let sCor = 0, sWrg = 0; const activeLang = sec.allowLang ? lang : 'en';
+      totalQs += sec.questions.length;
+      revBox.innerHTML += `<div class="sec-heading">${sec.name} - सॉल्यूशन</div>`;
+      sec.questions.forEach((q, qIdx) => {
+        const ua = userAns[sIdx][qIdx];
+        let status = '';
+        if (ua === null) { totalSkip++; status = 'छोड़ा गया'; }
+        else if (ua === q.ans) { totalCorrect++; sCor++; status = '<span class="correct">सही</span>'; }
+        else { totalWrong++; sWrg++; status = '<span class="wrong">गलत</span>'; }
+        const qTopic = detectTopic(sec.name, q);
+        const optLabels = ['A', 'B', 'C', 'D'];
+        const optBreakdownHtml = q.opts[activeLang].map((optTxt, oIdx) => {
+          const isCor = (oIdx === q.ans);
+          const isUserWrg = (ua === oIdx && !isCor);
+          const rowCls = isCor ? 'is-cor' : (isUserWrg ? 'is-wrg' : '');
+          const badge = isCor ? '✅ सही उत्तर' : (isUserWrg ? '❌ आपका गलत उत्तर' : '⚪ अन्य विकल्प');
+          const customDesc = (q.optExp && q.optExp[activeLang] && q.optExp[activeLang][oIdx])
+            ? `<div class="tb-opt-desc">${q.optExp[activeLang][oIdx]}</div>` : '';
+          return `<div class="tb-opt-row ${rowCls}"><div class="tb-opt-lbl"><span>(${optLabels[oIdx]}) ${optTxt}</span><span style="font-size:0.72rem;">${badge}</span></div>${customDesc}</div>`;
+        }).join('');
 
-    document.getElementById("saveSettingsBtn").onclick = () => {
-      localStorage.setItem(LS_KEY, apiKeyInput.value.trim());
-      localStorage.setItem(LS_MODEL, modelInput.value.trim() || "gemini-3.8-flash");
-      localStorage.setItem(LS_EXAM, examSelect.value);
-      localStorage.setItem(LS_LANG, langSelect.value);
-      headerBadge.textContent = examSelect.value;
-      modalBg.style.display = "none";
-    };
+        const kpArr = (q.keyPoints && q.keyPoints[activeLang])
+          ? q.keyPoints[activeLang]
+          : (TOPIC_KEY_FACTS[qTopic] ? (TOPIC_KEY_FACTS[qTopic][activeLang] || TOPIC_KEY_FACTS[qTopic].hi) : null);
+        const kpHtml = kpArr
+          ? `<div class="tb-kp-box"><div class="tb-kp-title">📌 मुख्य परीक्षा तथ्य (Key Points — ${qTopic})</div><ul class="tb-kp-list">${kpArr.map(pt => `<li>${pt}</li>`).join('')}</ul></div>`
+          : '';
 
-    // Image Upload
-    document.getElementById("uploadBtn").onclick = () => fileInput.click();
-    fileInput.onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        attachedImage = {
-          mimeType: file.type,
-          dataUrl,
-          base64: dataUrl.split(",")[1]
-        };
-        previewImg.src = dataUrl;
-        previewStrip.style.display = "flex";
-      };
-      reader.readAsDataURL(file);
-    };
-    document.getElementById("removeImgBtn").onclick = () => {
-      attachedImage = null;
-      fileInput.value = "";
-      previewStrip.style.display = "none";
-    };
+        revBox.innerHTML += `
+          <div class="review-item">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+              <span class="ca-date" style="margin:0;">${qTopic}</span>
+              <span style="font-size:0.76rem; font-weight:700;">${status}</span>
+            </div>
+            <b>${qIdx+1}. ${q.q[activeLang]}</b>
+            <div class="tb-opt-box">
+              <div class="tb-opt-head">🔍 चारों विकल्पों का विश्लेषण (All 4 Options)</div>
+              ${optBreakdownHtml}
+            </div>
+            <div class="exp-box"><b>💡 विस्तृत सॉल्यूशन:</b> ${q.exp[activeLang]}</div>
+            ${kpHtml}
+          </div>`;
+      });
+      const sScore = (sCor * curExam.pos) - (sWrg * curExam.neg);
+      tblBody.innerHTML += `<tr><td><b>${sec.name}</b></td><td class="correct">${sCor}</td><td class="wrong">${sWrg}</td><td><b>${sScore.toFixed(2)}</b></td></tr>`;
+    });
 
-    // Voice Mic
-    document.getElementById("micBtn").onclick = () => {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) return alert("Is browser mein voice input supported nahi hai.");
-      const rec = new SR();
-      rec.lang = "en-IN";
-      rec.onresult = e => {
-        promptInput.value += (promptInput.value ? " " : "") + e.results[0][0].transcript;
-      };
-      rec.start();
-    };
+    const totalScore = (totalCorrect * curExam.pos) - (totalWrong * curExam.neg);
+    const maxMarks = totalQs * curExam.pos;
+    const attempted = totalCorrect + totalWrong;
+    const acc = attempted > 0 ? Math.round((totalCorrect / attempted) * 100) : 0;
 
-    loadSettings();
-    renderChat();
-  </script>
+    document.getElementById('res-max-marks').innerText = maxMarks;
+    document.getElementById('final-score').innerText = totalScore.toFixed(2);
+    document.getElementById('res-correct').innerText = totalCorrect;
+    document.getElementById('res-wrong').innerText = totalWrong;
+    document.getElementById('res-skip').innerText = totalSkip;
+    document.getElementById('res-acc').innerText = acc + '%';
+
+    renderCutoffBox(totalScore, maxMarks);
+    renderThreeLevelAnalysis();
+
+    return { totalScore, totalCorrect, totalWrong, acc };
+  }
+
+  function goHome() {
+    isResultView = false;
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+    switchMainTab('home');
+  }
+
+  initApp();
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+</script>
 </body>
 </html>
