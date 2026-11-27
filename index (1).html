@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ExamPrep Pro - All Govt Exams</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --soft-bg: #f8fafc;
+    --primary: #4f46e5;
+    --primary-soft: #eef2ff;
+    --secondary: #0d9488;
+    --secondary-soft: #f0fdfa;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --purple: #9333ea;
+    --amber: #d97706;
+    --amber-soft: #fef3c7;
+    --exp-bg: #fffbeb;
+    --exp-border: #f59e0b;
+    --exp-text: #78350f;
+    --shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0b1120;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: #334155;
+    --soft-bg: #0f172a;
+    --primary: #6366f1;
+    --primary-soft: #312e81;
+    --secondary: #14b8a6;
+    --secondary-soft: #134e4a;
+    --danger: #f87171;
+    --danger-soft: #450a0a;
+    --success: #34d399;
+    --success-soft: #064e3b;
+    --purple: #a855f7;
+    --amber: #fbbf24;
+    --amber-soft: #451a03;
+    --exp-bg: #292524;
+    --exp-border: #d97706;
+    --exp-text: #fde68a;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; min-height: 100vh; }
+
+  .app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; padding: 14px 14px 88px; }
+  .hidden { display: none !important; }
+
+  .top-app-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 4px 2px; }
+  .brand-wrap { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+  .brand-title { font-size: 1.15rem; font-weight: 800; line-height: 1.1; }
+  .brand-sub { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+  .icon-btn { background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 7px 11px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.82rem; box-shadow: var(--shadow); }
+  .icon-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .hero-banner { background: linear-gradient(135deg, #4f46e5, #0d9488); color: #fff; padding: 16px 18px; border-radius: 18px; margin-bottom: 14px; box-shadow: 0 10px 25px -5px rgba(79,70,229,0.35); }
+  .hero-greeting { font-size: 0.82rem; opacity: 0.92; font-weight: 600; }
+  .hero-title { font-size: 1.2rem; font-weight: 800; margin: 4px 0 8px; }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .hero-pill { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; }
+
+  .search-wrap { position: relative; margin-bottom: 14px; }
+  .search-input { width: 100%; padding: 12px 14px 12px 40px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-size: 0.92rem; outline: none; box-shadow: var(--shadow); }
+  .search-input:focus { border-color: var(--primary); }
+  .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.65; }
+
+  .sec-label { display: flex; justify-content: space-between; align-items: center; margin: 16px 2px 10px; }
+  .sec-label h3 { margin: 0; font-size: 0.98rem; font-weight: 800; }
+  .sec-label span { font-size: 0.76rem; color: var(--primary); font-weight: 700; cursor: pointer; }
+
+  .exam-col-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 14px 16px; margin-bottom: 11px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+  .exam-col-card:active { transform: scale(0.985); }
+  .exam-col-left { display: flex; align-items: center; gap: 12px; }
+  .exam-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .ico-ssc { background: var(--primary-soft); }
+  .ico-rrb { background: var(--secondary-soft); }
+  .ico-def { background: var(--amber-soft); }
+  .exam-col-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 3px; }
+  .exam-col-sub { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .exam-arrow { font-size: 1.1rem; color: var(--muted); font-weight: 800; }
+
+  .hub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .back-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; }
+  .hub-title-wrap h2 { margin: 0; font-size: 1.12rem; font-weight: 800; }
+  .hub-title-wrap p { margin: 2px 0 0; font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+
+  .pill-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+  .pill-tab { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); font-weight: 700; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
+  .pill-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .test-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 11px; box-shadow: var(--shadow); }
+  .test-badge { display: inline-block; font-size: 0.68rem; font-weight: 800; padding: 3px 9px; border-radius: 20px; margin-bottom: 7px; text-transform: uppercase; }
+  .badge-full { background: var(--primary-soft); color: var(--primary); }
+  .badge-pyq { background: var(--amber-soft); color: var(--amber); }
+  .badge-sec { background: var(--secondary-soft); color: var(--secondary); }
+  [data-theme="dark"] .badge-full { color: #c7d2fe; }
+  [data-theme="dark"] .badge-sec { color: #99f6e4; }
+  .test-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 5px; }
+  .test-meta { font-size: 0.76rem; color: var(--muted); margin-bottom: 11px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-start { width: 100%; padding: 10px; border: none; border-radius: 10px; font-weight: 800; font-size: 0.9rem; color: #fff; cursor: pointer; background: linear-gradient(135deg, var(--primary), #3b82f6); }
+
+  .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 11px; box-shadow: var(--shadow); }
+  .ca-date { font-size: 0.72rem; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+  [data-theme="dark"] .ca-date { color: #c7d2fe; }
+  .ca-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 6px; line-height: 1.4; }
+  .ca-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.5; margin: 0; }
+
+  .formula-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--border); gap: 10px; font-size: 0.84rem; }
+  .formula-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .formula-name { color: var(--muted); font-weight: 600; flex: 1; }
+  .formula-eq { font-weight: 800; color: var(--primary); text-align: right; background: var(--soft-bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
+
+  .vocab-word { font-size: 1rem; font-weight: 800; color: var(--primary); }
+  .vocab-meaning { font-size: 0.86rem; margin: 4px 0; font-weight: 600; }
+  .vocab-trick { font-size: 0.8rem; background: var(--exp-bg); color: var(--exp-text); border-left: 3px solid var(--exp-border); padding: 6px 9px; border-radius: 6px; margin-top: 6px; }
+
+  .profile-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow); text-align: center; }
+  .avatar-circle { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .prof-tags { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .prof-tag { font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; background: var(--soft-bg); border: 1px solid var(--border); color: var(--muted); }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat-box { background: var(--soft-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; }
+  .stat-val { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+  .stat-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+
+  .form-group { text-align: left; margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+  .form-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--text); font-size: 0.92rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); z-index: 100; max-width: 600px; margin: 0 auto; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); }
+  .bnav-btn { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 12px; border-radius: 10px; }
+  .bnav-btn .bnav-ico { font-size: 1.2rem; }
+  .bnav-btn.active { color: var(--primary); background: var(--primary-soft); }
+  [data-theme="dark"] .bnav-btn.active { color: #c7d2fe; }
+
+  .card { width: 100%; background: var(--card); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; gap: 6px; flex-wrap: wrap; }
+  .exam-name { font-weight: 800; font-size: 0.88rem; }
+  .top-controls { display: flex; align-items: center; gap: 6px; }
+  .timer { background: var(--danger-soft); color: var(--danger); padding: 5px 10px; border-radius: 20px; font-weight: 800; font-size: 0.84rem; }
+  .btn-top-submit { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
+
+  .lock-notice { background: var(--amber-soft); color: var(--amber); font-size: 0.76rem; font-weight: 700; padding: 7px 11px; border-radius: 9px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+  .sec-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; }
+  .sec-tab { padding: 7px 14px; border: 1.5px solid var(--border); background: var(--soft-bg); color: var(--muted); border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .sec-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .sec-tab.locked { opacity: 0.5; cursor: not-allowed; }
+
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; padding: 10px; background: var(--soft-bg); border-radius: 10px; border: 1px solid var(--border); max-height: 140px; overflow-y: auto; }
+  .p-btn { width: 34px; height: 34px; border-radius: 8px; border: 2px solid transparent; font-weight: 700; cursor: pointer; font-size: 0.86rem; }
+  .p-not-visited { background: var(--border); color: var(--text); }
+  .p-not-answered { background: var(--danger); color: white; }
+  .p-answered { background: var(--success); color: white; }
+  .p-marked { background: var(--purple); color: white; }
+  .p-ans-marked { background: var(--purple); color: white; box-shadow: inset 0 -4px 0 var(--success); }
+  .p-active { border-color: var(--primary); transform: scale(1.08); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.72rem; color: var(--muted); margin-bottom: 14px; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  .q-meta { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
+  .q-text { font-size: 1.02rem; font-weight: 700; margin-bottom: 14px; line-height: 1.5; }
+  .option { display: block; width: 100%; padding: 12px 14px; margin-bottom: 9px; background: var(--soft-bg); border: 1.5px solid var(--border); border-radius: 10px; text-align: left; font-size: 0.94rem; cursor: pointer; color: var(--text); }
+  .option.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 700; }
+  [data-theme="dark"] .option.selected { color: #e0e7ff; }
+
+  .action-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .act-btn { flex: 1; padding: 9px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; border: 1.5px solid; background: transparent; }
+  .btn-clear { border-color: var(--muted); color: var(--muted); }
+  .btn-review { border-color: var(--purple); color: var(--purple); }
+  .btn-review.active-mark { background: var(--purple); color: white; }
+
+  .nav-btns { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; color: white; font-size: 0.92rem; }
+  .btn-prev { background: #64748b; }
+  .btn-next { background: var(--primary); }
+
+  .score-box { background: var(--success-soft); padding: 18px; border-radius: 14px; text-align: center; margin-bottom: 16px; border: 1px solid var(--success); }
+  .score-num { font-size: 2.1rem; font-weight: 800; color: var(--success); }
+  .stats { display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.86rem; flex-wrap: wrap; gap: 8px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.84rem; }
+  th, td { border: 1px solid var(--border); padding: 9px 6px; text-align: center; }
+  th { background: var(--soft-bg); }
+  .sec-heading { background: var(--primary-soft); color: var(--primary); padding: 8px 12px; border-radius: 8px; font-weight: 700; margin: 14px 0 8px; font-size: 0.9rem; }
+  [data-theme="dark"] .sec-heading { color: #c7d2fe; }
+  .review-item { border: 1px solid var(--border); background: var(--soft-bg); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.88rem; line-height: 1.5; }
+  .exp-box { margin-top: 8px; padding: 9px 11px; background: var(--exp-bg); border-left: 4px solid var(--exp-border); border-radius: 6px; font-size: 0.83rem; color: var(--exp-text); }
+  .correct { color: var(--success); font-weight: 700; }
+  .wrong { color: var(--danger); font-weight: 700; }
+  .empty-state { text-align: center; padding: 30px 15px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="main-app">
+    <div class="top-app-bar">
+      <div class="brand-wrap">
+        <div class="brand-logo">EP</div>
+        <div>
+          <div class="brand-title">ExamPrep Pro</div>
+          <div class="brand-sub" id="header-target">Target: SSC CGL & RRB NTPC</div>
+        </div>
+      </div>
+      <button class="icon-btn" id="theme-btn-main" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+
+    <!-- TAB 1: HOME -->
+    <div id="tab-home">
+      <div class="hero-banner">
+        <div class="hero-greeting" id="hero-greeting">नमस्ते, स्टूडेंट 👋</div>
+        <div class="hero-title">अपना एग्ज़ाम चुनें और तैयारी शुरू करें</div>
+        <div class="hero-pills">
+          <span class="hero-pill" id="hero-tests-pill">📊 0 टेस्ट पूरे</span>
+          <span class="hero-pill" id="hero-goal-pill">⏱️ लक्ष्य: 6 घंटे/दिन</span>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" class="search-input" placeholder="एग्ज़ाम, फॉर्मूला या वोकैबुलरी खोजें..." oninput="handleSearch(this.value)">
+      </div>
+
+      <div id="search-results-box" class="hidden"></div>
+
+      <div id="home-default-content">
+        <div class="sec-label"><h3>🎯 SSC परीक्षाएँ</h3></div>
+        <div id="list-ssc"></div>
+
+        <div class="sec-label"><h3>🚆 रेलवे (Railway) परीक्षाएँ</h3></div>
+        <div id="list-rrb"></div>
+
+        <div class="sec-label"><h3>🛡️ पुलिस व अन्य परीक्षाएँ</h3></div>
+        <div id="list-other"></div>
+      </div>
+    </div>
+
+    <!-- EXAM DETAIL HUB -->
+    <div id="exam-hub" class="hidden">
+      <div class="hub-header">
+        <button class="back-btn" onclick="closeExamHub()">← वापस</button>
+        <div class="hub-title-wrap">
+          <h2 id="hub-exam-title">SSC CGL Tier 1</h2>
+          <p id="hub-exam-sub">Full Test • PYQ • Sectional</p>
+        </div>
+      </div>
+
+      <div class="pill-tabs">
+        <button class="pill-tab active" id="flt-all" onclick="filterHubTests('all')">सभी टेस्ट</button>
+        <button class="pill-tab" id="flt-full" onclick="filterHubTests('full')">Full Test</button>
+        <button class="pill-tab" id="flt-pyq" onclick="filterHubTests('pyq')">PYQ (प्रीवियस ईयर)</button>
+        <button class="pill-tab" id="flt-sectional" onclick="filterHubTests('sectional')">Sectional</button>
+      </div>
+
+      <div id="hub-tests-list"></div>
+    </div>
+
+    <!-- TAB 2: STUDY HUB -->
+    <div id="tab-study" class="hidden">
+      <div class="pill-tabs">
+        <button class="pill-tab active" id="st-btn-vocab" onclick="switchStudyTab('vocab')">📚 25 OWS (ट्रिक्स)</button>
+        <button class="pill-tab" id="st-btn-formula" onclick="switchStudyTab('formula')">📐 एडवांस मैथ्स फॉर्मूला</button>
+        <button class="pill-tab" id="st-btn-ca" onclick="switchStudyTab('ca')">📰 करंट व GK</button>
+      </div>
+      <div id="study-vocab"></div>
+      <div id="study-formula" class="hidden"></div>
+      <div id="study-ca" class="hidden"></div>
+    </div>
+
+    <!-- TAB 3: HISTORY -->
+    <div id="tab-history" class="hidden">
+      <div class="sec-label">
+        <h3>आपके पिछले टेस्ट</h3>
+        <span onclick="clearHistory()">क्लियर करें</span>
+      </div>
+      <div id="history-list"></div>
+    </div>
+
+    <!-- TAB 4: PROFILE -->
+    <div id="tab-profile" class="hidden">
+      <div class="profile-card">
+        <div class="avatar-circle" id="prof-avatar">S</div>
+        <h3 style="margin:0;" id="prof-name-display">स्टूडेंट</h3>
+        <div style="font-size:0.82rem; color:var(--muted); margin-top:3px;" id="prof-target-display">Target: SSC CGL Tier 1</div>
+        <div class="prof-tags" id="prof-tags"></div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-val" id="stat-tests">0</div><div class="stat-lbl">कुल टेस्ट</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-acc">0%</div><div class="stat-lbl">औसत सटीकता</div></div>
+          <div class="stat-box"><div class="stat-val" id="stat-best">0</div><div class="stat-lbl">बेस्ट स्कोर</div></div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4 style="margin:0 0 12px;">अपनी प्रोफाइल बनाएँ / अपडेट करें</h4>
+        <div class="form-group">
+          <label>आपका पूरा नाम</label>
+          <input type="text" id="input-name" class="form-input" placeholder="अपना नाम लिखें">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>शहर / राज्य</label>
+            <input type="text" id="input-city" class="form-input" placeholder="जैसे: जयपुर">
+          </div>
+          <div class="form-group">
+            <label>डेली पढ़ाई (घंटे)</label>
+            <input type="number" id="input-goal" class="form-input" min="1" max="18" placeholder="6">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>टारगेट एग्ज़ाम</label>
+            <select id="input-target" class="form-input">
+              <option value="SSC CGL Tier 1 & 2">SSC CGL Tier 1 & 2</option>
+              <option value="RRB NTPC CBT 1 & 2">RRB NTPC CBT 1 & 2</option>
+              <option value="SSC CHSL / MTS">SSC CHSL / MTS</option>
+              <option value="SSC GD / Police">SSC GD / Police</option>
+              <option value="RRB Group D / ALP">RRB Group D / ALP</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>माध्यम (Medium)</label>
+            <select id="input-medium" class="form-input">
+              <option value="हिंदी माध्यम">हिंदी माध्यम</option>
+              <option value="English Medium">English Medium</option>
+              <option value="Bilingual">Bilingual</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-start" onclick="saveProfile()">प्रोफाइल सेव करें ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bnav-btn active" id="nav-home" onclick="switchMainTab('home')"><span class="bnav-ico">🏠</span><span>होम</span></button>
+    <button class="bnav-btn" id="nav-study" onclick="switchMainTab('study')"><span class="bnav-ico">📚</span><span>स्टडी</span></button>
+    <button class="bnav-btn" id="nav-history" onclick="switchMainTab('history')"><span class="bnav-ico">📊</span><span>हिस्ट्री</span></button>
+    <button class="bnav-btn" id="nav-profile" onclick="switchMainTab('profile')"><span class="bnav-ico">👤</span><span>प्रोफाइल</span></button>
+  </nav>
+
+  <!-- TEST SCREEN -->
+  <div class="card hidden" id="test-screen">
+    <div class="top-bar">
+      <span class="exam-name" id="exam-title">Mock Test</span>
+      <div class="top-controls">
+        <button class="icon-btn" id="lang-btn" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
+        <span class="timer" id="timer">15:00</span>
+        <button class="btn-top-submit" onclick="confirmSubmit()">सबमिट</button>
+      </div>
+    </div>
+
+    <div id="lock-notice" class="lock-notice hidden">
+      🔒 सेक्शन लॉक चालू है: 15 मिनट पूरे होने पर अगला सेक्शन अपने आप खुलेगा।
+    </div>
+
+    <div class="sec-tabs" id="sec-tabs"></div>
+    <div class="palette" id="palette"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--success)"></i>हल किया</span>
+      <span><i class="dot" style="background:var(--danger)"></i>छोड़ा</span>
+      <span><i class="dot" style="background:var(--purple)"></i>रिव्यू</span>
+      <span><i class="dot" style="background:var(--border)"></i>देखा नहीं</span>
+    </div>
+    <div class="q-meta"><span id="q-count">Q 1</span><span id="q-marks">+2 / -0.5</span></div>
+    <div class="q-text" id="q-text"></div>
+    <div id="options-box"></div>
+    <div class="action-btns">
+      <button class="act-btn btn-clear" onclick="clearResponse()">जवाब हटाएँ</button>
+      <button class="act-btn btn-review" id="review-btn" onclick="toggleReview()">Mark for Review</button>
+    </div>
+    <div class="nav-btns">
+      <button class="nav-btn btn-prev" id="prev-btn" onclick="prevQ()">पिछला</button>
+      <button class="nav-btn btn-next" id="next-btn" onclick="nextQ()">सेव और अगला</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="card hidden" id="result-screen">
+    <div class="top-bar">
+      <span class="exam-name">रिज़ल्ट एनालिसिस</span>
+      <div class="top-controls">
+        <button class="icon-btn" id="lang-btn-res" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" id="theme-btn-res" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+    <div class="score-box">
+      <div style="font-size:0.86rem; color:var(--muted);">कुल स्कोर</div>
+      <div class="score-num" id="final-score">0</div>
+      <div class="stats">
+        <span class="correct">सही: <b id="res-correct">0</b></span>
+        <span class="wrong">गलत: <b id="res-wrong">0</b></span>
+        <span>छोड़े: <b id="res-skip">0</b></span>
+        <span>सटीकता: <b id="res-acc">0%</b></span>
+      </div>
+    </div>
+    <table><thead><tr><th>सेक्शन</th><th>सही</th><th>गलत</th><th>स्कोर</th></tr></thead><tbody id="sec-table-body"></tbody></table>
+    <div id="review-box"></div>
+    <button class="btn-start" style="margin-top:15px;" onclick="goHome()">होम पेज पर जाएँ</button>
+  </div>
+</div>
+
+<!-- External Test Packs (Auto-loaded when uploaded to GitHub) -->
+<script>window.EXTERNAL_TEST_PACKS = [];</script>
+<script src="cgl_tests.js"></script>
+<script src="cgl_maths_sec.js"></script>
+<script src="cgl_reasoning_sec.js"></script>
+<script src="cgl_gs_sec.js"></script>
+<script src="cgl_english_sec.js"></script>
+<script src="cgl_full_pack2.js"></script>
+<script src="cgl_full_pack3.js"></script>
+<script src="cgl_pyq_pack1.js"></script>
+
+<script>
+  const qBank = {
+    maths: [
+      { q:{hi:"यदि x + 1/x = 5 है, तो x³ + 1/x³ का मान क्या होगा?", en:"If x + 1/x = 5, find the value of x³ + 1/x³."}, opts:{hi:["110","115","125","140"], en:["110","115","125","140"]}, ans:0, exp:{hi:"ट्रिक: k³ - 3k = 5³ - 3(5) = 125 - 15 = 110।", en:"Trick: k³ - 3k = 125 - 15 = 110."} },
+      { q:{hi:"यदि secθ + tanθ = 4 है, तो secθ - tanθ का मान क्या होगा?", en:"If secθ + tanθ = 4, what is the value of secθ - tanθ?"}, opts:{hi:["0.25","0.5","4","1"], en:["0.25","0.5","4","1"]}, ans:0, exp:{hi:"sec²θ - tan²θ = 1 ⇒ secθ - tanθ = 1/4 = 0.25।", en:"secθ - tanθ = 1 / (secθ + tanθ) = 1/4 = 0.25."} },
+      { q:{hi:"एक समबाहु त्रिभुज की भुजा 8 cm है। इसका क्षेत्रफल क्या होगा?", en:"The side of an equilateral triangle is 8 cm. Find its area."}, opts:{hi:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"], en:["16√3 cm²","32√3 cm²","8√3 cm²","64√3 cm²"]}, ans:0, exp:{hi:"क्षेत्रफल = (√3/4) × a² = (√3/4) × 64 = 16√3 cm²।", en:"Area = (√3/4) × 8² = 16√3 cm²."} },
+      { q:{hi:"एक वस्तु ₹480 में बेचने पर 20% लाभ होता है। क्रय मूल्य (CP) क्या है?", en:"Selling an article for ₹480 gives 20% profit. Find CP."}, opts:{hi:["₹380","₹400","₹420","₹450"], en:["₹380","₹400","₹420","₹450"]}, ans:1, exp:{hi:"CP = (480 × 100) / 120 = ₹400।", en:"CP = (480 × 100) / 120 = ₹400."} }
+    ],
+    reasoning: [
+      { q:{hi:"श्रृंखला पूरी करें: 2, 6, 12, 20, 30, ?", en:"Complete the series: 2, 6, 12, 20, 30, ?"}, opts:{hi:["38","40","42","44"], en:["38","40","42","44"]}, ans:2, exp:{hi:"अंतर +4, +6, +8, +10, +12 है। अतः 30 + 12 = 42।", en:"Differences: +4, +6, +8, +10, +12. So 30 + 12 = 42."} },
+      { q:{hi:"यदि CAT = 24 है, तो DOG का मान क्या होगा?", en:"If CAT = 24, what is the value of DOG?"}, opts:{hi:["24","26","28","30"], en:["24","26","28","30"]}, ans:1, exp:{hi:"D(4) + O(15) + G(7) = 26।", en:"D(4) + O(15) + G(7) = 26."} },
+      { q:{hi:"दर्पण में देखने पर 3:00 बजे का समय कैसा दिखाई देगा?", en:"What time will 3:00 appear in a mirror?"}, opts:{hi:["6:00","9:00","12:00","3:00"], en:["6:00","9:00","12:00","3:00"]}, ans:1, exp:{hi:"12:00 - 3:00 = 9:00।", en:"12:00 - 3:00 = 9:00."} }
+    ],
+    gs: [
+      { q:{hi:"भारतीय संविधान के किस अनुच्छेद में 'वित्तीय आपातकाल' है?", en:"Which Article provides for 'Financial Emergency'?"}, opts:{hi:["अनुच्छेद 352","अनुच्छेद 356","अनुच्छेद 360","अनुच्छेद 368"], en:["Article 352","Article 356","Article 360","Article 368"]}, ans:2, exp:{hi:"अनुच्छेद 360 में वित्तीय आपातकाल का प्रावधान है।", en:"Article 360 deals with Financial Emergency."} },
+      { q:{hi:"हड़प्पा सभ्यता का प्रसिद्ध बंदरगाह 'लोथल' किस राज्य में है?", en:"In which state is the Harappan port 'Lothal' located?"}, opts:{hi:["राजस्थान","गुजरात","पंजाब","हरियाणा"], en:["Rajasthan","Gujarat","Punjab","Haryana"]}, ans:1, exp:{hi:"लोथल गुजरात में भोगवा नदी के किनारे स्थित था।", en:"Lothal is located in Gujarat on the Bhogava river."} },
+      { q:{hi:"रक्त का थक्का जमाने में कौन-सा विटामिन सहायक होता है?", en:"Which vitamin helps in blood clotting?"}, opts:{hi:["विटामिन A","विटामिन C","विटामिन D","विटामिन K"], en:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"]}, ans:3, exp:{hi:"विटामिन K (Phylloquinone) रक्त का थक्का जमाता है।", en:"Vitamin K is essential for blood clotting."} }
+    ],
+    english: [
+      { q:{hi:"One Word: A doctor who treats children's diseases.", en:"One Word: A doctor who treats children's diseases."}, opts:{hi:["Cardiologist","Paediatrician","Dermatologist","Neurologist"], en:["Cardiologist","Paediatrician","Dermatologist","Neurologist"]}, ans:1, exp:{hi:"Paediatrician = बच्चों का डॉक्टर।", en:"Paediatrician treats children."} },
+      { q:{hi:"Synonym of 'ABUNDANT':", en:"Synonym of 'ABUNDANT':"}, opts:{hi:["Scarce","Plentiful","Rare","Empty"], en:["Scarce","Plentiful","Rare","Empty"]}, ans:1, exp:{hi:"Abundant = प्रचुर मात्रा में (Plentiful)।", en:"Abundant means existing in large quantities."} },
+      { q:{hi:"Fill in the blank: He has been living here ___ 2020.", en:"Fill in the blank: He has been living here ___ 2020."}, opts:{hi:["for","from","since","by"], en:["for","from","since","by"]}, ans:2, exp:{hi:"निश्चित समय (Point of time) के लिए 'since' लगता है।", en:"'Since' is used for a specific point of time."} }
+    ]
+  };
+
+  function getSlice(arr, start, count) {
+    let res = [];
+    for (let i = 0; i < count; i++) res.push(arr[(start + i) % arr.length]);
+    return res;
+  }
+
+  function makeSections(secKeys, offset = 0, perSec = 3) {
+    return secKeys.map(k => ({
+      name: k === 'maths' ? 'Maths' : k === 'reasoning' ? 'Reasoning' : k === 'gs' ? 'GS / GA' : 'English',
+      allowLang: k !== 'english',
+      questions: getSlice(qBank[k], offset, perSec)
+    }));
+  }
+
+  const examDirectory = [
+    {
+      id: "ssc_cgl_t1", group: "ssc", icon: "🎯", icoClass: "ico-ssc",
+      title: "SSC CGL Tier 1", sub: "15-15 Min Section Lock • Full Test • PYQ • Sectional", pos: 2, neg: 0.5,
+      tests: []
+    },
+    {
+      id: "ssc_cgl_t2", group: "ssc", icon: "🏆", icoClass: "ico-ssc",
+      title: "SSC CGL Tier 2 (Mains)", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
+      tests: [
+        { title: "SSC CGL Tier 2 - Full Mains Mock #1", type: "full", time: 900, secs: ['maths','reasoning','english','gs'], off: 1, cnt: 3 }
+      ]
+    },
+    {
+      id: "ssc_chsl", group: "ssc", icon: "📝", icoClass: "ico-ssc",
+      title: "SSC CHSL (10+2)", sub: "Full Test • PYQ • Sectional (+2 / -0.5)", pos: 2, neg: 0.5,
+      tests: [
+        { title: "SSC CHSL Tier 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 0, cnt: 3 }
+      ]
+    },
+    {
+      id: "ssc_mts", group: "ssc", icon: "📘", icoClass: "ico-ssc",
+      title: "SSC MTS & Havaldar", sub: "Full Test • PYQ • Sectional (+3 / -1)", pos: 3, neg: 1,
+      tests: [
+        { title: "SSC MTS - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs','english'], off: 1, cnt: 3 }
+      ]
+    },
+    {
+      id: "rrb_ntpc_cbt1", group: "rrb", icon: "🚆", icoClass: "ico-rrb",
+      title: "RRB NTPC CBT 1", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
+      ]
+    },
+    {
+      id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
+      title: "RRB NTPC CBT 2", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB NTPC CBT 2 - Full Mains Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 1, cnt: 3 }
+      ]
+    },
+    {
+      id: "rrb_groupd", group: "rrb", icon: "🛤️", icoClass: "ico-rrb",
+      title: "RRB Group D", sub: "Full Test • PYQ • Science (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: [
+        { title: "RRB Group D - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 2, cnt: 3 }
+      ]
+    },
+    {
+      id: "ssc_gd", group: "other", icon: "🪖", icoClass: "ico-def",
+      title: "SSC GD & Delhi Police", sub: "Full Test • PYQ • Sectional", pos: 2, neg: 0.25,
+      tests: [
+        { title: "SSC GD - Full Mock #1", type: "full", time: 480, secs: ['maths','reasoning','gs'], off: 0, cnt: 3 }
+      ]
+    }
+  ];
+
+  const vocabList = [
+    { type: "OWS • 1", word: "Abdicate", meaning: "राजगद्दी या पद त्याग देना (Give up a throne/power)", trick: "Ab (दूर) + Dicate (बोलना) = पद से दूर होने की घोषणा करना।" },
+    { type: "OWS • 2", word: "Abolish", meaning: "कानूनी रूप से समाप्त करना (Formally put an end to)", trick: "A + Polish = पुरानी प्रथा को पूरी तरह मिटा देना।" },
+    { type: "OWS • 3", word: "Aborigines", meaning: "मूल निवासी (Original inhabitants of a country)", trick: "Ab + Origin (शुरुआत) = जो शुरुआत से वहीं रह रहे हों।" },
+    { type: "OWS • 4", word: "Abridge", meaning: "संक्षिप्त करना (To shorten a book/text)", trick: "Bridge (पुल) रास्ता छोटा करता है, Abridge किताब को छोटा करता है।" },
+    { type: "OWS • 5", word: "Accomplice", meaning: "सह-अपराधी (A partner in crime)", trick: "Ac + Com + Police = जिसके साथ मिलकर जुर्म किया और पुलिस ने पकड़ा।" },
+    { type: "OWS • 6", word: "Acronym", meaning: "संक्षिप्त नाम (Word formed from initial letters, e.g., ISRO)", trick: "Acro (शुरुआती सिरा) + Nym (नाम) = पहले अक्षरों से बना नाम।" },
+    { type: "OWS • 7", word: "Acrobat", meaning: "कलाबाज़ (One who performs gymnastic feats)", trick: "Acro (ऊँचाई) + Bat = ऊँचाई पर लटककर करतब दिखाने वाला।" },
+    { type: "OWS • 8", word: "Aesthetics", meaning: "सौंदर्यशास्त्र (Study of art and beauty)", trick: "सुंदरता और कला की समझ रखने वाला शास्त्र।" },
+    { type: "OWS • 9", word: "Agnostic", meaning: "अज्ञेयवादी (Unsure about God's existence)", trick: "A (नहीं) + Gnos (जानना) = जो ईश्वर के होने पर संशय में हो।" },
+    { type: "OWS • 10", word: "Alimony", meaning: "गुजारा भत्ता (Allowance paid after divorce)", trick: "Ali + Money = तलाक के बाद दिया जाने वाला पैसा (Money)।" },
+    { type: "OWS • 11", word: "Altruist", meaning: "परोपकारी (One who helps others selflessly)", trick: "All + True = जो सबके लिए सच्चा और भला सोचे।" },
+    { type: "OWS • 12", word: "Amateur", meaning: "शौकिया (Does something for pleasure, not money)", trick: "A + Mature = जो प्रोफेशनल न हो, सिर्फ शौक से करे।" },
+    { type: "OWS • 13", word: "Ambidextrous", meaning: "दोनों हाथों से निपुण (Uses both hands equally well)", trick: "Ambi (दोनों) + Dexter (कुशल) = 3 Idiots के वायरस सर।" },
+    { type: "OWS • 14", word: "Ambiguous", meaning: "अस्पष्ट / दो अर्थों वाला (Having more than one meaning)", trick: "Ambi (दो) = जिसके दो मतलब निकलें, यानी साफ न हो।" },
+    { type: "OWS • 15", word: "Amnesia", meaning: "भूलने की बीमारी (Loss of memory)", trick: "A (नहीं) + Mnes (याददाश्त) = याददाश्त चले जाना (गजिनी)।" },
+    { type: "OWS • 16", word: "Amnesty", meaning: "राजक्षमा (Official pardon for political offenders)", trick: "सरकार द्वारा राजनीतिक कैदियों को दी गई आम माफी।" },
+    { type: "OWS • 17", word: "Amphibian", meaning: "उभयचर (Lives on both land and water)", trick: "Amphi (दोनों) + Bio (जीवन) = ज़मीन व पानी दोनों में रहने वाला।" },
+    { type: "OWS • 18", word: "Anarchist", meaning: "अराजकतावादी (Believes in no government)", trick: "An (बिना) + Archy (शासन) = जो कोई सरकार/नियम न माने।" },
+    { type: "OWS • 19", word: "Anecdote", meaning: "छोटा मनोरंजक किस्सा (Short amusing real story)", trick: "एक छोटा-सा असली और मज़ेदार किस्सा।" },
+    { type: "OWS • 20", word: "Anonymous", meaning: "गुमनाम (Without a name)", trick: "An (बिना) + Onym (नाम) = जिसका नाम न पता हो।" },
+    { type: "OWS • 21", word: "Anthology", meaning: "काव्य/साहित्य संग्रह (Collection of poems/writings)", trick: "Antho (फूल) + Logy = जैसे फूलों का गुलदस्ता, वैसे कविताओं का संग्रह।" },
+    { type: "OWS • 22", word: "Antidote", meaning: "विषहर दवा (Medicine to counteract poison)", trick: "Anti (खिलाफ) + Dote (डोज़) = ज़हर के खिलाफ दी जाने वाली दवा।" },
+    { type: "OWS • 23", word: "Apathy", meaning: "उदासीनता (Lack of feeling or emotion)", trick: "A (नहीं) + Pathy (भावना) = कोई फीलिंग या दिलचस्पी न होना।" },
+    { type: "OWS • 24", word: "Apiary", meaning: "मधुमक्खी पालन स्थान (Place where bees are kept)", trick: "Api = Bee (मधुमक्खी)। Apiculture से याद रखें।" },
+    { type: "OWS • 25", word: "Aviary", meaning: "पक्षीशाला (Place where birds are kept)", trick: "Avi = Bird (पक्षी)। Aviation (उड़ना) से याद रखें।" }
+  ];
+
+  const formulaGroups = [
+    { topic: "1. बीजगणित (Algebra Shortcuts)", items: [
+      { name: "यदि x + 1/x = k", eq: "x² + 1/x² = k² - 2" },
+      { name: "यदि x - 1/x = k", eq: "x² + 1/x² = k² + 2" },
+      { name: "यदि x + 1/x = k", eq: "x³ + 1/x³ = k³ - 3k" },
+      { name: "यदि x - 1/x = k", eq: "x³ - 1/x³ = k³ + 3k" },
+      { name: "यदि a + b + c = 0", eq: "a³ + b³ + c³ = 3abc" },
+      { name: "यदि x + 1/x = 2 (फिक्स ट्रिक)", eq: "x = 1 रखें (हमेशा)" }
+    ]},
+    { topic: "2. त्रिकोणमिति (Trigonometry Tricks)", items: [
+      { name: "यदि A + B = 90°", eq: "sinA = cosB, tanA·tanB = 1" },
+      { name: "यदि secθ + tanθ = k", eq: "secθ - tanθ = 1/k" },
+      { name: "यदि cosecθ + cotθ = k", eq: "cosecθ - cotθ = 1/k" },
+      { name: "a sinθ + b cosθ का Max/Min मान", eq: "± √(a² + b²)" },
+      { name: "sin 2θ / cos 2θ", eq: "2sinθcosθ / 1 - 2sin²θ" }
+    ]},
+    { topic: "3. ज्यामिति (Geometry Direct Results)", items: [
+      { name: "बहुभुज के अंतः कोणों का योग", eq: "(n - 2) × 180°" },
+      { name: "बहुभुज के विकर्ण (Diagonals)", eq: "n(n - 3) / 2" },
+      { name: "अंतःकेंद्र कोण (Incentre ∠BIC)", eq: "90° + (∠A / 2)" },
+      { name: "बाह्य समद्विभाजक कोण (∠BOC)", eq: "90° - (∠A / 2)" },
+      { name: "परिकेंद्र कोण (Circumcentre)", eq: "केंद्र पर कोण = 2 × परिधि कोण" }
+    ]},
+    { topic: "4. क्षेत्रमिति 2D (Mensuration 2D)", items: [
+      { name: "समबाहु त्रिभुज (Equilateral) क्षेत्रफल", eq: "(√3 / 4) × a²" },
+      { name: "समबाहु त्रिभुज की ऊँचाई (h)", eq: "(√3 / 2) × a" },
+      { name: "समचतुर्भुज (Rhombus) क्षेत्रफल", eq: "(1 / 2) × d₁ × d₂" },
+      { name: "समलंब (Trapezium) क्षेत्रफल", eq: "(1 / 2) × (a + b) × h" },
+      { name: "अर्धवृत्त का परिमाप (ट्रिक)", eq: "r × (36 / 7)" }
+    ]},
+    { topic: "5. क्षेत्रमिति 3D (Mensuration 3D)", items: [
+      { name: "बेलन (Cylinder) आयतन / वक्रपृष्ठ", eq: "πr²h  |  2πrh" },
+      { name: "शंकु (Cone) आयतन / वक्रपृष्ठ", eq: "(1/3)πr²h  |  πrl" },
+      { name: "गोला (Sphere) आयतन / पृष्ठ", eq: "(4/3)πr³  |  4πr²" },
+      { name: "अर्धगोला (Hemisphere) संपूर्ण पृष्ठ", eq: "3πr²" },
+      { name: "घनाभ (Cuboid) का विकर्ण", eq: "√(l² + b² + h²)" }
+    ]},
+    { topic: "6. निर्देशांक ज्यामिति (Coordinate Geometry)", items: [
+      { name: "दो बिंदुओं के बीच की दूरी", eq: "√[(x₂-x₁)² + (y₂-y₁)²]" },
+      { name: "मध्य बिंदु (Mid-Point)", eq: "((x₁+x₂)/2 , (y₁+y₂)/2)" },
+      { name: "रेखा की ढाल (Slope, m)", eq: "(y₂ - y₁) / (x₂ - x₁)" },
+      { name: "केंद्रक (Centroid) के निर्देशांक", eq: "((x₁+x₂+x₃)/3 , (y₁+y₂+y₃)/3)" }
+    ]},
+    { topic: "7. संख्या पद्धति व घातांक (Number System)", items: [
+      { name: "प्रथम n प्राकृतिक संख्याओं का योग", eq: "n(n + 1) / 2" },
+      { name: "प्रथम n वर्गों का योग (1²+2²..)", eq: "n(n+1)(2n+1) / 6" },
+      { name: "प्रथम n घनों का योग (1³+2³..)", eq: "[n(n + 1) / 2]²" },
+      { name: "इकाई अंक (Cyclicity ट्रिक)", eq: "घात को 4 से भाग दें (शेषफल रखें)" }
+    ]}
+  ];
+
+  const currentAffairs = [
+    { date: "Polity • Revision", title: "भारतीय संविधान और प्रमुख अनुच्छेद", desc: "अनुच्छेद 32 को 'संविधान की आत्मा' कहा गया है। अनुच्छेद 280 में वित्त आयोग और 360 में वित्तीय आपातकाल है।" },
+    { date: "Science • Space", title: "ISRO के प्रमुख मिशन (SSC स्पेशल)", desc: "चंद्रयान-3 ने 23 अगस्त 2023 को दक्षिणी ध्रुव पर सफल लैंडिंग की थी, जिसे 'राष्ट्रीय अंतरिक्ष दिवस' कहा जाता है।" }
+  ];
+
+  let activeHubExam = null, activeHubFilter = 'all';
+  let curExam, curSec = 0, curQ = 0, userAns = [], marked = [], visited = [], timerInt, timeLeft;
+  let lang = 'hi', isDark = localStorage.getItem('ep_dark') === 'true', isResultView = false;
+
+  function getProfile() {
+    return JSON.parse(localStorage.getItem('ep_profile')) || { name:'स्टूडेंट', city:'जयपुर', goal:'6', target:'SSC CGL Tier 1 & 2', medium:'हिंदी माध्यम' };
+  }
+  function getHistory() { return JSON.parse(localStorage.getItem('ep_history')) || []; }
+
+  // Register all external tests into examDirectory
+  function loadExternalPacks() {
+    const allExternal = [];
+    if (window.CGL_FULL_TESTS) {
+      window.CGL_FULL_TESTS.forEach(t => {
+        allExternal.push({ examId: 'ssc_cgl_t1', ...t, secLock: true, secTime: 900 });
+      });
+    }
+    if (window.EXTERNAL_TEST_PACKS && window.EXTERNAL_TEST_PACKS.length) {
+      window.EXTERNAL_TEST_PACKS.forEach(t => allExternal.push(t));
+    }
+
+    allExternal.forEach((t, idx) => {
+      const targetExam = examDirectory.find(e => e.id === (t.examId || 'ssc_cgl_t1'));
+      if (targetExam) {
+        const qCount = t.sections.reduce((s, sec) => s + sec.questions.length, 0);
+        targetExam.tests.push({
+          title: t.title,
+          type: t.type || 'full',
+          time: t.time || (t.sections.length * (t.secTime || 900)),
+          qCount: qCount,
+          secLock: !!t.secLock,
+          secTime: t.secTime || 900,
+          fullData: t
+        });
+      }
+    });
+  }
+
+  function initApp() {
+    loadExternalPacks();
+    if (isDark) { document.documentElement.setAttribute('data-theme', 'dark'); updateThemeIcons(); }
+    renderHomeExams(); renderProfileUI(); renderStudyHub(); renderHistoryUI();
+  }
+
+  function renderHomeExams() {
+    ['ssc', 'rrb', 'other'].forEach(grp => {
+      document.getElementById('list-' + grp).innerHTML = examDirectory.filter(e => e.group === grp).map(e => `
+        <div class="exam-col-card" onclick="openExamHub('${e.id}')">
+          <div class="exam-col-left">
+            <div class="exam-ico ${e.icoClass}">${e.icon}</div>
+            <div><div class="exam-col-title">${e.title}</div><div class="exam-col-sub">${e.sub}</div></div>
+          </div>
+          <div class="exam-arrow">›</div>
+        </div>
+      `).join('');
+    });
+  }
+
+  function openExamHub(examId) {
+    activeHubExam = examDirectory.find(e => e.id === examId);
+    document.getElementById('tab-home').classList.add('hidden');
+    document.getElementById('exam-hub').classList.remove('hidden');
+    document.getElementById('hub-exam-title').innerText = activeHubExam.title;
+    document.getElementById('hub-exam-sub').innerText = activeHubExam.sub;
+    filterHubTests('all');
+    window.scrollTo(0, 0);
+  }
+
+  function closeExamHub() {
+    document.getElementById('exam-hub').classList.add('hidden');
+    document.getElementById('tab-home').classList.remove('hidden');
+  }
+
+  function filterHubTests(type) {
+    activeHubFilter = type;
+    ['all', 'full', 'pyq', 'sectional'].forEach(t => document.getElementById('flt-' + t).classList.toggle('active', t === type));
+    const filtered = activeHubExam.tests.filter(t => type === 'all' || t.type === type);
+    const list = document.getElementById('hub-tests-list');
+    if (!filtered.length) { list.innerHTML = `<div class="empty-state">इस कैटेगरी में अभी टेस्ट नहीं हैं।</div>`; return; }
+
+    list.innerHTML = filtered.map(t => {
+      const realIdx = activeHubExam.tests.indexOf(t);
+      const badgeCls = t.type === 'full' ? 'badge-full' : t.type === 'pyq' ? 'badge-pyq' : 'badge-sec';
+      const badgeTxt = t.type === 'full' ? 'Full Test' : t.type === 'pyq' ? 'PYQ Paper' : 'Sectional';
+      const qTotal = t.qCount || (t.secs ? t.secs.length * t.cnt : 25);
+      const lockBadge = t.secLock ? `<span>🔒 15m/सेक्शन</span>` : '';
+      return `
+        <div class="test-card">
+          <span class="test-badge ${badgeCls}">${badgeTxt}</span>
+          <div class="test-title">${t.title}</div>
+          <div class="test-meta"><span>📝 ${qTotal} सवाल</span><span>⏱️ ${Math.round(t.time/60)} मिनट</span>${lockBadge}<span>📊 +${activeHubExam.pos} / -${activeHubExam.neg}</span></div>
+          <button class="btn-start" onclick="launchTest('${activeHubExam.id}', ${realIdx})">टेस्ट शुरू करें →</button>
+        </div>`;
+    }).join('');
+  }
+
+  function switchMainTab(tab) {
+    document.getElementById('exam-hub').classList.add('hidden');
+    ['home', 'study', 'history', 'profile'].forEach(t => {
+      document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+      document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+    });
+    if (tab === 'history') renderHistoryUI();
+    if (tab === 'profile') renderProfileUI();
+    window.scrollTo(0, 0);
+  }
+
+  function switchStudyTab(sub) {
+    ['vocab', 'formula', 'ca'].forEach(s => {
+      document.getElementById('study-' + s).classList.toggle('hidden', s !== sub);
+      document.getElementById('st-btn-' + s).classList.toggle('active', s === sub);
+    });
+  }
+
+  function renderStudyHub() {
+    document.getElementById('study-vocab').innerHTML = vocabList.map(v => `
+      <div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 <b>ट्रिक:</b> ${v.trick}</div></div>
+    `).join('');
+    document.getElementById('study-formula').innerHTML = formulaGroups.map(g => `
+      <div class="info-card"><div class="ca-title" style="margin-bottom:8px;">📐 ${g.topic}</div>${g.items.map(i => `<div class="formula-row"><span class="formula-name">${i.name}</span><span class="formula-eq">${i.eq}</span></div>`).join('')}</div>
+    `).join('');
+    document.getElementById('study-ca').innerHTML = currentAffairs.map(c => `
+      <div class="info-card"><span class="ca-date">${c.date}</span><div class="ca-title">${c.title}</div><p class="ca-desc">${c.desc}</p></div>
+    `).join('');
+  }
+
+  function renderProfileUI() {
+    const p = getProfile(), h = getHistory();
+    document.getElementById('hero-greeting').innerText = `नमस्ते, ${p.name} 👋`;
+    document.getElementById('header-target').innerText = `Target: ${p.target}`;
+    document.getElementById('hero-tests-pill').innerText = `📊 ${h.length} टेस्ट पूरे`;
+    document.getElementById('hero-goal-pill').innerText = `⏱️ लक्ष्य: ${p.goal || 6} घंटे/दिन`;
+    document.getElementById('prof-avatar').innerText = p.name.charAt(0).toUpperCase();
+    document.getElementById('prof-name-display').innerText = p.name;
+    document.getElementById('prof-target-display').innerText = `Target: ${p.target}`;
+    document.getElementById('prof-tags').innerHTML = `<span class="prof-tag">📍 ${p.city}</span><span class="prof-tag">🌐 ${p.medium}</span><span class="prof-tag">⏱️ ${p.goal} घंटे/दिन</span>`;
+    document.getElementById('input-name').value = p.name;
+    document.getElementById('input-city').value = p.city;
+    document.getElementById('input-goal').value = p.goal;
+    document.getElementById('input-target').value = p.target;
+    document.getElementById('input-medium').value = p.medium;
+    document.getElementById('stat-tests').innerText = h.length;
+    document.getElementById('stat-acc').innerText = h.length ? Math.round(h.reduce((s,x)=>s+x.acc,0)/h.length)+'%' : '0%';
+    document.getElementById('stat-best').innerText = h.length ? Math.max(...h.map(x=>parseFloat(x.score))).toFixed(1) : '0';
+  }
+
+  function saveProfile() {
+    localStorage.setItem('ep_profile', JSON.stringify({
+      name: document.getElementById('input-name').value.trim() || 'स्टूडेंट',
+      city: document.getElementById('input-city').value.trim() || 'भारत',
+      goal: document.getElementById('input-goal').value || '6',
+      target: document.getElementById('input-target').value,
+      medium: document.getElementById('input-medium').value
+    }));
+    renderProfileUI();
+    alert('प्रोफाइल सेव हो गई!');
+  }
+
+  function renderHistoryUI() {
+    const h = getHistory(), box = document.getElementById('history-list');
+    if (!h.length) { box.innerHTML = `<div class="empty-state">अभी तक कोई टेस्ट सबमिट नहीं किया है।</div>`; return; }
+    box.innerHTML = h.map(item => `
+      <div class="info-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><b style="font-size:0.9rem;">${item.exam}</b><span style="font-size:0.74rem;color:var(--muted);">${item.date}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.84rem;"><span>स्कोर: <b style="color:var(--primary);">${item.score}</b></span><span class="correct">सही: ${item.correct}</span><span class="wrong">गलत: ${item.wrong}</span><span>सटीकता: <b>${item.acc}%</b></span></div>
+      </div>`).join('');
+  }
+
+  function clearHistory() {
+    if (confirm('क्या आप टेस्ट हिस्ट्री हटाना चाहते हैं?')) { localStorage.removeItem('ep_history'); renderHistoryUI(); renderProfileUI(); }
+  }
+
+  function handleSearch(query) {
+    const q = query.trim().toLowerCase(), resBox = document.getElementById('search-results-box'), defBox = document.getElementById('home-default-content');
+    if (!q) { resBox.classList.add('hidden'); defBox.classList.remove('hidden'); return; }
+    defBox.classList.add('hidden'); resBox.classList.remove('hidden');
+    let html = '';
+    examDirectory.forEach(e => { if ((e.title+' '+e.sub).toLowerCase().includes(q)) html += `<div class="exam-col-card" onclick="openExamHub('${e.id}')"><div class="exam-col-left"><div class="exam-ico ${e.icoClass}">${e.icon}</div><div><div class="exam-col-title">${e.title}</div><div class="exam-col-sub">${e.sub}</div></div></div><div class="exam-arrow">›</div></div>`; });
+    vocabList.forEach(v => { if ((v.word+' '+v.meaning).toLowerCase().includes(q)) html += `<div class="info-card"><span class="ca-date">${v.type}</span><div class="vocab-word">${v.word}</div><div class="vocab-meaning">${v.meaning}</div><div class="vocab-trick">💡 ${v.trick}</div></div>`; });
+    resBox.innerHTML = html || `<div class="empty-state">"${query}" से जुड़ा कुछ नहीं मिला।</div>`;
+  }
+
+  function updateThemeIcons() {
+    document.getElementById('theme-btn-main').innerText = isDark ? '☀️ Light' : '🌙 Dark';
+    document.getElementById('theme-btn-test').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('theme-btn-res').innerText = isDark ? '☀️' : '🌙';
+  }
+  function toggleTheme() { isDark = !isDark; localStorage.setItem('ep_dark', isDark); document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light'); updateThemeIcons(); }
+  function toggleLang() { lang = (lang === 'hi') ? 'en' : 'hi'; document.getElementById('lang-btn').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; document.getElementById('lang-btn-res').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; if (isResultView) renderResultContent(); else renderAll(); }
+
+  function launchTest(examId, testIdx) {
+    const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
+    if (tObj.fullData) {
+      const ft = tObj.fullData;
+      curExam = {
+        name: ft.title, pos: ft.pos || exObj.pos, neg: ft.neg || exObj.neg,
+        time: ft.time, sections: ft.sections,
+        secLock: !!ft.secLock && ft.sections.length > 1,
+        secTime: ft.secTime || 900
+      };
+    } else {
+      curExam = {
+        name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time,
+        sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 3),
+        secLock: false, secTime: tObj.time
+      };
+    }
+
+    curSec = 0; curQ = 0; isResultView = false;
+    userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
+    marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited = curExam.sections.map(s => new Array(s.questions.length).fill(false));
+    visited[0][0] = true;
+    timeLeft = curExam.secLock ? curExam.secTime : curExam.time;
+
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.remove('hidden');
+    document.getElementById('lock-notice').classList.toggle('hidden', !curExam.secLock);
+    document.getElementById('exam-title').innerText = curExam.name;
+    document.getElementById('q-marks').innerText = `+${curExam.pos} / -${curExam.neg}`;
+    startTimer(); renderAll(); window.scrollTo(0, 0);
+  }
+
+  function startTimer() {
+    clearInterval(timerInt);
+    updateTimerDisplay();
+    timerInt = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        if (curExam.secLock && curSec < curExam.sections.length - 1) {
+          curSec++;
+          curQ = 0;
+          visited[curSec][0] = true;
+          timeLeft = curExam.secTime;
+          renderAll();
+          updateTimerDisplay();
+          alert(`समय समाप्त! अब अगला सेक्शन (${curExam.sections[curSec].name}) शुरू हो गया है।`);
+        } else {
+          submitTest();
+        }
+      } else {
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    document.getElementById('timer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+  }
+
+  function confirmSubmit() {
+    if (confirm('क्या आप टेस्ट सबमिट करना चाहते हैं?')) submitTest();
+  }
+
+  function renderAll() {
+    visited[curSec][curQ] = true;
+    const sec = curExam.sections[curSec], q = sec.questions[curQ], activeLang = sec.allowLang ? lang : 'en';
+    const langBtn = document.getElementById('lang-btn');
+    langBtn.disabled = !sec.allowLang;
+    langBtn.innerText = sec.allowLang ? (lang === 'hi' ? 'EN' : 'हिंदी') : 'EN Only';
+
+    const tabs = document.getElementById('sec-tabs'); tabs.innerHTML = '';
+    curExam.sections.forEach((s, idx) => {
+      const btn = document.createElement('button');
+      const isLocked = curExam.secLock && idx !== curSec;
+      btn.className = 'sec-tab' + (idx === curSec ? ' active' : '') + (isLocked ? ' locked' : '');
+      btn.innerText = isLocked ? `🔒 ${s.name}` : s.name;
+      btn.onclick = () => {
+        if (isLocked) {
+          alert('सेक्शन लॉक है! 15 मिनट पूरे होने के बाद ही अगला सेक्शन खुलेगा।');
+          return;
+        }
+        curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll();
+      };
+      tabs.appendChild(btn);
+    });
+
+    const pal = document.getElementById('palette'); pal.innerHTML = '';
+    sec.questions.forEach((_, i) => {
+      const btn = document.createElement('button'); btn.innerText = i + 1;
+      let cls = 'p-btn ';
+      if (marked[curSec][i] && userAns[curSec][i] !== null) cls += 'p-ans-marked';
+      else if (marked[curSec][i]) cls += 'p-marked';
+      else if (userAns[curSec][i] !== null) cls += 'p-answered';
+      else if (visited[curSec][i]) cls += 'p-not-answered';
+      else cls += 'p-not-visited';
+      if (i === curQ) cls += ' p-active';
+      btn.className = cls; btn.onclick = () => { curQ = i; visited[curSec][i] = true; renderAll(); };
+      pal.appendChild(btn);
+    });
+
+    document.getElementById('q-count').innerText = `${sec.name} - Q ${curQ + 1} / ${sec.questions.length}`;
+    document.getElementById('q-text').innerText = q.q[activeLang];
+    const box = document.getElementById('options-box'); box.innerHTML = '';
+    q.opts[activeLang].forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option' + (userAns[curSec][curQ] === i ? ' selected' : '');
+      btn.innerText = opt; btn.onclick = () => { userAns[curSec][curQ] = i; renderAll(); };
+      box.appendChild(btn);
+    });
+
+    const revBtn = document.getElementById('review-btn');
+    revBtn.classList.toggle('active-mark', marked[curSec][curQ]);
+    revBtn.innerText = marked[curSec][curQ] ? 'रिव्यू में है ✓' : 'Mark for Review';
+
+    const isFirstInView = curExam.secLock ? (curQ === 0) : (curSec === 0 && curQ === 0);
+    const isLastInSec = (curQ === sec.questions.length - 1);
+    const isLastOverall = (curSec === curExam.sections.length - 1 && isLastInSec);
+
+    document.getElementById('prev-btn').style.visibility = isFirstInView ? 'hidden' : 'visible';
+    if (curExam.secLock && isLastInSec && !isLastOverall) {
+      document.getElementById('next-btn').innerText = 'सेक्शन का आखिरी सवाल (🔒)';
+    } else {
+      document.getElementById('next-btn').innerText = isLastOverall ? 'सबमिट करें' : 'सेव और अगला';
+    }
+  }
+
+  function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
+  function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
+
+  function prevQ() {
+    if (curQ > 0) curQ--;
+    else if (!curExam.secLock && curSec > 0) {
+      curSec--; curQ = curExam.sections[curSec].questions.length - 1;
+    }
+    renderAll();
+  }
+
+  function nextQ() {
+    const secLen = curExam.sections[curSec].questions.length;
+    if (curQ < secLen - 1) {
+      curQ++; renderAll();
+    } else if (curExam.secLock && curSec < curExam.sections.length - 1) {
+      alert('यह इस सेक्शन का आखिरी सवाल है। 15 मिनट पूरे होते ही अगला सेक्शन अपने आप खुल जाएगा।');
+    } else if (!curExam.secLock && curSec < curExam.sections.length - 1) {
+      curSec++; curQ = 0; renderAll();
+    } else {
+      confirmSubmit();
+    }
+  }
+
+  function submitTest() {
+    clearInterval(timerInt); isResultView = true;
+    const summary = renderResultContent();
+    const h = getHistory();
+    h.unshift({ exam: curExam.name, score: summary.totalScore.toFixed(2), correct: summary.totalCorrect, wrong: summary.totalWrong, acc: summary.acc, date: new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'short' }) });
+    localStorage.setItem('ep_history', JSON.stringify(h.slice(0, 25)));
+    renderProfileUI();
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function renderResultContent() {
+    let totalCorrect = 0, totalWrong = 0, totalSkip = 0;
+    const tblBody = document.getElementById('sec-table-body'), revBox = document.getElementById('review-box');
+    tblBody.innerHTML = ''; revBox.innerHTML = '';
+
+    curExam.sections.forEach((sec, sIdx) => {
+      let sCor = 0, sWrg = 0; const activeLang = sec.allowLang ? lang : 'en';
+      revBox.innerHTML += `<div class="sec-heading">${sec.name}</div>`;
+      sec.questions.forEach((q, qIdx) => {
+        const ua = userAns[sIdx][qIdx];
+        let status = '';
+        if (ua === null) { totalSkip++; status = 'छोड़ा गया'; }
+        else if (ua === q.ans) { totalCorrect++; sCor++; status = '<span class="correct">सही</span>'; }
+        else { totalWrong++; sWrg++; status = '<span class="wrong">गलत</span>'; }
+        revBox.innerHTML += `<div class="review-item"><b>${qIdx+1}. ${q.q[activeLang]}</b><br>आपका जवाब: ${ua !== null ? q.opts[activeLang][ua] : 'कोई नहीं'} (${status})<br><span class="correct">सही जवाब: ${q.opts[activeLang][q.ans]}</span><div class="exp-box"><b>सॉल्यूशन:</b> ${q.exp[activeLang]}</div></div>`;
+      });
+      const sScore = (sCor * curExam.pos) - (sWrg * curExam.neg);
+      tblBody.innerHTML += `<tr><td><b>${sec.name}</b></td><td class="correct">${sCor}</td><td class="wrong">${sWrg}</td><td><b>${sScore.toFixed(2)}</b></td></tr>`;
+    });
+
+    const totalScore = (totalCorrect * curExam.pos) - (totalWrong * curExam.neg);
+    const attempted = totalCorrect + totalWrong;
+    const acc = attempted > 0 ? Math.round((totalCorrect / attempted) * 100) : 0;
+    document.getElementById('final-score').innerText = totalScore.toFixed(2);
+    document.getElementById('res-correct').innerText = totalCorrect;
+    document.getElementById('res-wrong').innerText = totalWrong;
+    document.getElementById('res-skip').innerText = totalSkip;
+    document.getElementById('res-acc').innerText = acc + '%';
+    return { totalScore, totalCorrect, totalWrong, acc };
+  }
+
+  function goHome() {
+    isResultView = false;
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+    switchMainTab('home');
+  }
+
+  initApp();
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+</script>
+</body>
+</html>
