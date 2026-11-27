@@ -265,6 +265,38 @@
   .math-col-btn span { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
   [data-theme="dark"] .math-col-btn.active b { color: #e0e7ff; }
 
+
+  /* Real CBT Exam-Specific Official Themes */
+  .cbt-header { color: #fff; padding: 12px 14px; border-radius: 12px 12px 0 0; margin: -18px -18px 14px -18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .cbt-cand-bar { display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; padding: 7px 10px; border-radius: 8px; margin-bottom: 12px; font-weight: 700; border: 1px solid var(--border); background: var(--soft-bg); }
+  .inst-list { font-size: 0.84rem; line-height: 1.55; padding-left: 18px; margin: 10px 0 14px; color: var(--text); }
+  .inst-list li { margin-bottom: 6px; }
+  .decl-box { background: var(--soft-bg); border: 1.5px solid var(--border); padding: 11px 12px; border-radius: 10px; margin: 12px 0; display: flex; align-items: flex-start; gap: 9px; font-size: 0.8rem; cursor: pointer; }
+  .decl-box input { margin-top: 3px; width: 17px; height: 17px; cursor: pointer; }
+  .btn-ready { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 800; font-size: 0.94rem; color: #fff; cursor: pointer; opacity: 1; }
+  .btn-ready:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* Exam Color Themes */
+  .theme-ssc .cbt-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
+  .theme-ssc .sec-tab.active, .theme-ssc .btn-next, .theme-ssc .btn-ready { background: #1d4ed8 !important; border-color: #1d4ed8 !important; }
+  .theme-ssc .option.selected { border-color: #1d4ed8; background: #eff6ff; color: #1e3a8a; }
+  [data-theme="dark"] .theme-ssc .option.selected { background: #1e3a8a; color: #dbeafe; }
+
+  .theme-rrb .cbt-header { background: linear-gradient(135deg, #0b3d60, #0284c7); }
+  .theme-rrb .sec-tab.active, .theme-rrb .btn-next, .theme-rrb .btn-ready { background: #0369a1 !important; border-color: #0369a1 !important; }
+  .theme-rrb .option.selected { border-color: #0369a1; background: #e0f2fe; color: #0c4a6e; }
+  [data-theme="dark"] .theme-rrb .option.selected { background: #0c4a6e; color: #e0f2fe; }
+
+  .theme-mp .cbt-header { background: linear-gradient(135deg, #1e293b, #b45309); }
+  .theme-mp .sec-tab.active, .theme-mp .btn-next, .theme-mp .btn-ready { background: #b45309 !important; border-color: #b45309 !important; }
+  .theme-mp .option.selected { border-color: #b45309; background: #fef3c7; color: #78350f; }
+  [data-theme="dark"] .theme-mp .option.selected { background: #78350f; color: #fef3c7; }
+
+  .theme-police .cbt-header { background: linear-gradient(135deg, #111827, #b91c1c); }
+  .theme-police .sec-tab.active, .theme-police .btn-next, .theme-police .btn-ready { background: #b91c1c !important; border-color: #b91c1c !important; }
+  .theme-police .option.selected { border-color: #b91c1c; background: #fee2e2; color: #7f1d1d; }
+  [data-theme="dark"] .theme-police .option.selected { background: #7f1d1d; color: #fee2e2; }
+
 </style>
 </head>
 <body>
@@ -497,20 +529,69 @@
     <button class="bnav-btn" id="nav-profile" onclick="switchMainTab('profile')"><span class="bnav-ico">👤</span><span>प्रोफाइल</span></button>
   </nav>
 
+  <!-- REAL CBT EXAM ENTRY / INSTRUCTIONS SCREEN -->
+  <div class="card hidden" id="inst-screen">
+    <div class="cbt-header" id="inst-header">
+      <div>
+        <div style="font-size:0.72rem; opacity:0.88; font-weight:700;" id="inst-board">OFFICIAL CBT EXAM PORTAL</div>
+        <div style="font-size:1rem; font-weight:800;" id="inst-exam-title">Mock Test</div>
+      </div>
+      <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border:1px solid rgba(255,255,255,0.35);" onclick="cancelExamEntry()">✕ बाहर</button>
+    </div>
+
+    <div class="cbt-cand-bar">
+      <span id="inst-cand-name">👤 Candidate: स्टूडेंट</span>
+      <span id="inst-cand-sys">💻 System: CBT-01</span>
+    </div>
+
+    <h4 style="margin:0 0 6px; font-size:0.94rem;">📋 सामान्य निर्देश (General Instructions)</h4>
+    <ol class="inst-list" id="inst-details"></ol>
+
+    <div class="legend" style="background:var(--soft-bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
+      <span><i class="dot" style="background:var(--border)"></i>देखा नहीं (Not Visited)</span>
+      <span><i class="dot" style="background:var(--danger)"></i>उत्तर नहीं दिया (Not Answered)</span>
+      <span><i class="dot" style="background:var(--success)"></i>उत्तर दिया (Answered)</span>
+      <span><i class="dot" style="background:var(--purple)"></i>रिव्यू (Marked)</span>
+    </div>
+
+    <div class="form-group" style="margin-top:10px;">
+      <label>डिफ़ॉल्ट भाषा चुनें (Choose Default Language)</label>
+      <select id="inst-lang-select" class="form-input">
+        <option value="hi">हिंदी (Hindi)</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <label class="decl-box">
+      <input type="checkbox" id="inst-agree" onchange="document.getElementById('btn-begin-exam').disabled = !this.checked;">
+      <span>मैंने सभी निर्देश ध्यान से पढ़ और समझ लिए हैं। मैं वास्तविक परीक्षा के नियमों के अनुसार टेस्ट शुरू करने के लिए तैयार हूँ।</span>
+    </label>
+
+    <button class="btn-ready" id="btn-begin-exam" disabled onclick="beginActualTest()">I am ready to begin / टेस्ट शुरू करें →</button>
+  </div>
+
   <!-- TEST SCREEN -->
   <div class="card hidden" id="test-screen">
-    <div class="top-bar">
-      <span class="exam-name" id="exam-title">Mock Test</span>
+    <div class="cbt-header">
+      <div>
+        <div style="font-size:0.68rem; opacity:0.88; font-weight:700;" id="test-board-tag">CBT EXAM</div>
+        <span class="exam-name" id="exam-title">Mock Test</span>
+      </div>
       <div class="top-controls">
-        <button class="icon-btn" id="lang-btn" onclick="toggleLang()">EN</button>
-        <button class="icon-btn" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
-        <span class="timer" id="timer">15:00</span>
+        <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border-color:rgba(255,255,255,0.35);" id="lang-btn" onclick="toggleLang()">EN</button>
+        <button class="icon-btn" style="background:rgba(255,255,255,0.18); color:#fff; border-color:rgba(255,255,255,0.35);" id="theme-btn-test" onclick="toggleTheme()">🌙</button>
+        <span class="timer" style="background:#fff; color:#dc2626;" id="timer">15:00</span>
         <button class="btn-top-submit" onclick="confirmSubmit()">सबमिट</button>
       </div>
     </div>
+    <div class="cbt-cand-bar">
+      <span id="test-cand-name">👤 स्टूडेंट</span>
+      <span id="test-status-mini">✅ 0 | ❌ 0</span>
+    </div>
 
-    <div id="lock-notice" class="lock-notice hidden">
-      🔒 सेक्शन लॉक चालू है: 15 मिनट पूरे होने पर अगला सेक्शन अपने आप खुलेगा।
+    <div id="lock-notice" class="lock-notice hidden" style="justify-content:space-between; flex-wrap:wrap;">
+      <span>🔒 सभी 25 सवाल देखने के बाद आप सेक्शन सबमिट कर सकते हैं (वापस नहीं आ सकेंगे)।</span>
+      <button id="btn-submit-sec" onclick="trySubmitSection()" style="background:var(--amber); color:#fff; border:none; padding:5px 10px; border-radius:7px; font-weight:800; font-size:0.74rem; cursor:pointer;">सेक्शन सबमिट →</button>
     </div>
 
     <div class="sec-tabs" id="sec-tabs"></div>
@@ -685,11 +766,8 @@
     // RAILWAY (RRB) EXAMS
     {
       id: "rrb_ntpc_cbt1", group: "rrb", icon: "🚆", icoClass: "ico-rrb",
-      title: "RRB NTPC CBT 1", sub: "Full Test • PYQ • Sectional (+1 / -0.33)", pos: 1, neg: 0.33,
-      tests: [
-        { title: "RRB NTPC CBT 1 - Full Mock #1", type: "full", time: 600, secs: ['maths','reasoning','gs'], off: 0, cnt: 4 },
-        { title: "RRB NTPC CBT 1 - PYQ Shift Paper", type: "pyq", time: 600, secs: ['maths','reasoning','gs'], off: 2, cnt: 4 }
-      ]
+      title: "RRB NTPC CBT 1", sub: "5 Full Tests (100 Qs • 90 Min) • Real CBT (+1 / -0.33)", pos: 1, neg: 0.33,
+      tests: []
     },
     {
       id: "rrb_ntpc_cbt2", group: "rrb", icon: "🚄", icoClass: "ico-rrb",
@@ -1398,11 +1476,28 @@
   function toggleTheme() { isDark = !isDark; localStorage.setItem('ep_dark', isDark); document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light'); updateThemeIcons(); }
   function toggleLang() { lang = (lang === 'hi') ? 'en' : 'hi'; document.getElementById('lang-btn').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; document.getElementById('lang-btn-res').innerText = lang === 'hi' ? 'EN' : 'हिंदी'; if (isResultView) renderResultContent(); else renderAll(); }
 
+  function getExamThemeInfo(examId) {
+    if (examId.startsWith('ssc_')) return { cls: 'theme-ssc', board: 'SSC • TCS iON CBT PORTAL' };
+    if (examId.startsWith('rrb_')) return { cls: 'theme-rrb', board: 'INDIAN RAILWAYS • RRB CBT PORTAL' };
+    if (examId.startsWith('mp_police')) return { cls: 'theme-mp', board: 'MPESB • MP POLICE CBT PORTAL' };
+    return { cls: 'theme-police', board: 'POLICE & DEFENCE • CBT PORTAL' };
+  }
+
+  function applyExamTheme(themeCls) {
+    ['inst-screen', 'test-screen'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('theme-ssc', 'theme-rrb', 'theme-mp', 'theme-police');
+      el.classList.add(themeCls);
+    });
+  }
+
   function launchTest(examId, testIdx) {
     const exObj = examDirectory.find(e => e.id === examId), tObj = exObj.tests[testIdx];
+    const themeInfo = getExamThemeInfo(examId);
     if (tObj.fullData) {
       const ft = tObj.fullData;
       curExam = {
+        examId: examId, themeInfo: themeInfo,
         name: ft.title, pos: ft.pos || exObj.pos, neg: ft.neg || exObj.neg,
         time: ft.time, sections: ft.sections,
         secLock: !!ft.secLock && ft.sections.length > 1,
@@ -1410,12 +1505,49 @@
       };
     } else {
       curExam = {
+        examId: examId, themeInfo: themeInfo,
         name: tObj.title, pos: exObj.pos, neg: exObj.neg, time: tObj.time,
         sections: makeSections(tObj.secs, tObj.off || 0, tObj.cnt || 3),
         secLock: false, secTime: tObj.time
       };
     }
 
+    applyExamTheme(themeInfo.cls);
+    const p = getProfile();
+    const totalQs = curExam.sections.reduce((s, sec) => s + sec.questions.length, 0);
+    const totalMins = Math.round(curExam.time / 60);
+
+    document.getElementById('inst-board').innerText = themeInfo.board;
+    document.getElementById('inst-exam-title').innerText = curExam.name;
+    document.getElementById('inst-cand-name').innerText = `👤 ${p.name} (${currentMobile || 'Guest'})`;
+    document.getElementById('inst-cand-sys').innerText = `💻 C-01`;
+    document.getElementById('inst-details').innerHTML = `
+      <li>कुल प्रश्न: <b>${totalQs} सवाल</b> | कुल समय: <b>${totalMins} मिनट</b>।</li>
+      <li>अंक योजना: प्रत्येक सही उत्तर के लिए <b>+${curExam.pos}</b> और गलत उत्तर के लिए <b>-${curExam.neg}</b> अंक।</li>
+      <li>सेक्शन: <b>${curExam.sections.map(s => s.name).join(', ')}</b>।</li>
+      ${curExam.secLock ? '<li><b>🔒 सेक्शन नियम (15 मिनट/सेक्शन):</b> सभी 25 सवाल देखने (Visit) के बाद आप 15 मिनट से पहले भी सेक्शन सबमिट करके अगले सेक्शन में जा सकते हैं। एक बार सेक्शन बदलने पर वापस नहीं आ पाएँगे और बचा हुआ समय समाप्त हो जाएगा।</li>' : '<li>आप किसी भी सेक्शन या सवाल पर सीधे जा सकते हैं।</li>'}
+      <li>समय समाप्त होने पर आपका टेस्ट अपने आप सबमिट हो जाएगा।</li>
+    `;
+    document.getElementById('inst-lang-select').value = lang;
+    document.getElementById('inst-agree').checked = false;
+    document.getElementById('btn-begin-exam').disabled = true;
+
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('inst-screen').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  function cancelExamEntry() {
+    document.getElementById('inst-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+  }
+
+  function beginActualTest() {
+    lang = document.getElementById('inst-lang-select').value || 'hi';
     curSec = 0; curQ = 0; isResultView = false;
     userAns = curExam.sections.map(s => new Array(s.questions.length).fill(null));
     marked = curExam.sections.map(s => new Array(s.questions.length).fill(false));
@@ -1423,12 +1555,13 @@
     visited[0][0] = true;
     timeLeft = curExam.secLock ? curExam.secTime : curExam.time;
 
-    document.getElementById('main-app').classList.add('hidden');
-    document.getElementById('bottom-nav').classList.add('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
+    const p = getProfile();
+    document.getElementById('inst-screen').classList.add('hidden');
     document.getElementById('test-screen').classList.remove('hidden');
     document.getElementById('lock-notice').classList.toggle('hidden', !curExam.secLock);
+    document.getElementById('test-board-tag').innerText = curExam.themeInfo.board;
     document.getElementById('exam-title').innerText = curExam.name;
+    document.getElementById('test-cand-name').innerText = `👤 ${p.name}`;
     document.getElementById('q-marks').innerText = `+${curExam.pos} / -${curExam.neg}`;
     startTimer(); renderAll(); window.scrollTo(0, 0);
   }
@@ -1476,7 +1609,11 @@
       btn.className = 'sec-tab' + (idx === curSec ? ' active' : '') + (isLocked ? ' locked' : '');
       btn.innerText = isLocked ? `🔒 ${s.name}` : s.name;
       btn.onclick = () => {
-        if (isLocked) { alert('सेक्शन लॉक है! 15 मिनट पूरे होने के बाद ही अगला सेक्शन खुलेगा।'); return; }
+        if (isLocked) {
+          if (idx < curSec) alert('यह सेक्शन पहले ही सबमिट हो चुका है। आप वापस नहीं जा सकते।');
+          else alert('अगले सेक्शन में जाने के लिए पहले इस सेक्शन के सभी सवाल देखकर "सेक्शन सबमिट" करें।');
+          return;
+        }
         curSec = idx; curQ = 0; visited[curSec][0] = true; renderAll();
       };
       tabs.appendChild(btn);
@@ -1497,6 +1634,9 @@
     });
 
     document.getElementById('q-count').innerText = `${sec.name} - Q ${curQ + 1} / ${sec.questions.length}`;
+    const ansCnt = userAns[curSec].filter(x => x !== null).length;
+    const mkCnt = marked[curSec].filter(Boolean).length;
+    document.getElementById('test-status-mini').innerText = `🟢 ${ansCnt} | 🟣 ${mkCnt} | ⚪ ${sec.questions.length - ansCnt}`;
     document.getElementById('q-text').innerText = q.q[activeLang];
     const box = document.getElementById('options-box'); box.innerHTML = '';
     q.opts[activeLang].forEach((opt, i) => {
@@ -1515,8 +1655,10 @@
     const isLastOverall = (curSec === curExam.sections.length - 1 && isLastInSec);
 
     document.getElementById('prev-btn').style.visibility = isFirstInView ? 'hidden' : 'visible';
+    const subSecBtn = document.getElementById('btn-submit-sec');
+    if (subSecBtn) subSecBtn.style.display = (curExam.secLock && curSec < curExam.sections.length - 1) ? 'inline-block' : 'none';
     if (curExam.secLock && isLastInSec && !isLastOverall) {
-      document.getElementById('next-btn').innerText = 'सेक्शन का आखिरी सवाल (🔒)';
+      document.getElementById('next-btn').innerText = 'सेक्शन सबमिट व अगला →';
     } else {
       document.getElementById('next-btn').innerText = isLastOverall ? 'सबमिट करें' : 'सेव और अगला';
     }
@@ -1525,10 +1667,34 @@
   function clearResponse() { userAns[curSec][curQ] = null; renderAll(); }
   function toggleReview() { marked[curSec][curQ] = !marked[curSec][curQ]; renderAll(); }
   function prevQ() { if (curQ > 0) curQ--; else if (!curExam.secLock && curSec > 0) { curSec--; curQ = curExam.sections[curSec].questions.length - 1; } renderAll(); }
+  function trySubmitSection() {
+    if (!curExam.secLock || curSec >= curExam.sections.length - 1) return;
+    const totalInSec = curExam.sections[curSec].questions.length;
+    const unseenCount = visited[curSec].filter(v => !v).length;
+    if (unseenCount > 0) {
+      alert(`अगले सेक्शन में जाने के लिए पहले इस सेक्शन के सभी ${totalInSec} सवाल देखना (Visit करना) ज़रूरी है!\n\nअभी ${unseenCount} सवाल देखे नहीं गए हैं।`);
+      return;
+    }
+    const curSecName = curExam.sections[curSec].name;
+    const nextSecName = curExam.sections[curSec + 1].name;
+    const ok = confirm(
+      `क्या आप "${curSecName}" सेक्शन सबमिट करके अगले सेक्शन "${nextSecName}" में जाना चाहते हैं?\n\n⚠️ ध्यान दें:\n1. आप वापस "${curSecName}" सेक्शन में नहीं आ पाएँगे।\n2. इस सेक्शन का बचा हुआ समय समाप्त हो जाएगा (अगले सेक्शन में नहीं जुड़ेगा)।`
+    );
+    if (ok) {
+      curSec++;
+      curQ = 0;
+      visited[curSec][0] = true;
+      timeLeft = curExam.secTime;
+      updateTimerDisplay();
+      renderAll();
+      window.scrollTo(0, 0);
+    }
+  }
+
   function nextQ() {
     const secLen = curExam.sections[curSec].questions.length;
     if (curQ < secLen - 1) { curQ++; renderAll(); }
-    else if (curExam.secLock && curSec < curExam.sections.length - 1) { alert('यह इस सेक्शन का आखिरी सवाल है। 15 मिनट पूरे होते ही अगला सेक्शन अपने आप खुल जाएगा।'); }
+    else if (curExam.secLock && curSec < curExam.sections.length - 1) { trySubmitSection(); }
     else if (!curExam.secLock && curSec < curExam.sections.length - 1) { curSec++; curQ = 0; renderAll(); }
     else { confirmSubmit(); }
   }
